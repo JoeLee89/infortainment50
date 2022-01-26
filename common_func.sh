@@ -8,23 +8,28 @@ COLOR_BLUE_WD='\e[0;36m'
 COLOR_YELLOW_WD='\e[93m'
 COLOR_GREEN_WD='\e[32m'
 
-for i in "BSEC_BACC" "LEC1" "SC1X"; do
+for i in "LEC1" "BSEC_BACC" "SC1X" "SA3X"; do
   board_init=$(sudo ./idll-test.exe -- --EBOARD_TYPE EBOARD_ADi_"$i" --section adiLibInit)
   if [[ "$board_init" =~ "detected" ]]; then
     board=$i
-    echo "$board"
     break
   fi
 done
 
 echo "================================================================"
-echo "Please ignore above message, it is detecting borad name process."
+echo "Please ignore above message, it is detecting board name process."
 echo "================================================================"
+
+printf "${COLOR_RED_WD}Please confirm the detected board name = $board${COLOR_REST}\n"
+echo "If it is correct, enter to continue, or input the board name: (BSEC_BACC, LEC1, SC1X, SA3X)"
+read -p "" board_name
+
+board=${board_name:-$board}
+board=${board^^}
+
 #board="BSEC_BACC"
 #board="LEC1"
 #board="SC1X"
-
-
 
 launch_command() {
   print_command "$1"
@@ -32,7 +37,7 @@ launch_command() {
   printcolor w "$result"
 }
 
-#if $3 has input string, it will ignore $1 including fail message 
+#if $3 has input string, it will ignore $1 including fail message
 compare_result() {
   status=""
   if [[ "$1" =~ "failed" && "$3" == "" ]]; then
@@ -82,11 +87,10 @@ compare_result() {
   fi
 }
 
-
 verify_result() {
   status=""
   if [[ "$1" =~ "failed" || "$1" =~ "error" ]]; then
-#    echo "$result"
+    #    echo "$result"
     printf "\n"
     printcolor r "============================================"
     printcolor r "Result: FAIL"
@@ -550,12 +554,12 @@ write_data() {
   local i r m
   for i in {0..10}; do
     write_data[$i]=$(shuf -i 0-255 -n 1)
-#    echo "${write_data[@]}"
+    #    echo "${write_data[@]}"
   done
 
   m=0
   for r in ${write_data[*]}; do
-    re=$( echo "obase=16;$r"|bc )
+    re=$(echo "obase=16;$r" | bc)
     if [ ${#re} == 1 ]; then
       write_data_hex[$m]=0x0$re
     else
@@ -563,8 +567,6 @@ write_data() {
     fi
     ((m++))
   done
-
-
 
 }
 
