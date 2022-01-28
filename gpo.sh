@@ -31,24 +31,15 @@ Blink() {
   ###########################################################################
   #test basic blink / period test
   title b "Reset blinking function...   reset all port to high, before test... "
-  if [ "$1" == "sa3" ]; then
-    for (( i = 0; i < 16; i++ )); do
-      launch_command "sudo ./idll-test.exe --PIN_NUM $i --PERIOD 0 --DUTY_CYCLE 99 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section GPO_LED_SetDoLedBlink"
-    done
-    launch_command "sudo ./idll-test.exe --PORT_VAL 4294967295 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section GPO_LED_SetPort"
-#    compare_result "$result" "Port value: 65535"
-  else
-    for (( i = 0; i < 32; i++ )); do
-      launch_command "sudo ./idll-test.exe --PIN_NUM $i --PERIOD 0 --DUTY_CYCLE 99 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section GPO_LED_SetDoLedBlink"
-    done
-    launch_command "sudo ./idll-test.exe --PORT_VAL 4294967295 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section GPO_LED_SetPort"
+  for i in $(seq 0 $led_amount); do
+    launch_command "sudo ./idll-test.exe --PIN_NUM $i --PIN_VAL true -- --EBOARD_TYPE EBOARD_ADi_"$board" --section GPO_LED_SetPin"
+  done
 
-  fi
 
   title b "Change DUTY CYCLE value"
   for all in $(seq 0 $led_amount); do
 
-    for duty_cyclell in "${duty_cycle_value[@]}"; do
+    for duty_cyclell in "${duty_cycle_value[*]}"; do
       printf "${COLOR_BLUE_WD}LED: $all ${COLOR_REST}\n"
       printf "${COLOR_BLUE_WD}Duty cycle:${COLOR_RED_WD} $duty_cyclell ${COLOR_REST}\n"
       printf "${COLOR_BLUE_WD}period (0=disable blinking): $period = $period ms ${COLOR_REST}\n"
@@ -94,7 +85,7 @@ Blink() {
     printf "${COLOR_RED_WD}======================= ${COLOR_REST}\n\n"
     read -p "Enter to continue..." continue
 
-    for perioddd in "${period_verify_value[@]}"; do
+    for perioddd in "${period_verify_value[*]}"; do
       printf "${COLOR_BLUE_WD}LED: $all ${COLOR_REST}\n"
       printf "${COLOR_BLUE_WD}Duty cycle: $duty_cycle ${COLOR_REST}\n"
       printf "${COLOR_BLUE_WD}period( 0=disable blinking): ${COLOR_RED_WD}$perioddd  = $perioddd ms ${COLOR_REST}\n"
@@ -110,23 +101,6 @@ Blink() {
       compare_result "$result" "Period: $perioddd"
       verify_result "$result"
 
-#      if [[ "$result" =~ "failed" && "$result" =~ "nReadDutyCycle == nDutyCycle" && "$result" =~ "Period: $perioddd" ]]; then
-#        printcolor g "============================================"
-#        printcolor g "Result PASS include : Period: $perioddd"
-#        printcolor g "============================================"
-#      elif [[ "$result" =~ "Period: $perioddd" ]]; then
-#        printcolor g "============================================"
-#        printcolor g "Result PASS include : Period: $perioddd"
-#        printcolor g "============================================"
-#      else
-#        printcolor r "============================================"
-#        printcolor r "Result: FAIL"
-#        printcolor r "============================================"
-#        read -p ""
-#      fi
-#      echo ""
-#      compare_result "$result" "Period: $perioddd"
-
     done
 
     #confirm LED status after disabling blinking
@@ -134,8 +108,8 @@ Blink() {
     printcolor r "(SCxx/SA3) LED: $all should be back to solid on as it's set port before ..."
     printcolor r "(LEC1) LED: $all won't keep its original state, it on/off randomly ..."
     read -p "Enter to continue..." continue
-    print_command "sudo ./idll-test.exe --PIN_NUM $all --PERIOD 0 --DUTY_CYCLE 99 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section GPO_LED_SetDoLedBlink"
-    sudo ./idll-test.exe --PIN_NUM $all --PERIOD 0 --DUTY_CYCLE 99 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section GPO_LED_SetDoLedBlink
+    print_command "sudo ./idll-test.exe --PIN_NUM $all --PERIOD 0 --DUTY_CYCLE 100 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section GPO_LED_SetDoLedBlink"
+    sudo ./idll-test.exe --PIN_NUM $all --PERIOD 0 --DUTY_CYCLE 100 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section GPO_LED_SetDoLedBlink
 
   done
 

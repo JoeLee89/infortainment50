@@ -20,7 +20,8 @@ Initial() {
       sudo ./idll-test.exe --ALLOW_INIT_FAIL true -- --EBOARD_TYPE EBOARD_ADi_"$board" --section InitBatDetect [ADiDLL][INIT][BAT_DETECT]
     fi
 
-    read -p "Input [q] to exit loop.." input
+    echo "Input [q] to exit loop.."
+    read -p "" input
       if [[ "$input" == "q"  ]]; then
         break
     fi

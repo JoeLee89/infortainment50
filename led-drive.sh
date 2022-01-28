@@ -23,51 +23,39 @@ LED_set_get(){
 }
 
 LED(){
+  brightness=99
+  duty_cycle=50
+  blink_period=1000
+  brightness_verify_value=("100" "99" "70" "50" "30" "10" "1" "0")
+  duty_cycle_list=("100" "99" "50" "10" "1" "0")
+  blink_period_list=("10000" "9999" "5000" "500" "1" "0")
   if [ "$1" == "scxx" ]; then
     project_period=24
     led_amount=23
-    brightness=250
-    duty_cycle=128
-    blink_period=50
-    brightness_verify_value=("255" "200" "100" "10" "1" "0")
-    duty_cycle_list=("255" "200" "100" "10" "1" "0")
-    blink_period_list=("255" "200" "100" "10" "1" "0")
   elif [ "$1" == "sa3" ]; then
     project_period=6
     led_amount=15
-    brightness=60
-    duty_cycle=32
-    blink_period=10
-    brightness_verify_value=("63" "45" "20" "10" "1" "0")
-    duty_cycle_list=("63" "40" "20" "10" "1" "0")
-    blink_period_list=("63" "30" "10" "1" "0")
   fi
 
-#  blink_period_sec=$((($blink_period+1)/$project_period))
-  blink_period_sec=$(count_whole_blink_sec $blink_period $project_period)
-#  duty_cycle=128
-
+#  blink_period_sec=$(count_whole_blink_sec $blink_period $project_period)
 
   for all in $(seq 0 $led_amount); do
     for brightness_ in "${brightness_verify_value[@]}"; do
       printf "\n\n\n"
       printcolor w "LED: $all"
       printcolor r "Setting brightness: $brightness_"
-      printcolor w "Blinking period: $blink_period"
+      printcolor w "Blinking period: $blink_period ms"
       printcolor w "Duty cycle: $duty_cycle"
-      printcolor w "Whole blinking period second: $blink_period_sec"
       printcolor w "==============================================="
 
       if [ "$brightness_" == 0 ]; then
-        printcolor r "Note: the LED will stop blinking/ turned LED OFF, while brightness = 0 "
-      elif [ "$brightness_" == 255 ]; then
-        printcolor r "Note: the LED will stop blinking/ turned LED SOLID ON, while brightness = 255"
-      elif [ "$brightness_" == 63 ]; then
-        printcolor r "Note: the LED will stop blinking/ turned LED SOLID ON, while brightness = 63"
+        printcolor r "Note: the LED will STOP blinking/ turned LED OFF, while brightness = 0 "
+      elif [ "$brightness_" == 100 ]; then
+        printcolor r "Note: the LED will KEEP Blinking, while brightness = 100"
       fi
 
       read -p "enter to continue above setting..."
-      launch_command "sudo ./idll-test.exe --PIN_NUM $all --BLINK $blink_period --DUTY_CYCLE $duty_cycle --BRIGHTNESS $brightness_ -- --EBOARD_TYPE EBOARD_ADi_"$board" --section GPO_LED_Drive_SetBlink"
+      launch_command "sudo ./idll-test.exe --PIN_NUM $all --PERIOD $blink_period --DUTY_CYCLE $duty_cycle --BRIGHTNESS $brightness_ -- --EBOARD_TYPE EBOARD_ADi_"$board" --section GPO_LED_Drive_SetBlink"
       compare_result "$result" "Brightness: $brightness_"
     done
 
@@ -76,17 +64,18 @@ LED(){
       printf "\n\n\n"
       printcolor w "LED: $all"
       printcolor w "Setting brightness: $brightness"
-      printcolor w "Blinking period: $blink_period"
+      printcolor w "Blinking period: $blink_period ms"
       printcolor r "Duty cycle: $dutycycle"
-      printcolor w "Whole blinking period second: $blink_period_sec"
       printcolor w "=============================================== "
 
       if [ "$dutycycle" == 0 ]; then
-          printcolor r "Note: the LED will stop blinking / turned LED OFF, while duty cycle = 0"
+        printcolor r "Note: the LED will stop blinking / turned LED OFF, while duty cycle = 0"
+      elif [ "$dutycycle" == 100 ]; then
+        printcolor r "Note: the LED will stop blinking / turned LED ON, while duty cycle = 100"
       fi
 
       read -p "enter to continue above setting..."
-      launch_command "sudo ./idll-test.exe --PIN_NUM $all --BLINK $blink_period --DUTY_CYCLE $dutycycle --BRIGHTNESS $brightness -- --EBOARD_TYPE EBOARD_ADi_"$board" --section GPO_LED_Drive_SetBlink"
+      launch_command "sudo ./idll-test.exe --PIN_NUM $all --PERIOD $blink_period --DUTY_CYCLE $dutycycle --BRIGHTNESS $brightness -- --EBOARD_TYPE EBOARD_ADi_"$board" --section GPO_LED_Drive_SetBlink"
       compare_result "$result" "Duty cycle: $dutycycle"
     done
 
@@ -97,9 +86,8 @@ LED(){
       printf "\n\n\n"
       printcolor w "LED: $all"
       printcolor w "Setting brightness: $brightness"
-      printcolor r "Blinking period: $blink"
+      printcolor r "Blinking period: $blink ms"
       printcolor w "Duty cycle: $duty_cycle"
-      printcolor w "Whole blinking period second: $(count_whole_blink_sec $blink $project_period)"
       printcolor w "==============================================="
 
       if [ "$blink" == 0 ]; then
@@ -107,13 +95,13 @@ LED(){
       fi
 
       read -p "enter to continue above setting..."
-      launch_command "sudo ./idll-test.exe --PIN_NUM $all --BLINK $blink --DUTY_CYCLE $duty_cycle --BRIGHTNESS $brightness -- --EBOARD_TYPE EBOARD_ADi_"$board" --section GPO_LED_Drive_SetBlink"
-      compare_result "$result" "nBlink: $blink"
+      launch_command "sudo ./idll-test.exe --PIN_NUM $all --PERIOD $blink --DUTY_CYCLE $duty_cycle --BRIGHTNESS $brightness -- --EBOARD_TYPE EBOARD_ADi_"$board" --section GPO_LED_Drive_SetBlink"
+      compare_result "$result" "nPeriod: $blink"
     done
 
     #just disable the led not te be tested.
     read -p "enter to reset LED status..."
-    sudo ./idll-test.exe --PIN_NUM $all --BLINK 0 --DUTY_CYCLE 0 --BRIGHTNESS 0 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section GPO_LED_Drive_SetBlink
+    sudo ./idll-test.exe --PIN_NUM $all --PERIOD 0 --DUTY_CYCLE 0 --BRIGHTNESS 0 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section GPO_LED_Drive_SetBlink
 
   done
 }
@@ -124,17 +112,17 @@ LED(){
 parameter(){
   title "Check bad parameter... "
 
-  print_command  "${COLOR_RED_WD}sudo ./idll-test.exe --PIN_NUM 25 --BLINK 23 --DUTY_CYCLE 255 --BRIGHTNESS 255 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section GPO_LED_Drive_SetBlink ${COLOR_REST}\n"
-  sudo ./idll-test.exe --PIN_NUM 25 --BLINK 23 --DUTY_CYCLE 255 --BRIGHTNESS 255 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section GPO_LED_Drive_SetBlink
+  print_command  "${COLOR_RED_WD}sudo ./idll-test.exe --PIN_NUM 25 --PERIOD 23 --DUTY_CYCLE 255 --BRIGHTNESS 255 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section GPO_LED_Drive_SetBlink ${COLOR_REST}\n"
+  sudo ./idll-test.exe --PIN_NUM 25 --PERIOD 23 --DUTY_CYCLE 255 --BRIGHTNESS 255 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section GPO_LED_Drive_SetBlink
 
-  print_command  "${COLOR_RED_WD}sudo ./idll-test.exe --PIN_NUM 23 --BLINK 256 --DUTY_CYCLE 255 --BRIGHTNESS 255 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section GPO_LED_Drive_SetBlink ${COLOR_REST}\n"
-  sudo ./idll-test.exe --PIN_NUM 23 --BLINK 256 --DUTY_CYCLE 255 --BRIGHTNESS 255 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section GPO_LED_Drive_SetBlink
+  print_command  "${COLOR_RED_WD}sudo ./idll-test.exe --PIN_NUM 23 --PERIOD 256 --DUTY_CYCLE 255 --BRIGHTNESS 255 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section GPO_LED_Drive_SetBlink ${COLOR_REST}\n"
+  sudo ./idll-test.exe --PIN_NUM 23 --PERIOD 256 --DUTY_CYCLE 255 --BRIGHTNESS 255 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section GPO_LED_Drive_SetBlink
 
-  print_command  "${COLOR_RED_WD}sudo ./idll-test.exe --PIN_NUM 23 --BLINK 23 --DUTY_CYCLE 256 --BRIGHTNESS 255 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section GPO_LED_Drive_SetBlink${COLOR_REST}\n"
-  sudo ./idll-test.exe --PIN_NUM 23 --BLINK 23 --DUTY_CYCLE 256 --BRIGHTNESS 255 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section GPO_LED_Drive_SetBlink
+  print_command  "${COLOR_RED_WD}sudo ./idll-test.exe --PIN_NUM 23 --PERIOD 23 --DUTY_CYCLE 256 --BRIGHTNESS 255 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section GPO_LED_Drive_SetBlink${COLOR_REST}\n"
+  sudo ./idll-test.exe --PIN_NUM 23 --PERIOD 23 --DUTY_CYCLE 256 --BRIGHTNESS 255 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section GPO_LED_Drive_SetBlink
 
-  print_command  "${COLOR_RED_WD}sudo ./idll-test.exe --PIN_NUM 23 --BLINK 23 --DUTY_CYCLE 255 --BRIGHTNESS 256 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section GPO_LED_Drive_SetBlink${COLOR_REST}\n"
-  sudo ./idll-test.exe --PIN_NUM 23 --BLINK 23 --DUTY_CYCLE 255 --BRIGHTNESS 256 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section GPO_LED_Drive_SetBlink
+  print_command  "${COLOR_RED_WD}sudo ./idll-test.exe --PIN_NUM 23 --PERIOD 23 --DUTY_CYCLE 255 --BRIGHTNESS 256 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section GPO_LED_Drive_SetBlink${COLOR_REST}\n"
+  sudo ./idll-test.exe --PIN_NUM 23 --PERIOD 23 --DUTY_CYCLE 255 --BRIGHTNESS 256 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section GPO_LED_Drive_SetBlink
 }
 
 

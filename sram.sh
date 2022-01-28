@@ -167,7 +167,7 @@ Sram_Mirror_Write(){
 
   number=$((4*size))
   read -n $number data < "$file"
-  launch_command "./idll-test.exe --sram-write $mirror_mode:$address:$data -- --EBOARD_TYPE EBOARD_ADi_LEC1 --section SRAM_Manual_write"
+  launch_command "./idll-test.exe --sram-write $mirror_mode:$address:$data -- --EBOARD_TYPE EBOARD_ADi_$board --section SRAM_Manual_write"
   if [[ "$result" =~ $size_mes ]]; then
         title b  "Sram capacity check PASS"
       else
@@ -275,8 +275,8 @@ Sram_Mirror_2_2(){
 
   title b "Mirror=1 to check data other banks"
   Sram_Mirror_Read "1" "${bank_address[0]}" "$size" "dummy_read_00.txt"
-  Sram_Mirror_Read "1" "${bank_address[1]}" "$size" "dummy_read_00.txt"
-  Sram_Mirror_Read "1" "${bank_address[2]}" "$size" "dummy_read_01.txt"
+  Sram_Mirror_Read "1" "${bank_address[1]}" "$size" "dummy_read_01.txt"
+  Sram_Mirror_Read "1" "${bank_address[2]}" "$size" "dummy_read_00.txt"
   Sram_Mirror_Read "1" "${bank_address[3]}" "$size" "dummy_read_01.txt"
 
 }

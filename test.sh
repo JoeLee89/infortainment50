@@ -141,6 +141,15 @@
 #  fi
 #
 #done
+while true;do
+  for i in {0..100};do
+
+    sudo ./idll-test.exe --PIN_NUM 0 --PERIOD 1000 --DUTY_CYCLE 50 --BRIGHTNESS $i -- --EBOARD_TYPE EBOARD_ADi_SA3X --section GPO_LED_Drive_SetBlink
+
+  done
+done
+exit
+
 
 
 write_data() {
