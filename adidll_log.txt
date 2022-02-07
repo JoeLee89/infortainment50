@@ -50,3 +50,105 @@
 [2022-01-27 21:41:03.124] [adidll_log.txt] [critical] FpgaAccess::GetL: FPGA HANDLE is invalid. \\?\GLOBALROOT\Device\ADiFPGA
 [2022-01-27 22:18:29.013] [adidll_log.txt] [critical] Fail when open \\?\GLOBALROOT\Device\ADiFPGA
 [2022-01-27 22:18:29.013] [adidll_log.txt] [critical] FpgaAccess::GetL: FPGA HANDLE is invalid. \\?\GLOBALROOT\Device\ADiFPGA
+[2022-02-06 17:53:28.454] [adidll_log.txt] [critical] Fail when open \\?\GLOBALROOT\Device\ADiFPGA
+[2022-02-06 17:53:28.454] [adidll_log.txt] [critical] FpgaAccess::GetL: FPGA HANDLE is invalid. \\?\GLOBALROOT\Device\ADiFPGA
+[2022-02-06 18:00:33.241] [adidll_log.txt] [critical] Fail when open \\?\GLOBALROOT\Device\ADiFPGA
+[2022-02-06 18:00:33.241] [adidll_log.txt] [critical] FpgaAccess::GetL: FPGA HANDLE is invalid. \\?\GLOBALROOT\Device\ADiFPGA
+[2022-02-06 18:16:31.367] [adidll_log.txt] [critical] Fail when open \\?\GLOBALROOT\Device\ADiFPGA
+[2022-02-06 18:16:31.367] [adidll_log.txt] [critical] FpgaAccess::GetL: FPGA HANDLE is invalid. \\?\GLOBALROOT\Device\ADiFPGA
+[2022-02-06 18:17:04.856] [adidll_log.txt] [critical] Fail when open \\?\GLOBALROOT\Device\ADiFPGA
+[2022-02-06 18:17:04.856] [adidll_log.txt] [critical] FpgaAccess::GetL: FPGA HANDLE is invalid. \\?\GLOBALROOT\Device\ADiFPGA
+[2022-02-06 18:34:34.851] [adidll_log.txt] [critical] Fail when open \\?\GLOBALROOT\Device\ADiFPGA
+[2022-02-06 18:34:34.851] [adidll_log.txt] [critical] FpgaAccess::GetL: FPGA HANDLE is invalid. \\?\GLOBALROOT\Device\ADiFPGA
+[2022-02-06 18:46:37.951] [adidll_log.txt] [critical] Fail when open \\?\GLOBALROOT\Device\ADiFPGA
+[2022-02-06 18:46:37.951] [adidll_log.txt] [critical] FpgaAccess::GetL: FPGA HANDLE is invalid. \\?\GLOBALROOT\Device\ADiFPGA
+[2022-02-06 19:57:57.492] [adidll_log.txt] [critical] Fail when open \\?\GLOBALROOT\Device\ADiFPGA
+[2022-02-06 19:57:57.492] [adidll_log.txt] [critical] FpgaAccess::GetL: FPGA HANDLE is invalid. \\?\GLOBALROOT\Device\ADiFPGA
+[2022-02-06 19:59:44.876] [adidll_log.txt] [critical] Fail when open \\?\GLOBALROOT\Device\ADiFPGA
+[2022-02-06 19:59:44.876] [adidll_log.txt] [critical] FpgaAccess::GetL: FPGA HANDLE is invalid. \\?\GLOBALROOT\Device\ADiFPGA
+[2022-02-06 21:39:10.309] [adidll_log.txt] [critical] Fail when open \\?\GLOBALROOT\Device\ADiFPGA
+[2022-02-06 21:39:10.309] [adidll_log.txt] [critical] FpgaAccess::GetL: FPGA HANDLE is invalid. \\?\GLOBALROOT\Device\ADiFPGA
+[2022-02-06 21:41:48.174] [adidll_log.txt] [critical] Fail when open \\?\GLOBALROOT\Device\ADiFPGA
+[2022-02-06 21:41:48.174] [adidll_log.txt] [critical] FpgaAccess::GetL: FPGA HANDLE is invalid. \\?\GLOBALROOT\Device\ADiFPGA
+[2022-02-06 21:53:53.206] [adidll_log.txt] [critical] Fail when open \\?\GLOBALROOT\Device\ADiFPGA
+[2022-02-06 21:53:53.206] [adidll_log.txt] [critical] FpgaAccess::GetL: FPGA HANDLE is invalid. \\?\GLOBALROOT\Device\ADiFPGA
+[2022-02-06 21:54:35.709] [adidll_log.txt] [critical] Fail when open \\?\GLOBALROOT\Device\ADiFPGA
+[2022-02-06 21:54:35.709] [adidll_log.txt] [critical] FpgaAccess::GetL: FPGA HANDLE is invalid. \\?\GLOBALROOT\Device\ADiFPGA
+[2022-02-06 21:55:03.051] [adidll_log.txt] [critical] Fail when open \\?\GLOBALROOT\Device\ADiFPGA
+[2022-02-06 21:55:03.051] [adidll_log.txt] [critical] FpgaAccess::GetL: FPGA HANDLE is invalid. \\?\GLOBALROOT\Device\ADiFPGA
+[2022-02-06 21:57:52.241] [adidll_log.txt] [critical] Fail when open \\?\GLOBALROOT\Device\ADiFPGA
+[2022-02-06 21:57:52.241] [adidll_log.txt] [critical] FpgaAccess::GetL: FPGA HANDLE is invalid. \\?\GLOBALROOT\Device\ADiFPGA
+[2022-02-06 21:59:31.417] [adidll_log.txt] [critical] Fail when open \\?\GLOBALROOT\Device\ADiFPGA
+[2022-02-06 21:59:31.417] [adidll_log.txt] [critical] FpgaAccess::GetL: FPGA HANDLE is invalid. \\?\GLOBALROOT\Device\ADiFPGA
+[2022-02-06 22:07:32.056] [adidll_log.txt] [critical] Fail when open \\?\GLOBALROOT\Device\ADiFPGA
+[2022-02-06 22:07:32.056] [adidll_log.txt] [critical] FpgaAccess::GetL: FPGA HANDLE is invalid. \\?\GLOBALROOT\Device\ADiFPGA
+[2022-02-06 22:09:15.100] [adidll_log.txt] [critical] Fail when open \\?\GLOBALROOT\Device\ADiFPGA
+[2022-02-06 22:09:15.100] [adidll_log.txt] [critical] FpgaAccess::GetL: FPGA HANDLE is invalid. \\?\GLOBALROOT\Device\ADiFPGA
+[2022-02-06 22:17:42.228] [adidll_log.txt] [critical] Fail when open \\?\GLOBALROOT\Device\ADiFPGA
+[2022-02-06 22:17:42.228] [adidll_log.txt] [critical] FpgaAccess::GetL: FPGA HANDLE is invalid. \\?\GLOBALROOT\Device\ADiFPGA
+[2022-02-06 22:24:00.928] [adidll_log.txt] [critical] Fail when open \\?\GLOBALROOT\Device\ADiFPGA
+[2022-02-06 22:24:00.928] [adidll_log.txt] [critical] FpgaAccess::GetL: FPGA HANDLE is invalid. \\?\GLOBALROOT\Device\ADiFPGA
+[2022-02-06 22:41:59.407] [adidll_log.txt] [critical] Fail when open \\?\GLOBALROOT\Device\ADiFPGA
+[2022-02-06 22:41:59.407] [adidll_log.txt] [critical] FpgaAccess::GetL: FPGA HANDLE is invalid. \\?\GLOBALROOT\Device\ADiFPGA
+[2022-02-06 22:44:41.406] [adidll_log.txt] [critical] Fail when open \\?\GLOBALROOT\Device\ADiFPGA
+[2022-02-06 22:44:41.406] [adidll_log.txt] [critical] FpgaAccess::GetL: FPGA HANDLE is invalid. \\?\GLOBALROOT\Device\ADiFPGA
+[2022-02-06 23:27:42.926] [adidll_log.txt] [critical] Fail when open \\?\GLOBALROOT\Device\ADiFPGA
+[2022-02-06 23:27:42.926] [adidll_log.txt] [critical] FpgaAccess::GetL: FPGA HANDLE is invalid. \\?\GLOBALROOT\Device\ADiFPGA
+[2022-02-06 23:28:36.018] [adidll_log.txt] [critical] Fail when open \\?\GLOBALROOT\Device\ADiFPGA
+[2022-02-06 23:28:36.018] [adidll_log.txt] [critical] FpgaAccess::GetL: FPGA HANDLE is invalid. \\?\GLOBALROOT\Device\ADiFPGA
+[2022-02-06 23:37:05.197] [adidll_log.txt] [critical] Fail when open \\?\GLOBALROOT\Device\ADiFPGA
+[2022-02-06 23:37:05.197] [adidll_log.txt] [critical] FpgaAccess::GetL: FPGA HANDLE is invalid. \\?\GLOBALROOT\Device\ADiFPGA
+[2022-02-06 23:38:22.573] [adidll_log.txt] [critical] Fail when open \\?\GLOBALROOT\Device\ADiFPGA
+[2022-02-06 23:38:22.573] [adidll_log.txt] [critical] FpgaAccess::GetL: FPGA HANDLE is invalid. \\?\GLOBALROOT\Device\ADiFPGA
+[2022-02-06 23:39:22.313] [adidll_log.txt] [critical] Fail when open \\?\GLOBALROOT\Device\ADiFPGA
+[2022-02-06 23:39:22.313] [adidll_log.txt] [critical] FpgaAccess::GetL: FPGA HANDLE is invalid. \\?\GLOBALROOT\Device\ADiFPGA
+[2022-02-06 23:41:39.556] [adidll_log.txt] [critical] Fail when open \\?\GLOBALROOT\Device\ADiFPGA
+[2022-02-06 23:41:39.556] [adidll_log.txt] [critical] FpgaAccess::GetL: FPGA HANDLE is invalid. \\?\GLOBALROOT\Device\ADiFPGA
+[2022-02-06 23:43:24.586] [adidll_log.txt] [critical] Fail when open \\?\GLOBALROOT\Device\ADiFPGA
+[2022-02-06 23:43:24.586] [adidll_log.txt] [critical] FpgaAccess::GetL: FPGA HANDLE is invalid. \\?\GLOBALROOT\Device\ADiFPGA
+[2022-02-06 23:44:37.353] [adidll_log.txt] [critical] Fail when open \\?\GLOBALROOT\Device\ADiFPGA
+[2022-02-06 23:44:37.353] [adidll_log.txt] [critical] FpgaAccess::GetL: FPGA HANDLE is invalid. \\?\GLOBALROOT\Device\ADiFPGA
+[2022-02-06 23:46:57.273] [adidll_log.txt] [critical] Fail when open \\?\GLOBALROOT\Device\ADiFPGA
+[2022-02-06 23:46:57.273] [adidll_log.txt] [critical] FpgaAccess::GetL: FPGA HANDLE is invalid. \\?\GLOBALROOT\Device\ADiFPGA
+[2022-02-07 00:09:18.125] [adidll_log.txt] [critical] Fail when open \\?\GLOBALROOT\Device\ADiFPGA
+[2022-02-07 00:09:18.125] [adidll_log.txt] [critical] FpgaAccess::GetL: FPGA HANDLE is invalid. \\?\GLOBALROOT\Device\ADiFPGA
+[2022-02-07 00:10:57.819] [adidll_log.txt] [critical] Fail when open \\?\GLOBALROOT\Device\ADiFPGA
+[2022-02-07 00:10:57.819] [adidll_log.txt] [critical] FpgaAccess::GetL: FPGA HANDLE is invalid. \\?\GLOBALROOT\Device\ADiFPGA
+[2022-02-07 00:14:57.528] [adidll_log.txt] [critical] Fail when open \\?\GLOBALROOT\Device\ADiFPGA
+[2022-02-07 00:14:57.528] [adidll_log.txt] [critical] FpgaAccess::GetL: FPGA HANDLE is invalid. \\?\GLOBALROOT\Device\ADiFPGA
+[2022-02-07 00:17:00.125] [adidll_log.txt] [critical] Fail when open \\?\GLOBALROOT\Device\ADiFPGA
+[2022-02-07 00:17:00.125] [adidll_log.txt] [critical] FpgaAccess::GetL: FPGA HANDLE is invalid. \\?\GLOBALROOT\Device\ADiFPGA
+[2022-02-07 00:20:56.954] [adidll_log.txt] [critical] Fail when open \\?\GLOBALROOT\Device\ADiFPGA
+[2022-02-07 00:20:56.954] [adidll_log.txt] [critical] FpgaAccess::GetL: FPGA HANDLE is invalid. \\?\GLOBALROOT\Device\ADiFPGA
+[2022-02-07 00:21:41.264] [adidll_log.txt] [critical] Fail when open \\?\GLOBALROOT\Device\ADiFPGA
+[2022-02-07 00:21:41.264] [adidll_log.txt] [critical] FpgaAccess::GetL: FPGA HANDLE is invalid. \\?\GLOBALROOT\Device\ADiFPGA
+[2022-02-07 00:24:07.975] [adidll_log.txt] [critical] Fail when open \\?\GLOBALROOT\Device\ADiFPGA
+[2022-02-07 00:24:07.975] [adidll_log.txt] [critical] FpgaAccess::GetL: FPGA HANDLE is invalid. \\?\GLOBALROOT\Device\ADiFPGA
+[2022-02-07 00:24:55.538] [adidll_log.txt] [critical] Fail when open \\?\GLOBALROOT\Device\ADiFPGA
+[2022-02-07 00:24:55.538] [adidll_log.txt] [critical] FpgaAccess::GetL: FPGA HANDLE is invalid. \\?\GLOBALROOT\Device\ADiFPGA
+[2022-02-07 00:30:05.733] [adidll_log.txt] [critical] Fail when open \\?\GLOBALROOT\Device\ADiFPGA
+[2022-02-07 00:30:05.733] [adidll_log.txt] [critical] FpgaAccess::GetL: FPGA HANDLE is invalid. \\?\GLOBALROOT\Device\ADiFPGA
+[2022-02-07 00:31:55.011] [adidll_log.txt] [critical] Fail when open \\?\GLOBALROOT\Device\ADiFPGA
+[2022-02-07 00:31:55.011] [adidll_log.txt] [critical] FpgaAccess::GetL: FPGA HANDLE is invalid. \\?\GLOBALROOT\Device\ADiFPGA
+[2022-02-07 00:39:59.177] [adidll_log.txt] [critical] Fail when open \\?\GLOBALROOT\Device\ADiFPGA
+[2022-02-07 00:39:59.177] [adidll_log.txt] [critical] FpgaAccess::GetL: FPGA HANDLE is invalid. \\?\GLOBALROOT\Device\ADiFPGA
+[2022-02-07 01:02:46.369] [adidll_log.txt] [critical] Fail when open \\?\GLOBALROOT\Device\ADiFPGA
+[2022-02-07 01:02:46.369] [adidll_log.txt] [critical] FpgaAccess::GetL: FPGA HANDLE is invalid. \\?\GLOBALROOT\Device\ADiFPGA
+[2022-02-07 01:07:18.122] [adidll_log.txt] [critical] Fail when open \\?\GLOBALROOT\Device\ADiFPGA
+[2022-02-07 01:07:18.122] [adidll_log.txt] [critical] FpgaAccess::GetL: FPGA HANDLE is invalid. \\?\GLOBALROOT\Device\ADiFPGA
+[2022-02-07 01:19:03.924] [adidll_log.txt] [critical] Fail when open \\?\GLOBALROOT\Device\ADiFPGA
+[2022-02-07 01:19:03.924] [adidll_log.txt] [critical] FpgaAccess::GetL: FPGA HANDLE is invalid. \\?\GLOBALROOT\Device\ADiFPGA
+[2022-02-07 01:25:59.013] [adidll_log.txt] [critical] Fail when open \\?\GLOBALROOT\Device\ADiFPGA
+[2022-02-07 01:25:59.013] [adidll_log.txt] [critical] FpgaAccess::GetL: FPGA HANDLE is invalid. \\?\GLOBALROOT\Device\ADiFPGA
+[2022-02-07 01:41:12.220] [adidll_log.txt] [critical] Fail when open \\?\GLOBALROOT\Device\ADiFPGA
+[2022-02-07 01:41:12.220] [adidll_log.txt] [critical] FpgaAccess::GetL: FPGA HANDLE is invalid. \\?\GLOBALROOT\Device\ADiFPGA
+[2022-02-07 01:41:23.640] [adidll_log.txt] [critical] Fail when open \\?\GLOBALROOT\Device\ADiFPGA
+[2022-02-07 01:41:23.640] [adidll_log.txt] [critical] FpgaAccess::GetL: FPGA HANDLE is invalid. \\?\GLOBALROOT\Device\ADiFPGA
+[2022-02-07 01:59:57.512] [adidll_log.txt] [critical] Fail when open \\?\GLOBALROOT\Device\ADiFPGA
+[2022-02-07 01:59:57.512] [adidll_log.txt] [critical] FpgaAccess::GetL: FPGA HANDLE is invalid. \\?\GLOBALROOT\Device\ADiFPGA
+[2022-02-07 02:03:47.924] [adidll_log.txt] [critical] Fail when open \\?\GLOBALROOT\Device\ADiFPGA
+[2022-02-07 02:03:47.924] [adidll_log.txt] [critical] FpgaAccess::GetL: FPGA HANDLE is invalid. \\?\GLOBALROOT\Device\ADiFPGA
+[2022-02-07 02:07:59.328] [adidll_log.txt] [critical] Fail when open \\?\GLOBALROOT\Device\ADiFPGA
+[2022-02-07 02:07:59.328] [adidll_log.txt] [critical] FpgaAccess::GetL: FPGA HANDLE is invalid. \\?\GLOBALROOT\Device\ADiFPGA
+[2022-02-07 02:20:47.537] [adidll_log.txt] [critical] Fail when open \\?\GLOBALROOT\Device\ADiFPGA
+[2022-02-07 02:20:47.537] [adidll_log.txt] [critical] FpgaAccess::GetL: FPGA HANDLE is invalid. \\?\GLOBALROOT\Device\ADiFPGA

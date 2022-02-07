@@ -207,31 +207,20 @@ BadParameter() {
   printf "${COLOR_RED_WD}Now test with bad address ${COLOR_REST}\n"
   printf "${COLOR_RED_WD}=========================  ${COLOR_REST}\n"
   read -p "enter key to test..." continue
-  bad=9999999999
-  for all in $(seq 0 2); do
-    launch_command "${COLOR_RED_WD}sudo ./idll-test.exe --dallas-eeprom-write $all:$bad:255/255/255 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section PIC_1Wire_EEPROM_Manual_write ${COLOR_REST}\n"
-    compare_result "$result" "failed"
-    sleep 0.5
-    launch_command "${COLOR_RED_WD}sudo ./idll-test.exe --dallas-eeprom-read $all:$bad:3 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section PIC_1Wire_EEPROM_Manual_read ${COLOR_REST}\n"
-    compare_result "$result" "failed"
+
+  command_line=(
+  "sudo ./idll-test.exe --dallas-eeprom-write 0:999999999:255/255/255 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section PIC_1Wire_EEPROM_Manual_write"
+  "sudo ./idll-test.exe --dallas-eeprom-write 0:0:g/g -- --EBOARD_TYPE EBOARD_ADi_"$board" --section PIC_1Wire_EEPROM_Manual_write"
+  "sudo ./idll-test.exe --dallas-eeprom-read 0:0:-1 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section PIC_1Wire_EEPROM_Manual_read"
+  "sudo ./idll-test.exe --dallas-eeprom-read 5:0:255 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section PIC_1Wire_EEPROM_Manual_read"
+  )
+
+  for command in "${command_line[@]}";do
+    launch_command "$command"
+    compare_result "$result" "failed" "skip"
   done
 
-  printf "${COLOR_RED_WD}Now test with bad data ${COLOR_REST}\n"
-  printf "${COLOR_RED_WD}======================  ${COLOR_REST}\n"
-  read -p "" continue
-  bad="g/g/g"
-  for all in $(seq 0 2); do
-    launch_command "${COLOR_RED_WD}sudo ./idll-test.exe --dallas-eeprom-write $all:0:$bad -- --EBOARD_TYPE EBOARD_ADi_"$board" --section PIC_1Wire_EEPROM_Manual_write ${COLOR_REST}\n"
-    compare_result "$result" "failed"
-  done
 
-  printf "${COLOR_RED_WD}Now test with bad reading length ${COLOR_REST}\n"
-  printf "${COLOR_RED_WD}================================  ${COLOR_REST}\n"
-  read -p "" continue
-  for all in $(seq 0 2); do
-    launch_command "${COLOR_RED_WD}sudo ./idll-test.exe --dallas-eeprom-read $all:0:-1 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section PIC_1Wire_EEPROM_Manual_read ${COLOR_REST}\n"
-    compare_result "$result" "failed"
-  done
 }
 
 #===============================================================

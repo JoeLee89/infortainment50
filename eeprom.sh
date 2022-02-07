@@ -21,7 +21,7 @@ write_data
 #===============================================================
 EepromReadWrite_Auto(){
   title b "Start Reading/Writing EEPROM data (AUTO Test)"
-  printcolor w "Press looping number to test or [q] key to skip.. \n"
+  printcolor w "Press looping number to test or [q] key to skip.. "
   read -p "loop time:" input
   x=0
   while true; do

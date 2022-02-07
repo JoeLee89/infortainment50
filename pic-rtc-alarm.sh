@@ -29,10 +29,11 @@ alarm_compare_set_get(){
     echo "$pic_alarm_get"
 #    RTC=$(echo "$pic_alarm_get" | grep -i "RTC time" )
     alarm_get_time=$(echo "$pic_alarm_get" | grep -i "rtc alarm")
-#    RTCtime=$(echo "${RTC:39:8}")
-    alarm_get_time=${alarm_get_time:36:17}
+    alarm_get_time=${alarm_get_time#*Time: }
+    alarm_get_time=${alarm_get_time:0:17}
     alarm_set_time=$(echo "$pic_alarm_set" | grep -i 'rtc alarm')
-    alarm_set_time=${alarm_set_time:47:17}
+    alarm_set_time=${alarm_set_time#*Time: }
+    alarm_set_time=${alarm_set_time:0:17}
 
 
     #transfer alarm time/ now pic rtc time to seconds , and then minor both value to confirm the difference if it is the same as setting amount seconds
@@ -108,19 +109,19 @@ PicRtcAlarm(){
       result=$(confirm_pic_message "rtc_alarm" "newest_unread" "0" "")
       printcolor w "$result"
       pic_catch_content=$(echo "$result" | grep "Time")
-      picevent_alarmtime=${pic_catch_content:17:8}
+      picevent_alarmtime=${pic_catch_content:8:17}
 
-      if [[ "$Alarm_get_time" == "$picevent_alarmtime" ]]; then
+      if [[ "$alarm_get_time" == "$picevent_alarmtime" ]]; then
         mesg=(
         "The PIC event time: $picevent_alarmtime"
-        "The PIC Alarm expected time:  $Alarm_get_time"
+        "The PIC Alarm expected time: $alarm_get_time"
         )
         title_list b mesg[@]
         printcolor y "Alarm time VS. PIC trigger event match!!!"
       else
         mesg=(
         "The PIC event time: $picevent_alarmtime"
-        "The PIC Alarm expected time:  $Alarm_get_time"
+        "The PIC Alarm expected time: $alarm_get_time"
         )
         title_list b mesg[@]
 

@@ -31,7 +31,8 @@ SecMeterCycleCounter(){
 
     print_command "sudo ./idll-test.exe --sec-counter-num $num --sec-reserve-time $time -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SecMeter_Cycle"
     sudo ./idll-test.exe --sec-counter-num $num --sec-reserve-time $time -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SecMeter_Cycle
-    read -p "[q] to exit loop test, or enter key to loop test" input
+    printf "[q] to exit loop test, or enter key to loop test\n"
+    read -p "" input
     if [ "$input" == "q" ]; then
         break
     fi

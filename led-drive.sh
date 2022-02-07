@@ -111,18 +111,18 @@ LED(){
 #===============================================================
 parameter(){
   title "Check bad parameter... "
+  command_line=(
+  "sudo ./idll-test.exe --PIN_NUM 25 --PERIOD 23 --DUTY_CYCLE 255 --BRIGHTNESS 255 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section GPO_LED_Drive_SetBlink"
+  "sudo ./idll-test.exe --PIN_NUM 23 --PERIOD 256 --DUTY_CYCLE 255 --BRIGHTNESS 255 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section GPO_LED_Drive_SetBlink"
+  "sudo ./idll-test.exe --PIN_NUM 23 --PERIOD 23 --DUTY_CYCLE 256 --BRIGHTNESS 255 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section GPO_LED_Drive_SetBlink"
+  "sudo ./idll-test.exe --PIN_NUM 23 --PERIOD 23 --DUTY_CYCLE 255 --BRIGHTNESS 256 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section GPO_LED_Drive_SetBlink"
+  )
 
-  print_command  "${COLOR_RED_WD}sudo ./idll-test.exe --PIN_NUM 25 --PERIOD 23 --DUTY_CYCLE 255 --BRIGHTNESS 255 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section GPO_LED_Drive_SetBlink ${COLOR_REST}\n"
-  sudo ./idll-test.exe --PIN_NUM 25 --PERIOD 23 --DUTY_CYCLE 255 --BRIGHTNESS 255 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section GPO_LED_Drive_SetBlink
+  for command in "${command_line[@]}";do
+    launch_command "$command"
+    compare_result "$result" "failed" "skip"
+  done
 
-  print_command  "${COLOR_RED_WD}sudo ./idll-test.exe --PIN_NUM 23 --PERIOD 256 --DUTY_CYCLE 255 --BRIGHTNESS 255 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section GPO_LED_Drive_SetBlink ${COLOR_REST}\n"
-  sudo ./idll-test.exe --PIN_NUM 23 --PERIOD 256 --DUTY_CYCLE 255 --BRIGHTNESS 255 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section GPO_LED_Drive_SetBlink
-
-  print_command  "${COLOR_RED_WD}sudo ./idll-test.exe --PIN_NUM 23 --PERIOD 23 --DUTY_CYCLE 256 --BRIGHTNESS 255 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section GPO_LED_Drive_SetBlink${COLOR_REST}\n"
-  sudo ./idll-test.exe --PIN_NUM 23 --PERIOD 23 --DUTY_CYCLE 256 --BRIGHTNESS 255 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section GPO_LED_Drive_SetBlink
-
-  print_command  "${COLOR_RED_WD}sudo ./idll-test.exe --PIN_NUM 23 --PERIOD 23 --DUTY_CYCLE 255 --BRIGHTNESS 256 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section GPO_LED_Drive_SetBlink${COLOR_REST}\n"
-  sudo ./idll-test.exe --PIN_NUM 23 --PERIOD 23 --DUTY_CYCLE 255 --BRIGHTNESS 256 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section GPO_LED_Drive_SetBlink
 }
 
 

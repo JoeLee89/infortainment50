@@ -444,7 +444,7 @@ BadParameter() {
   )
 
   for command in "${command_line[@]}";do
-    launch_command "$(echo "$command")"
+    launch_command "$command"
     compare_result "$result" "failed" "skip"
   done
 

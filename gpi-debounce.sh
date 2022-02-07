@@ -39,7 +39,7 @@ Debounce() {
       break
     fi
 
-    for all in 0 15 2555 4095 6553 10000; do
+    for all in 0 15 2555 4095 6553; do
       while true; do
         printf "debounce = ${COLOR_BLUE_WD} $all ${COLOR_REST}\n"
         printf "debounce time = ${COLOR_BLUE_WD} $all ms ${COLOR_REST}\n"
@@ -70,8 +70,15 @@ Debounce() {
 #===============================================================
 BadParameter() {
   title b "Check bad parameter"
-  launch_command "sudo ./idll-test.exe --DEBOUNCE 100001 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section GPI_SetDebounce"
-  compare_result "$result" "failed"
+
+  command_line=(
+  "sudo ./idll-test.exe --DEBOUNCE 6554 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section GPI_SetDebounce"
+  )
+
+  for command in "${command_line[@]}";do
+    launch_command "$command"
+    compare_result "$result" "failed" "skip"
+  done
 
 }
 

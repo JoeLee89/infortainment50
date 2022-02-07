@@ -17,7 +17,7 @@ for i in "LEC1" "BSEC_BACC" "SC1X" "SA3X"; do
 done
 
 echo "================================================================"
-echo "Please ignore above message, it is detecting board name process."
+echo "Please ignore above message, it is the process of the detecting board name."
 echo "================================================================"
 
 printf "${COLOR_RED_WD}Please confirm the detected board name = $board${COLOR_REST}\n"
