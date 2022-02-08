@@ -10,33 +10,37 @@ battery_wanring_reset(){
 
 pic_battery_low(){
 
+  pic_battery_preliminary
+  battery_wanring_reset "warning"
+
+  #confirm if the setting voltage is the same as getting voltage in low voltage idll function
+  launch_command "sudo ./idll-test.exe --pic-batteries-voltage "$low1,$low2,$low3" -- --EBOARD_TYPE EBOARD_ADi_"$board" --section BatSetGetLowVoltageManual [PIC][BATTERY][MANU]"
+  compare_result "$result" "batteriesGet.Volts1=$low1, batteriesGet.Volts2=$low2, batteriesGet.Volts3=$low3"
+
+  #wait 12 minute to confirm if pic generate related pic battery warning event manually
+
+  msg=(
+    "Going to check PIC event, if there is battery event..."
+    "**** So plug in battery first, if they are unplugged to avoid initial fail.***"
+    "Now make the to-be-verified battery voltage lower than the setting voltage."
+  )
+  title_list r msg[@]
+  read -p ""
+
   while true ; do
-
-    pic_battery_preliminary
-    battery_wanring_reset "warning"
-
-    #confirm if the setting voltage is the same as getting voltage in low voltage idll function
-    launch_command "sudo ./idll-test.exe --pic-batteries-voltage "$low1,$low2,$low3" -- --EBOARD_TYPE EBOARD_ADi_"$board" --section BatSetGetLowVoltageManual [PIC][BATTERY][MANU]"
-    compare_result "$result" "batteriesGet.Volts1=$low1, batteriesGet.Volts2=$low2, batteriesGet.Volts3=$low3"
-
-    #wait 12 minute to confirm if pic generate related pic battery warning event manually
-
-    msg=(
-      "Going to check PIC event, if there is battery event..."
-      "**** So plug in battery first, if they are unplugged to avoid initial fail.***"
-    )
-    title_list r msg[@]
-    read -p ""
-
     for (( i = 1; i < 12; i++ )); do
       printcolor y "$i minute"
-      printcolor y "Start to check PIC event if there is any battery event every minute within 12 minsutes..."
+      printcolor y "Start to check PIC event if there is any battery event every minute within 12 minutes..."
       sleep 60
+      confirm_pic_message "battery_alarm" "newest_unread" "255" ""
+      pic_event_unread=$pic_log_filter_amount
       confirm_pic_message "battery_alarm" "newest_unread" "all" "check"
+      if [[ "$pic_event_unread" -gt 0 ]]; then
+        break
+      fi
     done
 
-#    confirm_pic_message "battery_alarm" "newest_unread" "all" "check"
-    printcolor b "Retest to press enter key, or [q] key to exit..."
+    printcolor b "Enter to loop the detecting pic log process, or [q] key to exit..."
     read -p "" input
 
     if [[ "$input" == "q" || "$input" == "Q" ]]; then
@@ -91,29 +95,34 @@ pic_battery_low_callback(){
 #===============================================================
 
 pic_battery_warning(){
+  pic_battery_preliminary
+  battery_wanring_reset "low"
+  launch_command "sudo ./idll-test.exe --pic-batteries-voltage "$low1,$low2,$low3" -- --EBOARD_TYPE EBOARD_ADi_"$board" --section BatSetGetWarningVoltageManual [PIC][BATTERY][MANU]"
+  compare_result "$result" "batteriesGet.Volts1=$low1, batteriesGet.Volts2=$low2, batteriesGet.Volts3=$low3"
+
+  #loop every minute within 12 minute to confirm if pic generate related pic battery warning event manually
+  msg=(
+    "Going to check PIC event, if there is battery event..."
+    "**** So plug in battery first, if they are unplugged to avoid initial fail.***"
+    "Now make the to-be-verified battery voltage lower than the setting voltage."
+  )
+  title_list r msg[@]
+  read -p ""
 
   while true ; do
-    pic_battery_preliminary
-    battery_wanring_reset "low"
-    launch_command "sudo ./idll-test.exe --pic-batteries-voltage "$low1,$low2,$low3" -- --EBOARD_TYPE EBOARD_ADi_"$board" --section BatSetGetWarningVoltageManual [PIC][BATTERY][MANU]"
-    compare_result "$result" "batteriesGet.Volts1=$low1, batteriesGet.Volts2=$low2, batteriesGet.Volts3=$low3"
-
-    #loop every minute within 12 minute to confirm if pic generate related pic battery warning event manually
-    msg=(
-      "Going to check PIC event, if there is battery event..."
-      "**** So plug in battery first, if they are unplugged to avoid initial fail.***"
-    )
-    title_list r msg[@]
-    read -p ""
-
     for (( i = 1; i < 12; i++ )); do
       printcolor y "$i minute"
-      printcolor y "Start to check PIC event if there is any battery event every minute within 12 minsutes..."
+      printcolor y "Start to check PIC event if there is any battery event every minute within 12 minutes..."
       sleep 60
+      confirm_pic_message "battery_alarm" "newest_unread" "255" ""
+      pic_event_unread=$pic_log_filter_amount
       confirm_pic_message "battery_alarm" "newest_unread" "all" "check"
+      if [[ "$pic_event_unread" -gt 0 ]]; then
+        break
+      fi
     done
 
-    printcolor b "Retest to press enter key, or [q] key to exit..."
+    printcolor b "Enter to loop the detecting pic log process, or [q] key to exit..."
     read -p "" input
 
     if [[ "$input" == "q" || "$input" == "Q" ]]; then
@@ -176,16 +185,12 @@ pic_battery_time_detection() {
 
   while true; do
 
-    printcolor y "Starting counting down in 10 minute, please wait..."
-    for (( i = 0; i < 11; i++ )); do
-      m=$((11-i))
-      printcolor y "\r$m minute left.."
+    for (( i = 1; i < 12; i++ )); do
+      printcolor y "$i minute"
+      printcolor y "Start to check PIC event if there is any battery event every minute within 12 minutes..."
       sleep 60
+      confirm_pic_message "battery_alarm" "newest_unread" "all" "check"
     done
-
-    printcolor b "Start getting pic event"
-    confirm_pic_message "battery" "newest_unread" "all" "check"
-
 
     read -p "enter key to test again, or press q to exit test:" input
     if [[ "$input" == "q" || "$input" == "Q" ]]; then
@@ -212,7 +217,6 @@ GetDirect() {
   print_command "sudo ./idll-test.exe -- --EBOARD_TYPE EBOARD_ADi_"$board" --section PIC_Battery_PICEventByType"
   sudo ./idll-test.exe -- --EBOARD_TYPE EBOARD_ADi_"$board" --section PIC_Battery_PICEventByType
 }
-
 
 #===============================================================
 #MAIN

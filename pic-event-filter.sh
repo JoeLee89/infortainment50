@@ -367,19 +367,33 @@ battery_alarm_event() {
     confirm_pic_message "any" "newest_unread" "all" ""
     title b "Now test function from [$ii] order"
     title b "Now set up battery alarm setting to trigger RTC alarm."
-    print_command "sudo ./idll-test.exe --pic-batteries-voltage "33,33,33" -- --EBOARD_TYPE EBOARD_ADi_"$board" --section BatSetGetLowVoltageManual [PIC][BATTERY][MANU]"
-    sudo ./idll-test.exe --pic-batteries-voltage "33,33,33" -- --EBOARD_TYPE EBOARD_ADi_"$board" --section BatSetGetLowVoltageManual [PIC][BATTERY][MANU]
+    print_command "sudo ./idll-test.exe --pic-batteries-voltage "28,28,28" -- --EBOARD_TYPE EBOARD_ADi_"$board" --section BatSetGetLowVoltageManual [PIC][BATTERY][MANU]"
+    sudo ./idll-test.exe --pic-batteries-voltage "28,28,28" -- --EBOARD_TYPE EBOARD_ADi_"$board" --section BatSetGetLowVoltageManual [PIC][BATTERY][MANU]
 
     title r "***Now to adjust one of the battery voltage=3.0v. Press enter key, when you finish.***"
     read -p ""
     #reset PIC battery warning behavior by rechecking the pic battery voltage.
     sudo ./idll-test.exe -- --EBOARD_TYPE EBOARD_ADi_"$board" --section PIC_Battery_PICEventByType
 
-    title r "***Now adjust one of the battery voltage=2.8v. This will make PIC trigger the battery event.***"
+    title r "***Now adjust one of the battery voltage=2.6v. This will make PIC trigger the battery event.***"
     read -p "Press enter key, when you finish adjusting the battery voltage by DC source"
 
+    for (( i = 0; i < 12; i++ )); do
+      status2="$ii""_unread"
+      confirm_pic_message "battery_alarm" "$status2" "255" ""
+      pic_event_unread=$pic_log_filter_amount
 
-    loop_with_time 12
+      if [[ "$pic_event_unread" -gt 0 ]]; then
+        break
+      else
+        printcolor y "No any battery alarm/warning message exists. Keep waiting..."
+
+      fi
+      loop_with_time 1
+
+    done
+
+#    loop_with_time 1
 
     while true; do
       status1="$ii""_read"
@@ -399,7 +413,7 @@ battery_alarm_event() {
       print_read_unread_message "$pic_event_amount" "$pic_event_read" "$pic_event_unread" "$pic_event_any"
 
       confirm_pic_read_unread_amount "$pic_event_amount" "$pic_event_read" "$pic_event_unread" "$pic_event_any"
-      if [[ "$pic_event_unread" != 0 ]]; then
+      if [[ "$pic_event_unread" -ne 0 ]]; then
         confirm_pic_message "battery_alarm" "$status2" "0" "check"
       else
         case $ii in
