@@ -39,7 +39,7 @@ Blink() {
   title b "Change DUTY CYCLE value"
   for all in $(seq 0 $led_amount); do
 
-    for duty_cyclell in "${duty_cycle_value[*]}"; do
+    for duty_cyclell in "${duty_cycle_value[@]}"; do
       printf "${COLOR_BLUE_WD}LED: $all ${COLOR_REST}\n"
       printf "${COLOR_BLUE_WD}Duty cycle:${COLOR_RED_WD} $duty_cyclell ${COLOR_REST}\n"
       printf "${COLOR_BLUE_WD}period (0=disable blinking): $period = $period ms ${COLOR_REST}\n"
@@ -54,8 +54,9 @@ Blink() {
       read -p "enter key to continue above test..." continue
 
       launch_command "sudo ./idll-test.exe --PIN_NUM $all --PERIOD $period --DUTY_CYCLE $duty_cyclell -- --EBOARD_TYPE EBOARD_ADi_"$board" --section GPO_LED_SetDoLedBlink"
-      verify_result "$result"
+#      verify_result "$result"
       compare_result "$result" "Duty cycle: $duty_cyclell"
+      compare_result "$result" "tests passed"
 
 
 #      if [[ "$result" =~ "failed" && "$result" =~ "nReadDutyCycle == nDutyCycle" && "$result" =~ "Duty cycle: $duty_cyclell" ]]; then
@@ -85,7 +86,7 @@ Blink() {
     printf "${COLOR_RED_WD}======================= ${COLOR_REST}\n\n"
     read -p "Enter to continue..." continue
 
-    for perioddd in "${period_verify_value[*]}"; do
+    for perioddd in "${period_verify_value[@]}"; do
       printf "${COLOR_BLUE_WD}LED: $all ${COLOR_REST}\n"
       printf "${COLOR_BLUE_WD}Duty cycle: $duty_cycle ${COLOR_REST}\n"
       printf "${COLOR_BLUE_WD}period( 0=disable blinking): ${COLOR_RED_WD}$perioddd  = $perioddd ms ${COLOR_REST}\n"

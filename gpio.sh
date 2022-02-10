@@ -67,16 +67,14 @@ set_get_port(){
 
 }
 
-
-
 set_get_pin(){
 
   for (( i = 0; i < 4; i++ )); do
     for state in "true" "false"; do
       launch_command "sudo ./idll-test.exe --GPIO_PIN_ID 0x$i --GPIO_PIN_VAL $state -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SA3X_4xGPIO_by_Pin"
       compare_result "$result" "Read back pin value: $state"
-      launch_command "sudo ./idll-test.exe --GPIO_PIN_ID 0x$((i+4)) --GPIO_PIN_VAL $state -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SA3X_4xGPIO_by_Pin"
-      compare_result "$result" "Read back pin value: $state"
+#      launch_command "sudo ./idll-test.exe --GPIO_PIN_ID 0x$((i+4)) --GPIO_PIN_VAL $state -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SA3X_4xGPIO_by_Pin"
+#      compare_result "$result" "Read back pin value: $state"
     done
 
   done
@@ -92,8 +90,8 @@ set_get_pin(){
       for state in "true" "false"; do
         launch_command "sudo ./idll-test.exe --GPIO_PIN_ID 0x$random --GPIO_PIN_VAL $state -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SA3X_4xGPIO_by_Pin"
         compare_result "$result" "Read back pin value: $state"
-        launch_command "sudo ./idll-test.exe --GPIO_PIN_ID 0x$((random+4)) --GPIO_PIN_VAL $state -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SA3X_4xGPIO_by_Pin"
-        compare_result "$result" "Read back pin value: $state"
+#        launch_command "sudo ./idll-test.exe --GPIO_PIN_ID 0x$((random+4)) --GPIO_PIN_VAL $state -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SA3X_4xGPIO_by_Pin"
+#        compare_result "$result" "Read back pin value: $state"
       done
 
     done
@@ -111,12 +109,15 @@ BadParameter() {
   printf "${COLOR_RED_WD}===================${COLOR_REST}\n"
   read -p "enter key to continue..." continue
 
-  printf "${COLOR_RED_WD}sudo ./idll-test.exe --GPIO_PIN_ID 0x99 --GPIO_PIN_VAL true -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SA3X_4xGPIO_by_Pin ${COLOR_REST}\n"
-  sudo ./idll-test.exe --GPIO_PIN_ID 0x99 --GPIO_PIN_VAL true -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SA3X_4xGPIO_by_Pin
+  command_line=(
+  "sudo ./idll-test.exe --GPIO_PIN_ID 0x99 --GPIO_PIN_VAL true -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SA3X_4xGPIO_by_Pin"
+  "sudo ./idll-test.exe --GPIO_PORT_VAL 65535 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SA3X_4xGPIO_by_Port"
+  )
 
-  printf "${COLOR_RED_WD}sudo ./idll-test.exe --GPIO_PORT_VAL 65535 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SA3X_4xGPIO_by_Port ${COLOR_REST}\n"
-  sudo ./idll-test.exe --GPIO_PORT_VAL 65535 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SA3X_4xGPIO_by_Port
-
+  for command in "${command_line[@]}";do
+    launch_command "$command"
+    compare_result "$result" "failed" "skip"
+  done
 
 }
 

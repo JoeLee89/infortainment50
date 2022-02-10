@@ -69,21 +69,21 @@ Time_out() {
   ###############################
   for value in ${read_constant[*]}; do
     title b "Read Time Out Constant getting/setting test : $value ms"
-    launch_command "./idll-test.exe --serial-port1 $port1_number --serial-port2 $port2_number --RIT 0 --RTTC $value --RTM 0 -- --EBOARD_TYPE EBOARD_ADi_LEC1 --section SerialPort_RW "
+    launch_command "./idll-test.exe --serial-port1 $port1_number --serial-port2 $port2_number --RIT 0 --RTTC $value --RTM 0 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SerialPort_RW "
     compare_result "$result" "All tests passed"
     compare_result "$result" "Get ReadTotalTimeoutConstant setting: $value"
   done
 
   for value in ${read_interval[*]}; do
     title b "Read Time Out Interval getting/setting test : $value ms"
-    launch_command "./idll-test.exe --serial-port1 $port1_number --serial-port2 $port2_number --RIT $value --RTTC 0 --RTM 0 -- --EBOARD_TYPE EBOARD_ADi_LEC1 --section SerialPort_RW"
+    launch_command "./idll-test.exe --serial-port1 $port1_number --serial-port2 $port2_number --RIT $value --RTTC 0 --RTM 0 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SerialPort_RW"
     compare_result "$result" "All tests passed"
     compare_result "$result" "Get ReadIntervalTimeout setting: $value"
   done
 
   for value in ${read_mulplier[*]}; do
     title b "Read Time Out Mulplier getting/setting test : $value ms"
-    launch_command "./idll-test.exe --serial-port1 $port1_number --serial-port2 $port2_number --RIT 0 --RTTC 0 --RTM $value -- --EBOARD_TYPE EBOARD_ADi_LEC1 --section SerialPort_RW"
+    launch_command "./idll-test.exe --serial-port1 $port1_number --serial-port2 $port2_number --RIT 0 --RTTC 0 --RTM $value -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SerialPort_RW"
     compare_result "$result" "All tests passed"
     compare_result "$result" "Get ReadTotalTimeoutMultiplier setting: $value"
   done
@@ -100,18 +100,18 @@ Time_out() {
     case $mode in
     "constant")
       title b "Read Time Out Constant getting/setting test : ${read_constant[0]} ms"
-      launch_command "./idll-test.exe --serial-port1 $port1_number --serial-port2 $port2_number --RIT 0 --RTTC ${read_constant[0]} --RTM 0 -- --EBOARD_TYPE EBOARD_ADi_LEC1 --section SerialPort_RW "
+      launch_command "./idll-test.exe --serial-port1 $port1_number --serial-port2 $port2_number --RIT 0 --RTTC ${read_constant[0]} --RTM 0 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SerialPort_RW "
       after=$(date '+%s')
       ;;
     "mulplier")
         title b "Read Time Out Mulplier getting/setting test : ${read_mulplier[0]} ms"
-        launch_command "./idll-test.exe --serial-port1 $port1_number --serial-port2 $port2_number --RIT 0 --RTTC 0 --RTM ${read_mulplier[0]} -- --EBOARD_TYPE EBOARD_ADi_LEC1 --section SerialPort_RW"
+        launch_command "./idll-test.exe --serial-port1 $port1_number --serial-port2 $port2_number --RIT 0 --RTTC 0 --RTM ${read_mulplier[0]} -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SerialPort_RW"
         compare_result "$result" "failed"
         after=$(date '+%s')
       ;;
     "interval")
       title b "Read Time Out Interval getting/setting test : ${read_interval[0]} ms"
-      launch_command "./idll-test.exe --serial-port1 $port1_number --serial-port2 $port2_number --RIT ${read_interval[0]} --RTTC 0 --RTM 0 -- --EBOARD_TYPE EBOARD_ADi_LEC1 --section SerialPort_RW"
+      launch_command "./idll-test.exe --serial-port1 $port1_number --serial-port2 $port2_number --RIT ${read_interval[0]} --RTTC 0 --RTM 0 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SerialPort_RW"
       after=$(date '+%s')
       ;;
     esac
