@@ -14,8 +14,8 @@ SetWatchDogTimeOut() {
   confirm_pic_message "power" "newest_unread" "all" ""
 
   if [[ "$timeout" -gt 100 ]]; then
-    print_command "sudo ./idll-test.exe --watchdog $timeout -- --EBOARD_TYPE EBOARD_ADi_"$board" --section PIC_Watchdog"
-    sudo ./idll-test.exe --watchdog $timeout -- --EBOARD_TYPE EBOARD_ADi_"$board" --section PIC_Watchdog
+    print_command "sudo ./idll-test"$executable" --watchdog $timeout -- --EBOARD_TYPE EBOARD_ADi_"$board" --section PIC_Watchdog"
+    sudo ./idll-test"$executable" --watchdog $timeout -- --EBOARD_TYPE EBOARD_ADi_"$board" --section PIC_Watchdog
 
     #check if the watchdog related unread event should be 0, after been read.
     title b "Now confirm if PIC still has watchdog related event"
@@ -32,7 +32,7 @@ SetWatchDogTimeOut() {
 
   else
     for count in ${watchdog_timeout[*]}; do
-      launch_command "sudo ./idll-test.exe --watchdog $count -- --EBOARD_TYPE EBOARD_ADi_"$board" --section PIC_Watchdog"
+      launch_command "sudo ./idll-test"$executable" --watchdog $count -- --EBOARD_TYPE EBOARD_ADi_"$board" --section PIC_Watchdog"
 
       #check if the watchdog related unread event should be 0, after been read.
       amount=$(picevent_amount_confirm "power")
@@ -70,14 +70,14 @@ WatchDogCallback() {
   read -p "Input the watchdog timeout, when you need the time is larger than 100 (second), or just enter to continue by default setting (${watchdog_timeout[*]}): " timeout
   if [[ "$timeout" -gt 100 ]]; then
     title b "Now the test is starting. The result will display, after the setting timer $timeout seconds."
-    launch_command "sudo ./idll-test.exe --WATCHDOG_TIMEOUT "$timeout" --SYSTEM_RESTART false -- --EBOARD_TYPE EBOARD_ADi_"$board" --section Callback_PIC_WDTimeout_Manual [CALLBACK][PIC][MANU]"
+    launch_command "sudo ./idll-test"$executable" --WATCHDOG_TIMEOUT "$timeout" --SYSTEM_RESTART false -- --EBOARD_TYPE EBOARD_ADi_"$board" --section Callback_PIC_WDTimeout_Manual [CALLBACK][PIC][MANU]"
     compare_result "$result" "passed"
 
   else
     for i in ${watchdog_timeout[*]}; do
       title b "Test watchdog timeout callback timeout: $i sec"
       title b "Test watchdog timeout callback sytem restart: FALSE"
-      launch_command "sudo ./idll-test.exe --WATCHDOG_TIMEOUT $i --SYSTEM_RESTART false -- --EBOARD_TYPE EBOARD_ADi_"$board" --section Callback_PIC_WDTimeout_Manual [CALLBACK][PIC][MANU]"
+      launch_command "sudo ./idll-test"$executable" --WATCHDOG_TIMEOUT $i --SYSTEM_RESTART false -- --EBOARD_TYPE EBOARD_ADi_"$board" --section Callback_PIC_WDTimeout_Manual [CALLBACK][PIC][MANU]"
 
       if [[ "$i" = 0 ]]; then
         compare_result "$result" "failed"
@@ -104,7 +104,7 @@ loop_watchdog(){
     pic_rtc_sync
     title b "Test watchdog callback timeout: 1 sec"
     title b "Test watchdog timeout callback system restart: FALSE"
-    launch_command "sudo ./idll-test.exe --WATCHDOG_TIMEOUT 1 --SYSTEM_RESTART false -- --EBOARD_TYPE EBOARD_ADi_"$board" --section Callback_PIC_WDTimeout_Manual [CALLBACK][PIC][MANU]"
+    launch_command "sudo ./idll-test"$executable" --WATCHDOG_TIMEOUT 1 --SYSTEM_RESTART false -- --EBOARD_TYPE EBOARD_ADi_"$board" --section Callback_PIC_WDTimeout_Manual [CALLBACK][PIC][MANU]"
     compare_result "$result" "Watchdog system restart: false"
     compare_result "$result" "Event found: Watchdog Timeout"
     compare_result "$result" "Watchdog timeout seconds: 1"
@@ -123,8 +123,8 @@ WatchDog_RestartSystem() {
 
   pic_rtc_sync
   if [[ "$timeout" -ne 0 ]]; then
-    print_command "sudo ./idll-test.exe --WATCHDOG_TIMEOUT $timeout --SYSTEM_RESTART true -- --EBOARD_TYPE EBOARD_ADi_"$board" --section Callback_PIC_WDTimeout_Manual [CALLBACK][PIC][MANU]"
-    sudo ./idll-test.exe --WATCHDOG_TIMEOUT $timeout --SYSTEM_RESTART true -- --EBOARD_TYPE EBOARD_ADi_"$board" --section Callback_PIC_WDTimeout_Manual [CALLBACK][PIC][MANU]
+    print_command "sudo ./idll-test"$executable" --WATCHDOG_TIMEOUT $timeout --SYSTEM_RESTART true -- --EBOARD_TYPE EBOARD_ADi_"$board" --section Callback_PIC_WDTimeout_Manual [CALLBACK][PIC][MANU]"
+    sudo ./idll-test"$executable" --WATCHDOG_TIMEOUT $timeout --SYSTEM_RESTART true -- --EBOARD_TYPE EBOARD_ADi_"$board" --section Callback_PIC_WDTimeout_Manual [CALLBACK][PIC][MANU]
   fi
 
 #  confirm_pic_message "rtc_alarm" "newest_unread" "all" ""

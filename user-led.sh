@@ -24,9 +24,9 @@ SetPin_Scxx_Sa3x(){
   printf "${COLOR_RED_WD}================================ ${COLOR_REST}\n"
   read -p "press enter key to continue...  "
 
-  rest=$( sudo ./idll-test.exe --PORT_VAL 0 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section User_LED_SetPort )
-  rest=$( sudo ./idll-test.exe --PORT_VAL 0 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section Mainboard_User_LED_SetPort )
-  rest=$( sudo ./idll-test.exe --PORT_VAL 0 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section User_LED_SetPort )
+  rest=$( sudo ./idll-test"$executable" --PORT_VAL 0 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section User_LED_SetPort )
+  rest=$( sudo ./idll-test"$executable" --PORT_VAL 0 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section Mainboard_User_LED_SetPort )
+  rest=$( sudo ./idll-test"$executable" --PORT_VAL 0 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section User_LED_SetPort )
 
   for all in 0 1 2 3;do
     for status in "true" "false"; do
@@ -35,7 +35,7 @@ SetPin_Scxx_Sa3x(){
 #      printcolor b "Status: $status"
 #      printcolor b "====================="
 #      read -p "enter key to continue..." continue
-      launch_command "sudo ./idll-test.exe --PIN_NUM $all --PIN_VAL $status -- --EBOARD_TYPE EBOARD_ADi_"$board" --section User_LED_SetPin"
+      launch_command "sudo ./idll-test"$executable" --PIN_NUM $all --PIN_VAL $status -- --EBOARD_TYPE EBOARD_ADi_"$board" --section User_LED_SetPin"
       sleep 1
       case $status in
         true)
@@ -59,9 +59,9 @@ SetPin_Bsec_Backplan(){
   title b "USER LED status change by SET PIN"
   read -p "press enter key to continue...  "
 
-  rest=$( sudo ./idll-test.exe --PORT_VAL 0 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section User_LED_SetPort )
-  rest=$( sudo ./idll-test.exe --PORT_VAL 0 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section Mainboard_User_LED_SetPort )
-  rest=$( sudo ./idll-test.exe --PORT_VAL 0 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section User_LED_SetPort )
+  rest=$( sudo ./idll-test"$executable" --PORT_VAL 0 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section User_LED_SetPort )
+  rest=$( sudo ./idll-test"$executable" --PORT_VAL 0 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section Mainboard_User_LED_SetPort )
+  rest=$( sudo ./idll-test"$executable" --PORT_VAL 0 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section User_LED_SetPort )
 
   for all in 0 1 2 3;do
     for status in "true" "false"; do
@@ -73,7 +73,7 @@ SetPin_Bsec_Backplan(){
 
 #      read -p "enter key to continue..." continue
       sleep 1
-      launch_command "sudo ./idll-test.exe --PIN_NUM $all --PIN_VAL $status -- --EBOARD_TYPE EBOARD_ADi_"$board" --section User_LED_SetPin"
+      launch_command "sudo ./idll-test"$executable" --PIN_NUM $all --PIN_VAL $status -- --EBOARD_TYPE EBOARD_ADi_"$board" --section User_LED_SetPin"
 
       case $status in
         true)
@@ -98,9 +98,9 @@ SetPin_Bsec_Mainboard(){
   title b "USER LED status change by SET PIN "
   read -p "press enter key to continue..."
 
-  rest=$( sudo ./idll-test.exe --PORT_VAL 0 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section User_LED_SetPort )
-  rest=$( sudo ./idll-test.exe --PORT_VAL 0 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section Mainboard_User_LED_SetPort )
-  rest=$( sudo ./idll-test.exe --PORT_VAL 0 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section User_LED_SetPort )
+  rest=$( sudo ./idll-test"$executable" --PORT_VAL 0 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section User_LED_SetPort )
+  rest=$( sudo ./idll-test"$executable" --PORT_VAL 0 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section Mainboard_User_LED_SetPort )
+  rest=$( sudo ./idll-test"$executable" --PORT_VAL 0 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section User_LED_SetPort )
 
   for all in 0 1 2 3;do
     for status in "true" "false"; do
@@ -110,8 +110,8 @@ SetPin_Bsec_Mainboard(){
 #      printcolor b "====================="
 #      read -p "enter key to continue..."
       sleep 2
-#      launch_command "sudo ./idll-test.exe --PIN_NUM $all --PIN_VAL $status -- --EBOARD_TYPE EBOARD_ADi_"$board" --section User_LED_SetPin"
-      launch_command "sudo ./idll-test.exe --PIN_NUM $all --PIN_VAL $status -- --EBOARD_TYPE EBOARD_ADi_"$board" --section Mainboard_User_LED_SetPin"
+#      launch_command "sudo ./idll-test"$executable" --PIN_NUM $all --PIN_VAL $status -- --EBOARD_TYPE EBOARD_ADi_"$board" --section User_LED_SetPin"
+      launch_command "sudo ./idll-test"$executable" --PIN_NUM $all --PIN_VAL $status -- --EBOARD_TYPE EBOARD_ADi_"$board" --section Mainboard_User_LED_SetPin"
 
       case $status in
         true)
@@ -132,9 +132,9 @@ SetPin_Bsec_Mainboard(){
 #(LEC1) MCU USER LED status change by SET PIN
 #===============================================================
 SetPin_Lec1(){
-  rest=$( sudo ./idll-test.exe --PORT_VAL 0 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section User_LED_SetPort )
-  rest=$( sudo ./idll-test.exe --PORT_VAL 0 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section Mainboard_User_LED_SetPort )
-  rest=$( sudo ./idll-test.exe --PORT_VAL 0 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section User_LED_SetPort )
+  rest=$( sudo ./idll-test"$executable" --PORT_VAL 0 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section User_LED_SetPort )
+  rest=$( sudo ./idll-test"$executable" --PORT_VAL 0 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section Mainboard_User_LED_SetPort )
+  rest=$( sudo ./idll-test"$executable" --PORT_VAL 0 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section User_LED_SetPort )
 
   title b "(LEC1) MCU USER LED status change by SET PIN"
   read -p "press enter key to test..."
@@ -147,7 +147,7 @@ SetPin_Lec1(){
 #      printcolor b "====================="
 #      read -p "enter key to continue..."
       sleep 2
-      launch_command "sudo ./idll-test.exe --PIN_NUM $all --PIN_VAL $status -- --EBOARD_TYPE EBOARD_ADi_"$board" --section Mainboard_User_LED_SetPin"
+      launch_command "sudo ./idll-test"$executable" --PIN_NUM $all --PIN_VAL $status -- --EBOARD_TYPE EBOARD_ADi_"$board" --section Mainboard_User_LED_SetPin"
 
       case $status in
         true)
@@ -179,7 +179,7 @@ SetPort_Scxx_Sa3(){
 #      printcolor b "========================"
 #      read -p "enter key to continue test..."
       sleep 2
-      launch_command "sudo ./idll-test.exe --PORT_VAL $all -- --EBOARD_TYPE EBOARD_ADi_"$board" --section User_LED_SetPort"
+      launch_command "sudo ./idll-test"$executable" --PORT_VAL $all -- --EBOARD_TYPE EBOARD_ADi_"$board" --section User_LED_SetPort"
 
       value="value: $all"
       title b "Expected get pin/port data: ( $value )"
@@ -202,7 +202,7 @@ SetPort_Bsec_Backplan(){
 #      printcolor b "========================"
 #      read -p "enter key to continue..."
       sleep 2
-      launch_command "sudo ./idll-test.exe --PORT_VAL $all -- --EBOARD_TYPE EBOARD_ADi_"$board" --section User_LED_SetPort"
+      launch_command "sudo ./idll-test"$executable" --PORT_VAL $all -- --EBOARD_TYPE EBOARD_ADi_"$board" --section User_LED_SetPort"
 
       value="value: $all"
       title b "Expected get pin/port data: ( $value )"
@@ -226,7 +226,7 @@ SetPort_Bsec_Mainboard(){
 #      read -p "enter key to continue..."
       sleep 2
 
-      launch_command "sudo ./idll-test.exe --PORT_VAL $all -- --EBOARD_TYPE EBOARD_ADi_"$board" --section Mainboard_User_LED_SetPort"
+      launch_command "sudo ./idll-test"$executable" --PORT_VAL $all -- --EBOARD_TYPE EBOARD_ADi_"$board" --section Mainboard_User_LED_SetPort"
       value="value: $all"
       title b "Expected get pin/port data: ( $value )"
       compare_result "$result" "$value"
@@ -247,7 +247,7 @@ SetPort_Lec1(){
 #      printcolor b "========================"
 #      read -p "enter key to continue..."
       sleep 2
-      launch_command "sudo ./idll-test.exe --PORT_VAL $all -- --EBOARD_TYPE EBOARD_ADi_"$board" --section Mainboard_User_LED_SetPort"
+      launch_command "sudo ./idll-test"$executable" --PORT_VAL $all -- --EBOARD_TYPE EBOARD_ADi_"$board" --section Mainboard_User_LED_SetPort"
 
       value="value: $all"
       title b "Expected get pin/port data: ( $value )"
@@ -264,19 +264,19 @@ BadParameter(){
   printf "${COLOR_RED_WD}=================== ${COLOR_REST}\n"
 
 
-  print_command "sudo ./idll-test.exe --PORT_VAL W -- --EBOARD_TYPE EBOARD_ADi_"$board" --section User_LED_SetPort"
-  sudo ./idll-test.exe --PORT_VAL W -- --EBOARD_TYPE EBOARD_ADi_"$board" --section User_LED_SetPort
-  print_command "sudo ./idll-test.exe --PIN_NUM 1 --PIN_VAL 99999999 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section User_LED_SetPin"
-  sudo ./idll-test.exe --PIN_NUM 1 --PIN_VAL 99999999 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section User_LED_SetPin
-  print_command "sudo ./idll-test.exe --PIN_NUM 999 --PIN_VAL 1 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section User_LED_SetPin"
-  sudo ./idll-test.exe --PIN_NUM 999 --PIN_VAL 1 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section User_LED_SetPin
+  print_command "sudo ./idll-test"$executable" --PORT_VAL W -- --EBOARD_TYPE EBOARD_ADi_"$board" --section User_LED_SetPort"
+  sudo ./idll-test"$executable" --PORT_VAL W -- --EBOARD_TYPE EBOARD_ADi_"$board" --section User_LED_SetPort
+  print_command "sudo ./idll-test"$executable" --PIN_NUM 1 --PIN_VAL 99999999 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section User_LED_SetPin"
+  sudo ./idll-test"$executable" --PIN_NUM 1 --PIN_VAL 99999999 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section User_LED_SetPin
+  print_command "sudo ./idll-test"$executable" --PIN_NUM 999 --PIN_VAL 1 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section User_LED_SetPin"
+  sudo ./idll-test"$executable" --PIN_NUM 999 --PIN_VAL 1 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section User_LED_SetPin
 
   command_line=(
-  "sudo ./idll-test.exe --PORT_VAL W -- --EBOARD_TYPE EBOARD_ADi_"$board" --section User_LED_SetPort"
-  "sudo ./idll-test.exe --PIN_NUM 1 --PIN_VAL 99999999 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section User_LED_SetPin"
-  "sudo ./idll-test.exe --PIN_NUM 999 --PIN_VAL 1 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section User_LED_SetPin"
-  "sudo ./idll-test.exe --PIN_NUM 1 --PIN_VAL 99 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section Mainboard_User_LED_SetPin"
-  "sudo ./idll-test.exe --PORT_VAL 65535 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section Mainboard_User_LED_SetPort"
+  "sudo ./idll-test"$executable" --PORT_VAL W -- --EBOARD_TYPE EBOARD_ADi_"$board" --section User_LED_SetPort"
+  "sudo ./idll-test"$executable" --PIN_NUM 1 --PIN_VAL 99999999 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section User_LED_SetPin"
+  "sudo ./idll-test"$executable" --PIN_NUM 999 --PIN_VAL 1 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section User_LED_SetPin"
+  "sudo ./idll-test"$executable" --PIN_NUM 1 --PIN_VAL 99 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section Mainboard_User_LED_SetPin"
+  "sudo ./idll-test"$executable" --PORT_VAL 65535 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section Mainboard_User_LED_SetPort"
   )
 
   for command in "${command_line[@]}";do

@@ -1,13 +1,13 @@
 #!/bin/bash
 #i=0
 #while true; do
-##   sudo ./idll-test.exe -- --EBOARD_TYPE EBOARD_ADi_"$board" --section PIC_Battery_PICEventByType
-##  sudo ./idll-test.exe -- --EBOARD_TYPE EBOARD_ADi_"$board" --section adiLibInit
-##  sudo ./idll-test.exe -- --EBOARD_TYPE EBOARD_ADi_"$board" --section PIC_GetPICEvent_and_CheckPICBatteryVoltage
+##   sudo ./idll-test"$executable" -- --EBOARD_TYPE EBOARD_ADi_"$board" --section PIC_Battery_PICEventByType
+##  sudo ./idll-test"$executable" -- --EBOARD_TYPE EBOARD_ADi_"$board" --section adiLibInit
+##  sudo ./idll-test"$executable" -- --EBOARD_TYPE EBOARD_ADi_"$board" --section PIC_GetPICEvent_and_CheckPICBatteryVoltage
 #  ((i++))
 #  echo "i=$i"
 #
-#  result=$(sudo ./idll-test.exe --ADDRESS 1319213 --LENGTH 4 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SramAsyncCalculateCRC32Manual)
+#  result=$(sudo ./idll-test"$executable" --ADDRESS 1319213 --LENGTH 4 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SramAsyncCalculateCRC32Manual)
 #  if [[ "$result" =~ "Callback data[CRC]" ]]; then
 #    printf "===========================================================pass"
 #
@@ -61,8 +61,8 @@
 
 #echo "${result:0:2}"
 
-#a=$(sudo ./idll-test.exe --GPIO_PORT_VAL 1 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SA3X_4xGPIO_by_Port | grep -i "adiGpioGetPort" |  sed 's/\\n//g' > test.txt)
-#a=$(sudo ./idll-test.exe --GPIO_PORT_VAL 1 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SA3X_4xGPIO_by_Port > test.txt)
+#a=$(sudo ./idll-test"$executable" --GPIO_PORT_VAL 1 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SA3X_4xGPIO_by_Port | grep -i "adiGpioGetPort" |  sed 's/\\n//g' > test.txt)
+#a=$(sudo ./idll-test"$executable" --GPIO_PORT_VAL 1 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SA3X_4xGPIO_by_Port > test.txt)
 #a=$(cat test.txt)
 #echo "a=$a"
 #b="adiGpioGetPort(0x11)"
@@ -89,8 +89,8 @@
 #  for (( i = 0; i < 2 ; i++ )); do
 #    echo "====================================test time= $m===================================="
 #    echo "**********************************now read 1wire $i**********************************"
-#    sudo ./idll-test.exe --dallas-eeprom-write $i:0:$data -- --EBOARD_TYPE EBOARD_ADi_"$board" --section PIC_1Wire_EEPROM_Manual_write
-#    result=$(sudo ./idll-test.exe --dallas-eeprom-read $i:0:$length -- --EBOARD_TYPE EBOARD_ADi_"$board" --section PIC_1Wire_EEPROM_Manual_read)
+#    sudo ./idll-test"$executable" --dallas-eeprom-write $i:0:$data -- --EBOARD_TYPE EBOARD_ADi_"$board" --section PIC_1Wire_EEPROM_Manual_write
+#    result=$(sudo ./idll-test"$executable" --dallas-eeprom-read $i:0:$length -- --EBOARD_TYPE EBOARD_ADi_"$board" --section PIC_1Wire_EEPROM_Manual_read)
 #    echo "$result"
 #
 #    echo "**********************************now compare 1wire $i data**********************************"
@@ -121,7 +121,7 @@
 #done
 #while true; do
 #
-#  re=$(sudo ./idll-test.exe --serial-port1 LEC1_COM1 --serial-port2 LEC1_COM2 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SerialPort_Nullmodem)
+#  re=$(sudo ./idll-test"$executable" --serial-port1 LEC1_COM1 --serial-port2 LEC1_COM2 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SerialPort_Nullmodem)
 #  if [[ "$re" =~ "failed" ]]; then
 #    read -p "got error log"
 #  fi
@@ -133,22 +133,22 @@
 #while true; do
 #  ((i++))
 #  printf "loop=$i"
-#  re1=$(sudo ./idll-test.exe -- --EBOARD_TYPE EBOARD_ADi_"$board" --section LEC1_DO_Brightness [ADiDLL][DO][Brightness])
-#  re2=$(sudo ./idll-test.exe --LOOP 1 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section GPO_LED)
+#  re1=$(sudo ./idll-test"$executable" -- --EBOARD_TYPE EBOARD_ADi_"$board" --section LEC1_DO_Brightness [ADiDLL][DO][Brightness])
+#  re2=$(sudo ./idll-test"$executable" --LOOP 1 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section GPO_LED)
 #  if [[ "$re1" =~ "failed" || "$re2" =~ "failed"  ]]; then
 #      printf $re1
 #      printf $re2
 #  fi
 #
 #done
-while true;do
-  for i in {0..100};do
-
-    sudo ./idll-test.exe --PIN_NUM 0 --PERIOD 1000 --DUTY_CYCLE 50 --BRIGHTNESS $i -- --EBOARD_TYPE EBOARD_ADi_SA3X --section GPO_LED_Drive_SetBlink
-
-  done
-done
-exit
+#while true;do
+#  for i in {0..100};do
+#
+#    sudo ./idll-test"$executable" --PIN_NUM 0 --PERIOD 1000 --DUTY_CYCLE 50 --BRIGHTNESS $i -- --EBOARD_TYPE EBOARD_ADi_SA3X --section GPO_LED_Drive_SetBlink
+#
+#  done
+#done
+#exit
 
 
 
@@ -169,12 +169,12 @@ write_data() {
   printf "$write_data" > dummy_write_02.txt
 
 }
-#write_data
-read -p "aa" type
-mirror=3
-mirror_mode=${type:-$mirror}
-echo "$type"
-echo "$mirror_mode"
+write_data
+#read -p "aa" type
+#mirror=3
+#mirror_mode=${type:-$mirror}
+#echo "$type"
+#echo "$mirror_mode"
 
 #
 #size=100
@@ -186,11 +186,11 @@ echo "$mirror_mode"
 #rr=$(echo "$rr" | sed 's/\s//g')
 #echo "$data"
 #echo "abc=$rr" | sed 's/\r/-/g'
-#echo "./idll-test.exe --sram-write 1:0:$data -- --EBOARD_TYPE EBOARD_ADi_LEC1 --section SRAM_Manual_write"
-#./idll-test.exe --sram-write 1:0:$data -- --EBOARD_TYPE EBOARD_ADi_LEC1 --section SRAM_Manual_write
+#echo "./idll-test"$executable" --sram-write 1:0:$data -- --EBOARD_TYPE EBOARD_ADi_LEC1 --section SRAM_Manual_write"
+#./idll-test"$executable" --sram-write 1:0:$data -- --EBOARD_TYPE EBOARD_ADi_LEC1 --section SRAM_Manual_write
 #
 #
-#aa=$(./idll-test.exe --sram-read 1:0:$size -- --EBOARD_TYPE EBOARD_ADi_LEC1 --section SRAM_Manual_read | sed 's/\s//g')
+#aa=$(./idll-test"$executable" --sram-read 1:0:$size -- --EBOARD_TYPE EBOARD_ADi_LEC1 --section SRAM_Manual_read | sed 's/\s//g')
 #if [[ "$aa" =~ $rr ]]; then
 #  echo "good"
 #  read -p ""

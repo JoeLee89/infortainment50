@@ -4,7 +4,7 @@ source ./common_func.sh
 size_check() {
   local result i
   for ((i = 1; i < 5; i++)); do
-    result=$(sudo ./idll-test.exe --EMEM_TYPE EMEM_EEPROM"$i" -- --EBOARD_TYPE EBOARD_ADi_"$board" --section EEPROM_GetMemSize | grep -i "Memory size of EMEM_EEPROM" | sed "s/Memory size of EMEM_EEPROM$i: //g" | sed "s/\s//g")
+    result=$(sudo ./idll-test"$executable" --EMEM_TYPE EMEM_EEPROM"$i" -- --EBOARD_TYPE EBOARD_ADi_"$board" --section EEPROM_GetMemSize | grep -i "Memory size of EMEM_EEPROM" | sed "s/Memory size of EMEM_EEPROM$i: //g" | sed "s/\s//g")
     if [[ "$result" && "$result" -ne 0 ]]; then
       size[((i-1))]=$result
     fi
@@ -29,8 +29,8 @@ EepromReadWrite_Auto(){
     if [ "$input" == "q" ] || [ "$input" == "" ]|| [ "$input" == "Q" ]; then
       break
     elif [ "$x" -lt "$input" ]; then
-      print_command "sudo ./idll-test.exe --LOOP 1 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section EEPROM_Auto"
-      sudo ./idll-test.exe --LOOP 1 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section EEPROM_Auto
+      print_command "sudo ./idll-test"$executable" --LOOP 1 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section EEPROM_Auto"
+      sudo ./idll-test"$executable" --LOOP 1 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section EEPROM_Auto
     fi
 
     if [ "$x" == "$input" ]; then
@@ -50,7 +50,7 @@ EepromSize(){
 
   for q in $(seq 1 $eeprom);do
 #    title b "assume eeprom capacity = $size"
-    launch_command "sudo ./idll-test.exe --EMEM_TYPE EMEM_EEPROM$q -- --EBOARD_TYPE EBOARD_ADi_"$board" --section EEPROM_GetMemSize"
+    launch_command "sudo ./idll-test"$executable" --EMEM_TYPE EMEM_EEPROM$q -- --EBOARD_TYPE EBOARD_ADi_"$board" --section EEPROM_GetMemSize"
 
 #    title b "Capacity check result"
 #    compare_result "$result" "$size"
@@ -93,7 +93,7 @@ write_RandomSamePattern(){
     )
     title_list b mseg[@]
 
-    launch_command "sudo ./idll-test.exe --WRITE_MEM EMEM_EEPROM$choise,$position,$data -- --EBOARD_TYPE EBOARD_ADi_"$board" --section EEPROM_Write"
+    launch_command "sudo ./idll-test"$executable" --WRITE_MEM EMEM_EEPROM$choise,$position,$data -- --EBOARD_TYPE EBOARD_ADi_"$board" --section EEPROM_Write"
     compare_result "$result" "pass"
     compare_RandomSamePattern "$choise" "$data" "$position"
   done
@@ -117,7 +117,7 @@ compare_RandomSamePattern(){
   printf "\n\n\n\n\n"
   title b "Compare data process: the expected result should include data as the following list:"
   title b "Assuming data = $content"
-  launch_command "sudo ./idll-test.exe --READ_MEM EMEM_EEPROM$choise,$position,1 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section EEPROM_Read"
+  launch_command "sudo ./idll-test"$executable" --READ_MEM EMEM_EEPROM$choise,$position,1 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section EEPROM_Read"
   compare_result "$result" "$content"
 }
 
@@ -186,11 +186,11 @@ read_write_directly(){
 #===============================================================
 BadParameter(){
   command_line=(
-  "sudo ./idll-test.exe --WRITE_MEM EMEM_EEPROM1,100000000,0,1,2,3,4,5,6,7,8,9 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section EEPROM_Write"
-  "sudo ./idll-test.exe --READ_MEM EMEM_EEPROM1,1000000000,10 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section EEPROM_Read"
-  "sudo ./idll-test.exe --WRITE_MEM EMEM_EEPROM1,0,##77**,1,2,3,4,5,6,7,8,9 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section EEPROM_Write"
-  "sudo ./idll-test.exe --WRITE_MEM EMEM_EEPROM1,0,@#999999,1,2,3,4,5,6,7,8,9 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section EEPROM_Write"
-  "sudo ./idll-test.exe --READ_MEM EMEM_EEPROM1,1,99999999910 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section EEPROM_Read"
+  "sudo ./idll-test"$executable" --WRITE_MEM EMEM_EEPROM1,100000000,0,1,2,3,4,5,6,7,8,9 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section EEPROM_Write"
+  "sudo ./idll-test"$executable" --READ_MEM EMEM_EEPROM1,1000000000,10 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section EEPROM_Read"
+  "sudo ./idll-test"$executable" --WRITE_MEM EMEM_EEPROM1,0,##77**,1,2,3,4,5,6,7,8,9 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section EEPROM_Write"
+  "sudo ./idll-test"$executable" --WRITE_MEM EMEM_EEPROM1,0,@#999999,1,2,3,4,5,6,7,8,9 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section EEPROM_Write"
+  "sudo ./idll-test"$executable" --READ_MEM EMEM_EEPROM1,1,99999999910 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section EEPROM_Read"
   )
 
   for command in "${command_line[@]}";do
@@ -211,8 +211,8 @@ write(){
 
   title b "Write data to eeprom"
   title b "data : $1"
-  launch_command "sudo ./idll-test.exe --WRITE_MEM EMEM_EEPROM$2,0,$1 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section EEPROM_Write"
-#  sudo ./idll-test.exe --WRITE_MEM EMEM_EEPROM"$2",0,$1 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section EEPROM_Write
+  launch_command "sudo ./idll-test"$executable" --WRITE_MEM EMEM_EEPROM$2,0,$1 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section EEPROM_Write"
+#  sudo ./idll-test"$executable" --WRITE_MEM EMEM_EEPROM"$2",0,$1 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section EEPROM_Write
   printf "\n"
 }
 
@@ -221,7 +221,7 @@ read_data(){
 
   printf "\n\n\n\n"
   title b "Read all data from eeprom first, and then compare the result"
-  launch_command "sudo ./idll-test.exe --READ_MEM EMEM_EEPROM$2,0,$data_length -- --EBOARD_TYPE EBOARD_ADi_"$board" --section EEPROM_Read"
+  launch_command "sudo ./idll-test"$executable" --READ_MEM EMEM_EEPROM$2,0,$data_length -- --EBOARD_TYPE EBOARD_ADi_"$board" --section EEPROM_Read"
 
   #n means loop write_data list, if the n number is higher the the length of write_data, it will cause fail not to get the write_data,
   #so it need to reset back to n=0, keep looping to get write_data value.

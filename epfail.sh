@@ -8,8 +8,8 @@ while true; do
   if [ "$input" == "q" ]; then
       break
   else
-    print_command "sudo ./idll-test.exe -- --EBOARD_TYPE EBOARD_ADi_"$board" --section EP-FAIL"
-    sudo ./idll-test.exe -- --EBOARD_TYPE EBOARD_ADi_"$board" --section EP-FAIL
+    print_command "sudo ./idll-test"$executable" -- --EBOARD_TYPE EBOARD_ADi_"$board" --section EP-FAIL"
+    sudo ./idll-test"$executable" -- --EBOARD_TYPE EBOARD_ADi_"$board" --section EP-FAIL
   fi
 
   printf "Press enter key to test or [q] key to skip.. \n"

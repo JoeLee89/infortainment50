@@ -5,19 +5,19 @@ source ./common_func.sh
 #basic info/initial
 #===============================================================
 ErrorString() {
-  print_command "sudo ./idll-test.exe -- --EBOARD_TYPE EBOARD_ADi_"$board" --section Error_String_Message"
-  sudo ./idll-test.exe -- --EBOARD_TYPE EBOARD_ADi_"$board" --section Error_String_Message
+  print_command "sudo ./idll-test"$executable" -- --EBOARD_TYPE EBOARD_ADi_"$board" --section Error_String_Message"
+  sudo ./idll-test"$executable" -- --EBOARD_TYPE EBOARD_ADi_"$board" --section Error_String_Message
 }
 
 Initial() {
   while true; do
 #    echo "$board"
-    print_command "sudo ./idll-test.exe -- --EBOARD_TYPE EBOARD_ADi_BSEC_BACC --section adiLibInit"
-    result=$(sudo ./idll-test.exe -- --EBOARD_TYPE EBOARD_ADi_"$board" --section adiLibInit)
+    print_command "sudo ./idll-test"$executable" -- --EBOARD_TYPE EBOARD_ADi_BSEC_BACC --section adiLibInit"
+    result=$(sudo ./idll-test"$executable" -- --EBOARD_TYPE EBOARD_ADi_"$board" --section adiLibInit)
     echo "$result"
     if [[ "$result" == ""  ]]; then
-      print_command "sudo ./idll-test.exe --ALLOW_INIT_FAIL true -- --EBOARD_TYPE EBOARD_ADi_"$board" --section InitBatDetect [ADiDLL][INIT][BAT_DETECT]"
-      sudo ./idll-test.exe --ALLOW_INIT_FAIL true -- --EBOARD_TYPE EBOARD_ADi_"$board" --section InitBatDetect [ADiDLL][INIT][BAT_DETECT]
+      print_command "sudo ./idll-test"$executable" --ALLOW_INIT_FAIL true -- --EBOARD_TYPE EBOARD_ADi_"$board" --section InitBatDetect [ADiDLL][INIT][BAT_DETECT]"
+      sudo ./idll-test"$executable" --ALLOW_INIT_FAIL true -- --EBOARD_TYPE EBOARD_ADi_"$board" --section InitBatDetect [ADiDLL][INIT][BAT_DETECT]
     fi
 
     echo "Input [q] to exit loop.."
@@ -29,8 +29,8 @@ Initial() {
 }
 
 SystemInfo() {
-  print_command "sudo ./idll-test.exe -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SYS_Info"
-  sudo ./idll-test.exe -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SYS_Info
+  print_command "sudo ./idll-test"$executable" -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SYS_Info"
+  sudo ./idll-test"$executable" -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SYS_Info
 }
 
 FPGA_FW_SHA256() {
@@ -40,14 +40,14 @@ FPGA_FW_SHA256() {
   data=("aa" "12" "@@")
   for i in "${data[@]}"; do
     title b "start to input value: $i"
-    print_command "sudo ./idll-test.exe --fpga-fw-sha256 $i -- --EBOARD_TYPE EBOARD_ADi_"$board" \"Scenario: adiLibGetFirmwareSHA256\""
-    result=$(sudo ./idll-test.exe --fpga-fw-sha256 $i -- --EBOARD_TYPE EBOARD_ADi_"$board" "Scenario: adiLibGetFirmwareSHA256")
+    print_command "sudo ./idll-test"$executable" --fpga-fw-sha256 $i -- --EBOARD_TYPE EBOARD_ADi_"$board" \"Scenario: adiLibGetFirmwareSHA256\""
+    result=$(sudo ./idll-test"$executable" --fpga-fw-sha256 $i -- --EBOARD_TYPE EBOARD_ADi_"$board" "Scenario: adiLibGetFirmwareSHA256")
     echo "$result"
     compare_result "$result" "failed"
 
   done
-  print_command "sudo ./idll-test.exe --fpga-fw-sha256 $input -- --EBOARD_TYPE EBOARD_ADi_"$board" \"Scenario: adiLibGetFirmwareSHA256\""
-  sudo ./idll-test.exe --fpga-fw-sha256 "$input" -- --EBOARD_TYPE EBOARD_ADi_"$board" "Scenario: adiLibGetFirmwareSHA256"
+  print_command "sudo ./idll-test"$executable" --fpga-fw-sha256 $input -- --EBOARD_TYPE EBOARD_ADi_"$board" \"Scenario: adiLibGetFirmwareSHA256\""
+  sudo ./idll-test"$executable" --fpga-fw-sha256 "$input" -- --EBOARD_TYPE EBOARD_ADi_"$board" "Scenario: adiLibGetFirmwareSHA256"
 }
 
 #===============================================================

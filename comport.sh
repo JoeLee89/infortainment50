@@ -1,7 +1,7 @@
 #!/bin/bash
 source ./common_func.sh
 
-re=$(sudo ./idll-test.exe -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SerialPort_GetPort_Num_Name)
+re=$(sudo ./idll-test"$executable" -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SerialPort_GetPort_Num_Name)
 com_amount=$(echo "$re" | grep -i portcount | sed 's/\s//g')
 com_amount=${com_amount#adi*:}
 for ((i = 0; i < com_amount; i++)); do
@@ -45,7 +45,7 @@ data_default=$(number_random read_len_default)
 ###################################################
 
 Time_out() {
-  sudo ./idll-test.exe -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SerialPort_GetPort_Num_Name
+  sudo ./idll-test"$executable" -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SerialPort_GetPort_Num_Name
   printcolor r "Please refer above list, input the port index number as listed above as 'PortIndex= ??'"
   printcolor w "Input com port 1 name you need to test"
   read -p "Port 1 Index = " port1
@@ -69,21 +69,21 @@ Time_out() {
   ###############################
   for value in ${read_constant[*]}; do
     title b "Read Time Out Constant getting/setting test : $value ms"
-    launch_command "./idll-test.exe --serial-port1 $port1_number --serial-port2 $port2_number --RIT 0 --RTTC $value --RTM 0 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SerialPort_RW "
+    launch_command "./idll-test"$executable" --serial-port1 $port1_number --serial-port2 $port2_number --RIT 0 --RTTC $value --RTM 0 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SerialPort_RW "
     compare_result "$result" "All tests passed"
     compare_result "$result" "Get ReadTotalTimeoutConstant setting: $value"
   done
 
   for value in ${read_interval[*]}; do
     title b "Read Time Out Interval getting/setting test : $value ms"
-    launch_command "./idll-test.exe --serial-port1 $port1_number --serial-port2 $port2_number --RIT $value --RTTC 0 --RTM 0 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SerialPort_RW"
+    launch_command "./idll-test"$executable" --serial-port1 $port1_number --serial-port2 $port2_number --RIT $value --RTTC 0 --RTM 0 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SerialPort_RW"
     compare_result "$result" "All tests passed"
     compare_result "$result" "Get ReadIntervalTimeout setting: $value"
   done
 
   for value in ${read_mulplier[*]}; do
     title b "Read Time Out Mulplier getting/setting test : $value ms"
-    launch_command "./idll-test.exe --serial-port1 $port1_number --serial-port2 $port2_number --RIT 0 --RTTC 0 --RTM $value -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SerialPort_RW"
+    launch_command "./idll-test"$executable" --serial-port1 $port1_number --serial-port2 $port2_number --RIT 0 --RTTC 0 --RTM $value -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SerialPort_RW"
     compare_result "$result" "All tests passed"
     compare_result "$result" "Get ReadTotalTimeoutMultiplier setting: $value"
   done
@@ -100,18 +100,18 @@ Time_out() {
     case $mode in
     "constant")
       title b "Read Time Out Constant getting/setting test : ${read_constant[0]} ms"
-      launch_command "./idll-test.exe --serial-port1 $port1_number --serial-port2 $port2_number --RIT 0 --RTTC ${read_constant[0]} --RTM 0 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SerialPort_RW "
+      launch_command "./idll-test"$executable" --serial-port1 $port1_number --serial-port2 $port2_number --RIT 0 --RTTC ${read_constant[0]} --RTM 0 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SerialPort_RW "
       after=$(date '+%s')
       ;;
     "mulplier")
         title b "Read Time Out Mulplier getting/setting test : ${read_mulplier[0]} ms"
-        launch_command "./idll-test.exe --serial-port1 $port1_number --serial-port2 $port2_number --RIT 0 --RTTC 0 --RTM ${read_mulplier[0]} -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SerialPort_RW"
+        launch_command "./idll-test"$executable" --serial-port1 $port1_number --serial-port2 $port2_number --RIT 0 --RTTC 0 --RTM ${read_mulplier[0]} -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SerialPort_RW"
         compare_result "$result" "failed"
         after=$(date '+%s')
       ;;
     "interval")
       title b "Read Time Out Interval getting/setting test : ${read_interval[0]} ms"
-      launch_command "./idll-test.exe --serial-port1 $port1_number --serial-port2 $port2_number --RIT ${read_interval[0]} --RTTC 0 --RTM 0 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SerialPort_RW"
+      launch_command "./idll-test"$executable" --serial-port1 $port1_number --serial-port2 $port2_number --RIT ${read_interval[0]} --RTTC 0 --RTM 0 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SerialPort_RW"
       after=$(date '+%s')
       ;;
     esac
@@ -133,7 +133,7 @@ Time_out() {
 #basic info
 ###################################################
 Com_port_info() {
-  launch_command "sudo ./idll-test.exe -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SerialPort_GetPort_Num_Name"
+  launch_command "sudo ./idll-test"$executable" -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SerialPort_GetPort_Num_Name"
   compare_result "$result" "passed"
 
 }
@@ -142,14 +142,14 @@ Com_port_info() {
 ###################################################
 Feature() {
 
-  sudo ./idll-test.exe -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SerialPort_GetPort_Num_Name
+  sudo ./idll-test"$executable" -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SerialPort_GetPort_Num_Name
   printcolor w "Now connect each com port with loopback."
   printcolor w "Input com port number you need to test, or Enter to test all"
   printcolor r "Please refer above list, input the port index number as listed above as 'PortIndex= ??', if you choose to test the single port."
   read -p "PortIndex = " input
   input=${input:-"all"}
 
-  #  board_name=$(sudo ./idll-test.exe -- --EBOARD_TYPE EBOARD_ADi_"$board" --section adiLibInit)
+  #  board_name=$(sudo ./idll-test"$executable" -- --EBOARD_TYPE EBOARD_ADi_"$board" --section adiLibInit)
   #  if [[ "$board_name" =~ "LEC1"  ]]; then
   #    port1="LEC1_COM""$port1"
   #    port2="LEC1_COM""$port2"
@@ -179,7 +179,7 @@ Feature() {
       )
       title_list b mesg[@]
 
-      launch_command "sudo ./idll-test.exe --serial-port1 $com --serial-port2 $com --BAUDRATE $list --DATABIT $databit_default --FLOWCTRL $flowctrl_default --PARITYBIT $paritybit_default --STOPBIT $stopbit_default --SERIAL_WRITE $data_default --READ_LEN $read_len_default --LOOP 1 --READ_INTERVAL $read_interval_default -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SerialPort_RW"
+      launch_command "sudo ./idll-test"$executable" --serial-port1 $com --serial-port2 $com --BAUDRATE $list --DATABIT $databit_default --FLOWCTRL $flowctrl_default --PARITYBIT $paritybit_default --STOPBIT $stopbit_default --SERIAL_WRITE $data_default --READ_LEN $read_len_default --LOOP 1 --READ_INTERVAL $read_interval_default -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SerialPort_RW"
       result00=$(echo "$result" | grep -i "baudrate" | sed 's/\s//g')
       compare_result "$result" "passed"
       compare_result "$result00" "baudrate=$list"
@@ -200,7 +200,7 @@ Feature() {
       )
       title_list b mesg[@]
 
-      launch_command "sudo ./idll-test.exe --serial-port1 $com --serial-port2 $com --BAUDRATE $baudrate_default --DATABIT $list --FLOWCTRL $flowctrl_default --PARITYBIT $paritybit_default --STOPBIT $stopbit_default --SERIAL_WRITE $data_default --READ_LEN $read_len_default --LOOP 1 --READ_INTERVAL $read_interval_default -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SerialPort_RW"
+      launch_command "sudo ./idll-test"$executable" --serial-port1 $com --serial-port2 $com --BAUDRATE $baudrate_default --DATABIT $list --FLOWCTRL $flowctrl_default --PARITYBIT $paritybit_default --STOPBIT $stopbit_default --SERIAL_WRITE $data_default --READ_LEN $read_len_default --LOOP 1 --READ_INTERVAL $read_interval_default -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SerialPort_RW"
       result00=$(echo "$result" | grep -i "databit" | sed 's/\s//g')
       compare_result "$result" "passed"
       compare_result "$result00" "databit=$list"
@@ -221,7 +221,7 @@ Feature() {
   #      )
   #      title_list b mesg[@]
   #
-  #      launch_command  "sudo ./idll-test.exe --serial-port1 $com --serial-port2 $com --BAUDRATE $baudrate_default --DATABIT $databit_default --FLOWCTRL $list --PARITYBIT $paritybit_default --STOPBIT $stopbit_default --SERIAL_WRITE $data_default --READ_LEN $read_len_default --LOOP 1 --READ_INTERVAL $read_interval_default -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SerialPort_RW"
+  #      launch_command  "sudo ./idll-test"$executable" --serial-port1 $com --serial-port2 $com --BAUDRATE $baudrate_default --DATABIT $databit_default --FLOWCTRL $list --PARITYBIT $paritybit_default --STOPBIT $stopbit_default --SERIAL_WRITE $data_default --READ_LEN $read_len_default --LOOP 1 --READ_INTERVAL $read_interval_default -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SerialPort_RW"
   #      result00=$(echo "$result" | grep -i "flowctrl" | sed 's/\s//g')
   #      compare_result "$result" "passed"
   #      compare_result "$result00" "flowCtrl=$list"
@@ -242,7 +242,7 @@ Feature() {
       )
       title_list b mesg[@]
 
-      launch_command "sudo ./idll-test.exe --serial-port1 $com --serial-port2 $com --BAUDRATE $baudrate_default --DATABIT $databit_default --FLOWCTRL $flowctrl_default --PARITYBIT $list --STOPBIT $stopbit_default --SERIAL_WRITE $data_default --READ_LEN $read_len_default --LOOP 1 --READ_INTERVAL $read_interval_default -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SerialPort_RW"
+      launch_command "sudo ./idll-test"$executable" --serial-port1 $com --serial-port2 $com --BAUDRATE $baudrate_default --DATABIT $databit_default --FLOWCTRL $flowctrl_default --PARITYBIT $list --STOPBIT $stopbit_default --SERIAL_WRITE $data_default --READ_LEN $read_len_default --LOOP 1 --READ_INTERVAL $read_interval_default -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SerialPort_RW"
       result00=$(echo "$result" | grep -i "parity" | sed 's/\s//g')
       compare_result "$result" "passed"
       compare_result "$result00" "parity=$list"
@@ -263,7 +263,7 @@ Feature() {
       )
       title_list b mesg[@]
 
-      launch_command "sudo ./idll-test.exe --serial-port1 $com --serial-port2 $com --BAUDRATE $baudrate_default --DATABIT $databit_default --FLOWCTRL $flowctrl_default --PARITYBIT $paritybit_default --STOPBIT $list --SERIAL_WRITE $data_default --READ_LEN $read_len_default --LOOP 1 --READ_INTERVAL $read_interval_default -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SerialPort_RW"
+      launch_command "sudo ./idll-test"$executable" --serial-port1 $com --serial-port2 $com --BAUDRATE $baudrate_default --DATABIT $databit_default --FLOWCTRL $flowctrl_default --PARITYBIT $paritybit_default --STOPBIT $list --SERIAL_WRITE $data_default --READ_LEN $read_len_default --LOOP 1 --READ_INTERVAL $read_interval_default -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SerialPort_RW"
       result00=$(echo "$result" | grep -i "stopbit" | sed 's/\s//g')
       compare_result "$result" "passed"
       compare_result "$result00" "stopbit=$list"
@@ -284,7 +284,7 @@ Feature() {
       )
       title_list b mesg[@]
 
-      launch_command "sudo ./idll-test.exe --serial-port1 $com --serial-port2 $com --BAUDRATE $baudrate_default --DATABIT $databit_default --FLOWCTRL $flowctrl_default --PARITYBIT $paritybit_default --STOPBIT $stopbit_default --SERIAL_WRITE $data --READ_LEN $list --LOOP 1 --READ_INTERVAL 1000 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SerialPort_RW"
+      launch_command "sudo ./idll-test"$executable" --serial-port1 $com --serial-port2 $com --BAUDRATE $baudrate_default --DATABIT $databit_default --FLOWCTRL $flowctrl_default --PARITYBIT $paritybit_default --STOPBIT $stopbit_default --SERIAL_WRITE $data --READ_LEN $list --LOOP 1 --READ_INTERVAL 1000 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SerialPort_RW"
       #    result00=$(echo "$result" | grep -i "stopbit" | sed 's/\s//g')
       compare_result "$result" "passed"
       #    compare_result "$result00" "stopbit=$list"
@@ -296,7 +296,7 @@ Feature() {
 #prot to port
 ###################################################
 PortToPort() {
-  sudo ./idll-test.exe -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SerialPort_GetPort_Num_Name
+  sudo ./idll-test"$executable" -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SerialPort_GetPort_Num_Name
   printcolor r "Please refer above list, input the port index number as listed above as 'PortIndex= ??'"
   printcolor w "Input com port 1 name you need to test"
   read -p "Port 1 Index = " port1_number
@@ -329,7 +329,7 @@ PortToPort() {
       "STOPBIT: $stopbit_default"
     )
     title_list b mesg[@]
-    launch_command "sudo ./idll-test.exe --serial-port1 $port1 --serial-port2 $port2 --BAUDRATE $baudrate_default --DATABIT $databit_default --FLOWCTRL $flowctrl_default --PARITYBIT $paritybit_default --STOPBIT $stopbit_default --SERIAL_WRITE $data_default --READ_LEN $read_len_default --LOOP 1 --READ_INTERVAL $read_interval_default -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SerialPort_RW"
+    launch_command "sudo ./idll-test"$executable" --serial-port1 $port1 --serial-port2 $port2 --BAUDRATE $baudrate_default --DATABIT $databit_default --FLOWCTRL $flowctrl_default --PARITYBIT $paritybit_default --STOPBIT $stopbit_default --SERIAL_WRITE $data_default --READ_LEN $read_len_default --LOOP 1 --READ_INTERVAL $read_interval_default -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SerialPort_RW"
     compare_result "$result" "passed"
 
   done
@@ -352,7 +352,7 @@ PortToPort() {
       "STOPBIT: $stopbit_default"
     )
     title_list b mesg[@]
-    launch_command "sudo ./idll-test.exe --serial-port1 $port1 --serial-port2 $port2 --BAUDRATE $baudrate_default --DATABIT $databit_default --FLOWCTRL $flowctrl_default --PARITYBIT $paritybit_default --STOPBIT $stopbit_default --SERIAL_WRITE $data_default --READ_LEN $read_len_default --LOOP 1 --READ_INTERVAL $read_interval_default -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SerialPort_RW"
+    launch_command "sudo ./idll-test"$executable" --serial-port1 $port1 --serial-port2 $port2 --BAUDRATE $baudrate_default --DATABIT $databit_default --FLOWCTRL $flowctrl_default --PARITYBIT $paritybit_default --STOPBIT $stopbit_default --SERIAL_WRITE $data_default --READ_LEN $read_len_default --LOOP 1 --READ_INTERVAL $read_interval_default -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SerialPort_RW"
     compare_result "$result" "passed"
 
   done
@@ -383,12 +383,12 @@ PinFeature() {
     )
 
     title_list b mesg[@]
-    launch_command "sudo ./idll-test.exe --serial-port $port --signal-mask $mask_default --signal-value $i -- --EBOARD_TYPE EBOARD_ADi_"$board" --section adiSerialSetSignal [ADiDLL][LEC1][RAWCOM][SIGNAL]"
+    launch_command "sudo ./idll-test"$executable" --serial-port $port --signal-mask $mask_default --signal-value $i -- --EBOARD_TYPE EBOARD_ADi_"$board" --section adiSerialSetSignal [ADiDLL][LEC1][RAWCOM][SIGNAL]"
     compare_result "$result" "signal=0x$i"
     compare_result "$result" "mask=0x$mask_default"
 
     title b "Confirm each pin status"
-    launch_command "sudo ./idll-test.exe --serial-port $port -- --EBOARD_TYPE EBOARD_ADi_"$board" --section adiSerialGetSignal [ADiDLL][LEC1][RAWCOM][SIGNAL]"
+    launch_command "sudo ./idll-test"$executable" --serial-port $port -- --EBOARD_TYPE EBOARD_ADi_"$board" --section adiSerialGetSignal [ADiDLL][LEC1][RAWCOM][SIGNAL]"
 
     case $i in
     0)
@@ -447,15 +447,15 @@ PinFeature() {
     title_list b mesg[@]
 
     #reset each pin status before mask task
-    sudo ./idll-test.exe --serial-port $port --signal-mask $mask_default --signal-value 0 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section adiSerialSetSignal [ADiDLL][LEC1][RAWCOM][SIGNAL]
+    sudo ./idll-test"$executable" --serial-port $port --signal-mask $mask_default --signal-value 0 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section adiSerialSetSignal [ADiDLL][LEC1][RAWCOM][SIGNAL]
     #start to test mask value
-    launch_command "sudo ./idll-test.exe --serial-port $port --signal-mask $i --signal-value $set_signal_default -- --EBOARD_TYPE EBOARD_ADi_"$board" --section adiSerialSetSignal [ADiDLL][LEC1][RAWCOM][SIGNAL]"
+    launch_command "sudo ./idll-test"$executable" --serial-port $port --signal-mask $i --signal-value $set_signal_default -- --EBOARD_TYPE EBOARD_ADi_"$board" --section adiSerialSetSignal [ADiDLL][LEC1][RAWCOM][SIGNAL]"
 
     compare_result "$result" "signal=0x$set_signal_default"
     compare_result "$result" "mask=0x$i"
 
     title b "Confirm each pin status"
-    launch_command "sudo ./idll-test.exe --serial-port $port -- --EBOARD_TYPE EBOARD_ADi_"$board" --section adiSerialGetSignal [ADiDLL][LEC1][RAWCOM][SIGNAL]"
+    launch_command "sudo ./idll-test"$executable" --serial-port $port -- --EBOARD_TYPE EBOARD_ADi_"$board" --section adiSerialGetSignal [ADiDLL][LEC1][RAWCOM][SIGNAL]"
 
     case $i in
     0)

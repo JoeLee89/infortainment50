@@ -5,8 +5,8 @@ source ./common_func.sh
 #===============================================================
 PicEvent() {
   while true; do
-    print_command "sudo ./idll-test.exe -- --EBOARD_TYPE EBOARD_ADi_"$board" --section PIC_GetPICEvent_and_DisplayEventTime"
-    sudo ./idll-test.exe -- --EBOARD_TYPE EBOARD_ADi_"$board" --section PIC_GetPICEvent_and_DisplayEventTime
+    print_command "sudo ./idll-test"$executable" -- --EBOARD_TYPE EBOARD_ADi_"$board" --section PIC_GetPICEvent_and_DisplayEventTime"
+    sudo ./idll-test"$executable" -- --EBOARD_TYPE EBOARD_ADi_"$board" --section PIC_GetPICEvent_and_DisplayEventTime
 
     read -p "[q] to exit, or enter key to loop test PIC event" input
     if [ "$input" == "q" ]; then
@@ -24,8 +24,8 @@ PicEvent() {
 alarm_compare_set_get(){
     # to compare setting alarm time with the result getting value from pic alarm time are correct
     #==============================================================================
-    print_command "sudo ./idll-test.exe -- --EBOARD_TYPE EBOARD_ADi_"$board" --section PIC_RTC_ALARM_GET_manual [PIC][RTC][ALARM][MANUAL]"
-    pic_alarm_get=$(sudo ./idll-test.exe -- --EBOARD_TYPE EBOARD_ADi_"$board" --section PIC_RTC_ALARM_GET_manual [PIC][RTC][ALARM][MANUAL] )
+    print_command "sudo ./idll-test"$executable" -- --EBOARD_TYPE EBOARD_ADi_"$board" --section PIC_RTC_ALARM_GET_manual [PIC][RTC][ALARM][MANUAL]"
+    pic_alarm_get=$(sudo ./idll-test"$executable" -- --EBOARD_TYPE EBOARD_ADi_"$board" --section PIC_RTC_ALARM_GET_manual [PIC][RTC][ALARM][MANUAL] )
     echo "$pic_alarm_get"
 #    RTC=$(echo "$pic_alarm_get" | grep -i "RTC time" )
     alarm_get_time=$(echo "$pic_alarm_get" | grep -i "rtc alarm")
@@ -74,12 +74,12 @@ PicRtcAlarm(){
     printcolor r "Type 0: only event/ 1: power button trigger"
     read -p "Trigger mode= " input
 
-    print_command "sudo ./idll-test.exe --pic-alarm_seconds $key -- --EBOARD_TYPE EBOARD_ADi_"$board" --section PIC_RTC_ALARM_SET_manual [PIC][RTC][ALARM][MANUAL]"
-    pic_alarm_set=$(sudo ./idll-test.exe --pic-alarm_seconds $key -- --EBOARD_TYPE EBOARD_ADi_"$board" --section PIC_RTC_ALARM_SET_manual [PIC][RTC][ALARM][MANUAL])
+    print_command "sudo ./idll-test"$executable" --pic-alarm_seconds $key -- --EBOARD_TYPE EBOARD_ADi_"$board" --section PIC_RTC_ALARM_SET_manual [PIC][RTC][ALARM][MANUAL]"
+    pic_alarm_set=$(sudo ./idll-test"$executable" --pic-alarm_seconds $key -- --EBOARD_TYPE EBOARD_ADi_"$board" --section PIC_RTC_ALARM_SET_manual [PIC][RTC][ALARM][MANUAL])
     echo "$pic_alarm_set"
 
-    print_command "sudo ./idll-test.exe --rtc-alarm-conf $input -- --EBOARD_TYPE EBOARD_ADi_"$board" --section PIC_RTC_ALARM_CONF_SET_manual [PIC][RTC][ALARM][MANUAL]"
-    sudo ./idll-test.exe --rtc-alarm-conf $input -- --EBOARD_TYPE EBOARD_ADi_"$board" --section PIC_RTC_ALARM_CONF_SET_manual [PIC][RTC][ALARM][MANUAL]
+    print_command "sudo ./idll-test"$executable" --rtc-alarm-conf $input -- --EBOARD_TYPE EBOARD_ADi_"$board" --section PIC_RTC_ALARM_CONF_SET_manual [PIC][RTC][ALARM][MANUAL]"
+    sudo ./idll-test"$executable" --rtc-alarm-conf $input -- --EBOARD_TYPE EBOARD_ADi_"$board" --section PIC_RTC_ALARM_CONF_SET_manual [PIC][RTC][ALARM][MANUAL]
 
     title b "Confirm if RTC alarm time setting is correct..."
     alarm_compare_set_get
@@ -93,7 +93,7 @@ PicRtcAlarm(){
     #confirm alarm config setting if both setting/getting match
     #==============================================================================
     title b "Get PIC alarm behavior setting"
-    launch_command "sudo ./idll-test.exe -- --EBOARD_TYPE EBOARD_ADi_"$board" --section PIC_RTC_ALARM_CONF_GET_manual [PIC][RTC][ALARM][MANUAL]"
+    launch_command "sudo ./idll-test"$executable" -- --EBOARD_TYPE EBOARD_ADi_"$board" --section PIC_RTC_ALARM_CONF_GET_manual [PIC][RTC][ALARM][MANUAL]"
     compare_result "$result" "Current RTC Alarm Configuration is '$input'"
 
     #check if the trigger time match the setting alarm time from pic event
@@ -103,7 +103,7 @@ PicRtcAlarm(){
     #to get how many event related to rtc alarm
     confirm_pic_message "rtc_alarm" "newest_unread" "255" ""
 
-    pic_alarm_get=$(sudo ./idll-test.exe -- --EBOARD_TYPE EBOARD_ADi_"$board" --section PIC_RTC_ALARM_GET_manual [PIC][RTC][ALARM][MANUAL])
+    pic_alarm_get=$(sudo ./idll-test"$executable" -- --EBOARD_TYPE EBOARD_ADi_"$board" --section PIC_RTC_ALARM_GET_manual [PIC][RTC][ALARM][MANUAL])
 
     for (( i = 0; i < pic_log_filter_amount; i++ )); do
       result=$(confirm_pic_message "rtc_alarm" "newest_unread" "0" "")
@@ -154,8 +154,8 @@ PicRtcAlarm_Callback() {
     printcolor w "Set alarm time"
     read -p "seconds= " time
 
-    print_command "sudo ./idll-test.exe --rtc-alarm-conf $config --pic-alarm_seconds $time -- --EBOARD_TYPE EBOARD_ADi_"$board" --section Callback_PIC_RtcAlarm_Manual [CALLBACK][PIC][MANU]"
-    sudo ./idll-test.exe --rtc-alarm-conf $config --pic-alarm_seconds $time -- --EBOARD_TYPE EBOARD_ADi_"$board" --section Callback_PIC_RtcAlarm_Manual [CALLBACK][PIC][MANU]
+    print_command "sudo ./idll-test"$executable" --rtc-alarm-conf $config --pic-alarm_seconds $time -- --EBOARD_TYPE EBOARD_ADi_"$board" --section Callback_PIC_RtcAlarm_Manual [CALLBACK][PIC][MANU]"
+    sudo ./idll-test"$executable" --rtc-alarm-conf $config --pic-alarm_seconds $time -- --EBOARD_TYPE EBOARD_ADi_"$board" --section Callback_PIC_RtcAlarm_Manual [CALLBACK][PIC][MANU]
 
     read -p "[q] to exit loop RTC alarm callback test, or enter key to repeat test " leave
 

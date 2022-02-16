@@ -3,13 +3,13 @@ source ./common_func.sh
 
 sram_info(){
   #before process , it needs to reset sram mirror as none mirror
-  temp=$(sudo ./idll-test.exe --sram-read 1:0:1 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SRAM_Manual_read)
+  temp=$(sudo ./idll-test"$executable" --sram-read 1:0:1 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SRAM_Manual_read)
 
-  bank=$(sudo ./idll-test.exe --SOURCE_BANK 0x0 --DEST_BANK 0x1 --ADDRESS 0x0 --LENGTH 0x1 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SramBankCompareManual | grep -i "sram bank" | sed 's/SRAM Bank\[Number:Size\]\=\[0x//g' | sed 's/:0x[0-9]*]//g' | sed 's/\s//g')
+  bank=$(sudo ./idll-test"$executable" --SOURCE_BANK 0x0 --DEST_BANK 0x1 --ADDRESS 0x0 --LENGTH 0x1 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SramBankCompareManual | grep -i "sram bank" | sed 's/SRAM Bank\[Number:Size\]\=\[0x//g' | sed 's/:0x[0-9]*]//g' | sed 's/\s//g')
   #display each bank capacity in hex unit
-  bank_capacity_hex=$(sudo ./idll-test.exe --SOURCE_BANK 0x0 --DEST_BANK 0x1 --ADDRESS 0x0 --LENGTH 0x1 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SramBankCompareManual | grep -i "sram bank" | sed 's/SRAM Bank\[Number:Size\]\=\[0x//g' | sed 's/[0-9]:0x//g' | sed 's/\]//g' | sed 's/\s//g')
+  bank_capacity_hex=$(sudo ./idll-test"$executable" --SOURCE_BANK 0x0 --DEST_BANK 0x1 --ADDRESS 0x0 --LENGTH 0x1 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SramBankCompareManual | grep -i "sram bank" | sed 's/SRAM Bank\[Number:Size\]\=\[0x//g' | sed 's/[0-9]:0x//g' | sed 's/\]//g' | sed 's/\s//g')
 
-  bank_amount=$(sudo ./idll-test.exe --SOURCE_BANK 0x0 --DEST_BANK 0x1 --ADDRESS 0x0 --LENGTH 0x1 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SramBankCompareManual | grep -i "sram bank" | sed 's/SRAM Bank\[Number:Size\]\=\[0x//g' | sed 's/\s//g')
+  bank_amount=$(sudo ./idll-test"$executable" --SOURCE_BANK 0x0 --DEST_BANK 0x1 --ADDRESS 0x0 --LENGTH 0x1 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SramBankCompareManual | grep -i "sram bank" | sed 's/SRAM Bank\[Number:Size\]\=\[0x//g' | sed 's/\s//g')
 
 #  #display how many bank
   bank_amount=$(echo ${bank_amount:0:1})
@@ -29,7 +29,7 @@ sram_info(){
 
 
   #display sram capacity in dec unit
-  address=$(sudo ./idll-test.exe -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SRAM_Capacity | grep -i 'SRAM size' | sed 's/SRAM size: //g' | sed 's/\/r//g' | sed 's/\s//g' |sed 's/]//g')
+  address=$(sudo ./idll-test"$executable" -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SRAM_Capacity | grep -i 'SRAM size' | sed 's/SRAM size: //g' | sed 's/\/r//g' | sed 's/\s//g' |sed 's/]//g')
 
   #display sram capacity in dec unit
 #  address=$(echo ${address:0:8})
@@ -63,17 +63,19 @@ SramSyncVsync_Repeat(){
   read -p ""
 
   for (( i = 0; i < 10; i++ )); do
-    title b "Async sram test (repeat 10 times)"
-    launch_command "sudo ./idll-test.exe -- --EBOARD_TYPE EBOARD_ADi_"$board" --section ASYNC_SRAM"
+    title b "Async/sync sram test (repeat 10 times)"
+#    launch_command "sudo ./idll-test"$executable" -- --EBOARD_TYPE EBOARD_ADi_"$board" --section ASYNC_SRAM"
+    launch_command "sudo ./idll-test"$executable" -- --EBOARD_TYPE EBOARD_ADi_LEC1 --section SRAM_AutoVerify"
     verify_result "$result"
-
-    title b "Sync sram test (repeat 10 times)"
-    launch_command "sudo ./idll-test.exe -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SYNC_SRAM"
+    launch_command "sudo ./idll-test"$executable" -- --EBOARD_TYPE EBOARD_ADi_LEC1 --section SRAM_BankCopy"
+    verify_result "$result"
+    launch_command "sudo ./idll-test"$executable" -- --EBOARD_TYPE EBOARD_ADi_LEC1 --section SRAM_BankCompare"
+    verify_result "$result"
+    launch_command "sudo ./idll-test"$executable" -- --EBOARD_TYPE EBOARD_ADi_LEC1 --section SRAM_CalculateCRC32"
     verify_result "$result"
 
     if [ "$status" == "fail" ]; then
       break
-
     fi
 
   done
@@ -87,12 +89,13 @@ SramAutoRandomSame(){
   read -p "enter key to test..."
 
   for (( i = 0; i < 10; i++ )); do
-    title b "Same pattern date test (repeat 10 times)"
+    title b "Same/random pattern date test (repeat 10 times)"
+    title b "times= $i"
 
-    launch_command "sudo ./idll-test.exe -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SRAM_Same_Pattern_0xA5"
+    launch_command "sudo ./idll-test"$executable" -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SRAM_Same_Pattern_0xA5"
     verify_result "$result"
 
-    launch_command "sudo ./idll-test.exe -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SRAM_Random_Pattern"
+    launch_command "sudo ./idll-test"$executable" -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SRAM_Random_Pattern"
     verify_result "$result"
 
     if [ "$status" == "fail" ]; then
@@ -108,7 +111,7 @@ SramAutoRandomSame(){
 SramCapacity(){
 #  sram_info
   title b "SRAM capacity check, while set it sram in mirror 1"
-  launch_command "sudo ./idll-test.exe -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SRAM_Capacity"
+  launch_command "sudo ./idll-test"$executable" -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SRAM_Capacity"
 #  sram_info
   printcolor y "sram size = $totalsize"
   printcolor y "sram bank amount = $bank_amount"
@@ -133,12 +136,12 @@ write_wrong_address(){
   #set up the third bank, because it is used only front 2 banks for mirror mode, no matter how the mirror 1 or 3 is.
   address=${bank_address[2]}
   title b "Now read the address out of the define in mode$1 : $address"
-  launch_command "sudo ./idll-test.exe --sram-read $1:$address:1 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SRAM_Manual_read"
+  launch_command "sudo ./idll-test"$executable" --sram-read $1:$address:1 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SRAM_Manual_read"
   compare_result "$result" "failed"
 
   echo ""
   title b "Now write the address out of the define in mode$1 : $address"
-  launch_command "sudo ./idll-test.exe --sram-write $1:$address:255 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SRAM_Manual_write"
+  launch_command "sudo ./idll-test"$executable" --sram-write $1:$address:255 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SRAM_Manual_write"
   compare_result "$result" "failed"
 }
 #===============================================================
@@ -167,7 +170,7 @@ Sram_Mirror_Write(){
 
   number=$((4*size))
   read -n $number data < "$file"
-  launch_command "./idll-test.exe --sram-write $mirror_mode:$address:$data -- --EBOARD_TYPE EBOARD_ADi_$board --section SRAM_Manual_write"
+  launch_command "./idll-test"$executable" --sram-write $mirror_mode:$address:$data -- --EBOARD_TYPE EBOARD_ADi_$board --section SRAM_Manual_write"
   if [[ "$result" =~ $size_mes ]]; then
         title b  "Sram capacity check PASS"
       else
@@ -193,15 +196,15 @@ Sram_Mirror_Read(){
   read_data=${readdata[*]}
   read_data=$(echo "$read_data" | sed 's/\s//g')
 
-  launch_command "./idll-test.exe --sram-read $mode:$address:$size -- --EBOARD_TYPE EBOARD_ADi_$board --section SRAM_Manual_read"
+  launch_command "./idll-test"$executable" --sram-read $mode:$address:$size -- --EBOARD_TYPE EBOARD_ADi_$board --section SRAM_Manual_read"
   compare_result "$(echo "$result" | sed 's/\s//g')" "$read_data"
 
 }
 
 Sram_Bank_Check(){
   #display each bank capacity in hex unit
-  bank_capacity_hex_02=$(sudo ./idll-test.exe --SOURCE_BANK 0x0 --DEST_BANK 0x1 --ADDRESS 0x0 --LENGTH 0x1 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SramBankCompareManual | grep -i "sram bank" | sed 's/SRAM Bank\[Number:Size\]\=\[0x//g' | sed 's/[0-9]:0x//g' | sed 's/\]//g' | sed 's/\s//g')
-  bank_amount_02=$(sudo ./idll-test.exe --SOURCE_BANK 0x0 --DEST_BANK 0x1 --ADDRESS 0x0 --LENGTH 0x1 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SramBankCompareManual | grep -i "sram bank" | sed 's/SRAM Bank\[Number:Size\]\=\[0x//g' | sed 's/\s//g')
+  bank_capacity_hex_02=$(sudo ./idll-test"$executable" --SOURCE_BANK 0x0 --DEST_BANK 0x1 --ADDRESS 0x0 --LENGTH 0x1 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SramBankCompareManual | grep -i "sram bank" | sed 's/SRAM Bank\[Number:Size\]\=\[0x//g' | sed 's/[0-9]:0x//g' | sed 's/\]//g' | sed 's/\s//g')
+  bank_amount_02=$(sudo ./idll-test"$executable" --SOURCE_BANK 0x0 --DEST_BANK 0x1 --ADDRESS 0x0 --LENGTH 0x1 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SramBankCompareManual | grep -i "sram bank" | sed 's/SRAM Bank\[Number:Size\]\=\[0x//g' | sed 's/\s//g')
 
 #  #display how many bank
   bank_amount_02=$(echo ${bank_amount:0:1})
@@ -308,11 +311,11 @@ BadParameter(){
   read -p ""
 
   command_line=(
-    "sudo ./idll-test.exe --sram-write 1:100000000000:255/255/255 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SRAM_Manual_write"
-    "sudo ./idll-test.exe --sram-write 1:10:abcdef@/255/255 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SRAM_Manual_write"
-    "sudo ./idll-test.exe --sram-read 1:100000000:3 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SRAM_Manual_read"
-    "sudo ./idll-test.exe --sram-read 1:100000000:3 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SRAM_Manual_read"
-    "sudo ./idll-test.exe --sram-read 5:1:3 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SRAM_Manual_read"
+    "sudo ./idll-test"$executable" --sram-write 1:100000000000:255/255/255 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SRAM_Manual_write"
+    "sudo ./idll-test"$executable" --sram-write 1:10:abcdef@/255/255 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SRAM_Manual_write"
+    "sudo ./idll-test"$executable" --sram-read 1:100000000:3 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SRAM_Manual_read"
+    "sudo ./idll-test"$executable" --sram-read 1:100000000:3 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SRAM_Manual_read"
+    "sudo ./idll-test"$executable" --sram-read 5:1:3 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SRAM_Manual_read"
   )
 
   for command in "${command_line[@]}";do
@@ -348,8 +351,8 @@ sram_write_read_iterate(){
       )
       title_list b mesg[@]
 
-      Sram_Mirror_Write "$mirror_mode" "$multiple" "$r" "$addr" "dummy_write_00.txt"
-      Sram_Mirror_Read "$mirror_mode" "$addr" "$r" "dummy_read_00.txt"
+      Sram_Mirror_Write "$mirror_mode" "$multiple" "$r" "$addr" "dummy_write_01.txt"
+      Sram_Mirror_Read "$mirror_mode" "$addr" "$r" "dummy_read_01.txt"
     done
   done
 }
@@ -373,8 +376,8 @@ Write_with_verify(){
 #    read -p "enter key to continue..."
 #    for i in $(seq 1 $stepping $addresss); do
 #
-#      result=$(sudo ./idll-test.exe --ADDRESS 0x0 --LENGTH $i --SRAM-DATA-FILE="./fakefile.txt" -- --EBOARD_TYPE EBOARD_ADi_"$board" --section $m)
-#      print_command "sudo ./idll-test.exe --ADDRESS 0x0 --LENGTH $i --SRAM-DATA-FILE="./fakefile.txt" -- --EBOARD_TYPE EBOARD_ADi_"$board" --section $m"
+#      result=$(sudo ./idll-test"$executable" --ADDRESS 0x0 --LENGTH $i --SRAM-DATA-FILE="./fakefile.txt" -- --EBOARD_TYPE EBOARD_ADi_"$board" --section $m)
+#      print_command "sudo ./idll-test"$executable" --ADDRESS 0x0 --LENGTH $i --SRAM-DATA-FILE="./fakefile.txt" -- --EBOARD_TYPE EBOARD_ADi_"$board" --section $m"
 #      printcolor w "$result"
 #      verify_result "$result"
 #
@@ -392,8 +395,8 @@ Write_with_verify(){
     while true; do
 
       title b "Test sram with verify ($m) : address get higher while data length smaller "
-      result=$( sudo ./idll-test.exe --ADDRESS $((addresss-1)) --LENGTH $length --SRAM-DATA-FILE="./fakefile.txt" -- --EBOARD_TYPE EBOARD_ADi_"$board" --section $m )
-      print_command "sudo ./idll-test.exe --ADDRESS $((addresss-1)) --LENGTH $length --SRAM-DATA-FILE="./fakefile.txt" -- --EBOARD_TYPE EBOARD_ADi_"$board" --section $m"
+      result=$( sudo ./idll-test"$executable" --ADDRESS $((addresss-1)) --LENGTH $length --SRAM-DATA-FILE="./fakefile.txt" -- --EBOARD_TYPE EBOARD_ADi_"$board" --section $m )
+      print_command "sudo ./idll-test"$executable" --ADDRESS $((addresss-1)) --LENGTH $length --SRAM-DATA-FILE="./fakefile.txt" -- --EBOARD_TYPE EBOARD_ADi_"$board" --section $m"
       printcolor w "$result"
       verify_result "$result"
 
@@ -425,8 +428,8 @@ bank_copy(){
       for (( i = 0; i < bank_capacity_hex; i=i+10000 )); do
 
         title b "Bank copy ($k) : data length setting from small to bigger + all bank compare"
-        print_command "sudo ./idll-test.exe --ADDRESS 0x0 --LENGTH 0x$i --SOURCE_BANK 0x$m --DEST_BANK 0x$((m+1)) -- --EBOARD_TYPE EBOARD_ADi_"$board" --section $k"
-        result=$(sudo ./idll-test.exe --ADDRESS 0x0 --LENGTH 0x$i --SOURCE_BANK 0x$m --DEST_BANK 0x$((m+1)) -- --EBOARD_TYPE EBOARD_ADi_"$board" --section $k)
+        print_command "sudo ./idll-test"$executable" --ADDRESS 0x0 --LENGTH 0x$i --SOURCE_BANK 0x$m --DEST_BANK 0x$((m+1)) -- --EBOARD_TYPE EBOARD_ADi_"$board" --section $k"
+        result=$(sudo ./idll-test"$executable" --ADDRESS 0x0 --LENGTH 0x$i --SOURCE_BANK 0x$m --DEST_BANK 0x$((m+1)) -- --EBOARD_TYPE EBOARD_ADi_"$board" --section $k)
 
         printcolor w "$result"
         verify_result "$result"
@@ -447,11 +450,11 @@ bank_copy(){
 bank_reset(){
   title b "Now make both banks sync up first."
   if [ "$bank" == "4" ]; then
-    temp=$(sudo ./idll-test.exe --ADDRESS 0x0 --LENGTH 0x$bank_capacity_hex --SOURCE_BANK 0x0 --DEST_BANK 0x1 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SramBankCopyManual)
-    temp=$(sudo ./idll-test.exe --ADDRESS 0x0 --LENGTH 0x$bank_capacity_hex --SOURCE_BANK 0x1 --DEST_BANK 0x2 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SramBankCopyManual)
-    temp=$(sudo ./idll-test.exe --ADDRESS 0x0 --LENGTH 0x$bank_capacity_hex --SOURCE_BANK 0x2 --DEST_BANK 0x3 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SramBankCopyManual)
+    temp=$(sudo ./idll-test"$executable" --ADDRESS 0x0 --LENGTH 0x$bank_capacity_hex --SOURCE_BANK 0x0 --DEST_BANK 0x1 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SramBankCopyManual)
+    temp=$(sudo ./idll-test"$executable" --ADDRESS 0x0 --LENGTH 0x$bank_capacity_hex --SOURCE_BANK 0x1 --DEST_BANK 0x2 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SramBankCopyManual)
+    temp=$(sudo ./idll-test"$executable" --ADDRESS 0x0 --LENGTH 0x$bank_capacity_hex --SOURCE_BANK 0x2 --DEST_BANK 0x3 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SramBankCopyManual)
   else
-    temp=$(sudo ./idll-test.exe --ADDRESS 0x0 --LENGTH 0x$bank_capacity_hex --SOURCE_BANK 0x0 --DEST_BANK 0x1 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SramBankCopyManual)
+    temp=$(sudo ./idll-test"$executable" --ADDRESS 0x0 --LENGTH 0x$bank_capacity_hex --SOURCE_BANK 0x0 --DEST_BANK 0x1 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SramBankCopyManual)
   fi
 }
 
@@ -467,8 +470,8 @@ bank_compare(){
 #    for (( m = 0; m < $((bank-1)); m++ )); do
 #      for (( i = 0; i < bank_capacity_hex; i=i+10000 )); do
 #        title b "Bank copy ($k) : Data length setting from small to bigger + all bank compare"
-#        result=$(sudo ./idll-test.exe --SOURCE_BANK 0x$m --DEST_BANK 0x$((m+1)) --ADDRESS 0x$i --LENGTH 0x$((bank_capacity_hex-i)) -- --EBOARD_TYPE EBOARD_ADi_"$board" --section $k)
-#        print_command "sudo ./idll-test.exe --SOURCE_BANK 0x$m --DEST_BANK 0x$((m+1)) --ADDRESS 0x$i --LENGTH 0x$((bank_capacity_hex-i)) -- --EBOARD_TYPE EBOARD_ADi_"$board" --section $k"
+#        result=$(sudo ./idll-test"$executable" --SOURCE_BANK 0x$m --DEST_BANK 0x$((m+1)) --ADDRESS 0x$i --LENGTH 0x$((bank_capacity_hex-i)) -- --EBOARD_TYPE EBOARD_ADi_"$board" --section $k)
+#        print_command "sudo ./idll-test"$executable" --SOURCE_BANK 0x$m --DEST_BANK 0x$((m+1)) --ADDRESS 0x$i --LENGTH 0x$((bank_capacity_hex-i)) -- --EBOARD_TYPE EBOARD_ADi_"$board" --section $k"
 #        printcolor w "$result"
 #        verify_result "$result"
 #      done
@@ -494,11 +497,11 @@ bank_compare(){
       #write data in bank0
       ran=$(shuf -i 0-255 -n 1)
       title b "Now trying to write data in address: 0x$i"
-      print_command "sudo ./idll-test.exe --sram-write 1:0x$i:$ran -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SRAM_Manual_write"
-      sudo ./idll-test.exe --sram-write 1:0x$i:"$ran" -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SRAM_Manual_write
+      print_command "sudo ./idll-test"$executable" --sram-write 1:0x$i:$ran -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SRAM_Manual_write"
+      sudo ./idll-test"$executable" --sram-write 1:0x$i:"$ran" -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SRAM_Manual_write
 
 
-      launch_command "sudo ./idll-test.exe --SOURCE_BANK 0x0 --DEST_BANK 0x1 --ADDRESS 0x0 --LENGTH 0x$bank_capacity_hex -- --EBOARD_TYPE EBOARD_ADi_"$board" --section $h"
+      launch_command "sudo ./idll-test"$executable" --SOURCE_BANK 0x0 --DEST_BANK 0x1 --ADDRESS 0x0 --LENGTH 0x$bank_capacity_hex -- --EBOARD_TYPE EBOARD_ADi_"$board" --section $h"
       verify_result "$result"
 
 
@@ -522,8 +525,8 @@ bank_compare(){
 
   #################################################################
   #make bank data different from above test to prevent both bank data from being the same.
-  sudo ./idll-test.exe --sram-write 1:0:1/2/3 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SRAM_Manual_write
-  sudo ./idll-test.exe --ADDRESS 0x0 --LENGTH 0x"$bank_capacity_hex" --SOURCE_BANK 0x0 --DEST_BANK 0x1 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SramBankCopyManual
+  sudo ./idll-test"$executable" --sram-write 1:0:1/2/3 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SRAM_Manual_write
+  sudo ./idll-test"$executable" --ADDRESS 0x0 --LENGTH 0x"$bank_capacity_hex" --SOURCE_BANK 0x0 --DEST_BANK 0x1 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SramBankCopyManual
 
 }
 
@@ -553,11 +556,11 @@ crc32_caculate(){
       printf  "$content" > temp.txt
 
       #write temp.txt data to sram in specific address
-      sudo ./idll-test.exe --ADDRESS $start_address --LENGTH $length --SRAM-DATA-FILE="temp.txt" -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SramWriteWithVerifyManual
+      sudo ./idll-test"$executable" --ADDRESS $start_address --LENGTH $length --SRAM-DATA-FILE="temp.txt" -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SramWriteWithVerifyManual
 
       title b "Test sram calculate CRC32 ($l)"
       title b "writing data : $m"
-      launch_command "sudo ./idll-test.exe --ADDRESS $start_address --LENGTH $length -- --EBOARD_TYPE EBOARD_ADi_"$board" --section $l"
+      launch_command "sudo ./idll-test"$executable" --ADDRESS $start_address --LENGTH $length -- --EBOARD_TYPE EBOARD_ADi_"$board" --section $l"
       local crc=$(crc32 temp.txt)
       compare_result "$result" "$crc"
 
@@ -587,10 +590,10 @@ crc32_caculate(){
     esac
 
     title b "Try to write all supported capacity in sram, and calculate the all supported capacity crc32"
-    launch_command "sudo ./idll-test.exe --ADDRESS 0x0 --LENGTH $totalsize --SRAM-DATA-FILE="$file" -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SramWriteWithVerifyManual"
-#    print_command "sudo ./idll-test.exe --ADDRESS 0x0 --LENGTH $totalsize --SRAM-DATA-FILE="fake8m.txt" -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SramWriteWithVerifyManual"
-#    sudo ./idll-test.exe --ADDRESS 0x0 --LENGTH $totalsize --SRAM-DATA-FILE="fake8m.txt" -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SramWriteWithVerifyManual
-    launch_command "sudo ./idll-test.exe --ADDRESS 0x0 --LENGTH $totalsize -- --EBOARD_TYPE EBOARD_ADi_"$board" --section $l"
+    launch_command "sudo ./idll-test"$executable" --ADDRESS 0x0 --LENGTH $totalsize --SRAM-DATA-FILE="$file" -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SramWriteWithVerifyManual"
+#    print_command "sudo ./idll-test"$executable" --ADDRESS 0x0 --LENGTH $totalsize --SRAM-DATA-FILE="fake8m.txt" -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SramWriteWithVerifyManual"
+#    sudo ./idll-test"$executable" --ADDRESS 0x0 --LENGTH $totalsize --SRAM-DATA-FILE="fake8m.txt" -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SramWriteWithVerifyManual
+    launch_command "sudo ./idll-test"$executable" --ADDRESS 0x0 --LENGTH $totalsize -- --EBOARD_TYPE EBOARD_ADi_"$board" --section $l"
     compare_result "$result" "$crc"
   done
 
