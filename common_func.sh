@@ -8,6 +8,7 @@ COLOR_BLUE_WD='\e[0;36m'
 COLOR_YELLOW_WD='\e[93m'
 COLOR_GREEN_WD='\e[32m'
 
+os=$(uname -a)
 if [[ "$os" =~ "Microsoft" ]]; then
   executable=".exe"
 else
@@ -15,7 +16,7 @@ else
 fi
 
 for i in "LEC1" "BSEC_BACC" "SC1X" "SA3X"; do
-  os=$(uname -a)
+
   board_init=$(sudo ./idll-test"$executable" -- --EBOARD_TYPE EBOARD_ADi_"$i" --section adiLibInit)
 
   if [[ "$board_init" =~ "detected" ]]; then

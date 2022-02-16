@@ -277,8 +277,9 @@ Brightness(){
       elif [ "$brightness_value" == 100 ]; then
         printcolor r "Note: the LED will stop blinking/ turned LED SOLID ON, while brightness = $brightness_value"
       fi
-
+      printcolor r "Note: LED should keep blinking, while change the brightness setting < 100 and > 0."
       printcolor w "Enter to test brightness setting."
+
       read -p ""
       launch_command "sudo ./idll-test"$executable" --PIN_NUM $led --PERIOD $period --DUTY_CYCLE $duty_cycle -- --EBOARD_TYPE EBOARD_ADi_"$board" --section GPO_LED_SetDoLedBlink"
 #      launch_command "sudo ./idll-test"$executable" --PIN_NUM $led --BLINK 100 --DUTY_CYCLE 50 --BRIGHTNESS $brightness_value -- --EBOARD_TYPE EBOARD_ADi_"$board" --section GPO_LED_Drive_SetBlink"
