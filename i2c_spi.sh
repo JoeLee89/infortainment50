@@ -33,7 +33,7 @@ I2CFreauency() {
     launch_command "sudo ./idll-test"$executable" --I2C_PSCL $all -- --EBOARD_TYPE EBOARD_ADi_"$board" --section Ext_I2C_BUS"
     hz=$((12500000/(all+1)))
     compare_result "$result" "$hz Hz"
-    compare_result "$result" "I2C Pre-Scale is : $all"
+    compare_result "$(echo "$result" | sed 's/\s//g' )" "I2CPre-Scaleis:$all"
 
   done
 

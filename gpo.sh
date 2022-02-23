@@ -32,16 +32,17 @@ Blink() {
   #test basic blink / period test
   title b "Reset blinking function...   reset all port to high, before test... "
   for i in $(seq 0 $led_amount); do
-    launch_command "sudo ./idll-test"$executable" --PIN_NUM $i --PIN_VAL true -- --EBOARD_TYPE EBOARD_ADi_"$board" --section GPO_LED_SetPin"
-    launch_command "sudo ./idll-test"$executable" --LED_NUM $i --BRIGHTNESS 10 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section LEC1_DO_Brightness_with_parameter [ADiDLL][DO][Brightness]"
+
+    temp=$(sudo ./idll-test"$executable" --PIN_NUM $i --PIN_VAL true -- --EBOARD_TYPE EBOARD_ADi_"$board" --section GPO_LED_SetPin)
+    temp=$(sudo ./idll-test"$executable" --LED_NUM $i --BRIGHTNESS 10 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section LEC1_DO_Brightness_with_parameter [ADiDLL][DO][Brightness])
   done
 
 
-  title b "Change DUTY CYCLE value"
+  title b "Change DUTY CYCLE value test"
   for all in $(seq 0 $led_amount); do
 
     for duty_cyclell in "${duty_cycle_value[@]}"; do
-      title r "Note: be sure the brightness should not be changed during test."
+      title r "Note: be sure the brightness should be changed to 100, while blinking/period test."
       printf "${COLOR_BLUE_WD}LED: $all ${COLOR_REST}\n"
       printf "${COLOR_BLUE_WD}Duty cycle:${COLOR_RED_WD} $duty_cyclell ${COLOR_REST}\n"
       printf "${COLOR_BLUE_WD}period (0=disable blinking): $period = $period ms ${COLOR_REST}\n"
@@ -85,12 +86,11 @@ Blink() {
 
     #Change PERIOD value
     ######################################################
-    printf "${COLOR_RED_WD}Change PERIOD value ${COLOR_REST}\n"
-    printf "${COLOR_RED_WD}======================= ${COLOR_REST}\n\n"
+    title b "Change PERIOD value test"
     read -p "Enter to continue..." continue
 
     for perioddd in "${period_verify_value[@]}"; do
-      title r "Note: be sure the brightness should not be changed during test."
+      title r "Note: be sure the brightness should be changed to 100, while blinking/period test."
       printf "${COLOR_BLUE_WD}LED: $all ${COLOR_REST}\n"
       printf "${COLOR_BLUE_WD}Duty cycle: $duty_cycle ${COLOR_REST}\n"
       printf "${COLOR_BLUE_WD}period( 0=disable blinking): ${COLOR_RED_WD}$perioddd  = $perioddd ms ${COLOR_REST}\n"

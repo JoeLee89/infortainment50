@@ -23,7 +23,7 @@ LED_set_get(){
 }
 
 LED(){
-  brightness=99
+  brightness=40
   duty_cycle=50
   blink_period=1000
   brightness_verify_value=("100" "99" "70" "50" "30" "10" "1" "0")
@@ -67,6 +67,7 @@ LED(){
       printcolor w "Blinking period: $blink_period ms"
       printcolor r "Duty cycle: $dutycycle"
       printcolor w "=============================================== "
+      printcolor r 'Note: brightness will NOT be changed, while blink/period item testing'
 
       if [ "$dutycycle" == 0 ]; then
         printcolor r "Note: the LED will stop blinking / turned LED OFF, while duty cycle = 0"
@@ -89,6 +90,7 @@ LED(){
       printcolor r "Blinking period: $blink ms"
       printcolor w "Duty cycle: $duty_cycle"
       printcolor w "==============================================="
+      printcolor r 'Note: brightness will NOT be changed, while blink/period item testing'
 
       if [ "$blink" == 0 ]; then
           printcolor r "Note: the LED will stop blinking/ LED SOLID ON, while blinking period = 0"
