@@ -253,7 +253,7 @@ read_data() {
     title_list b "msg[@]"
     compare_result "$result" "$content"
 
-    if [[ "$n" < $((${#write_data[*]} - 1)) ]]; then
+    if [[ "$n" -lt $((${#write_data[*]} - 1)) ]]; then
       ((n++))
     else
       n=0
@@ -293,7 +293,7 @@ main() {
       #the last strings need to be remove, it will add repeated "//" string
       result_data=${command_data:0:$len}
 
-      if [[ "$m" < $((${#write_data[*]} - 1)) ]]; then
+      if [[ "$m" -lt $((${#write_data[*]} - 1)) ]]; then
         ((m++))
       else
         m=0

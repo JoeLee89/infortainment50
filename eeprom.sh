@@ -232,9 +232,12 @@ read_data(){
 
     if [ "$write_data_hexx" == "0" ]; then
       write_data_hexx="00"
+    elif [ "${#write_data_hexx}" -eq 1 ]; then
+      write_data_hexx="0$write_data_hexx"
     fi
+    
 
-    if [ "$p" == 0 ]; then
+    if [ "$p" -eq 0 ]; then
       content=x$write_data_hexx
     else
       content="$content$write_data_hexx"
@@ -242,7 +245,7 @@ read_data(){
 
 
 
-    if [[ "$n" < $((${#write_data[*]}-1)) ]]; then
+    if [[ "$n" -lt $((${#write_data[*]}-1)) ]]; then
       ((n++))
     else
       n=0
@@ -290,7 +293,7 @@ main(){
 #      printf " result=$result_data\n"
 #      printf " temp_list=${temp_list[*]}\n\n"
 
-      if [[ "$m" < $((${#write_data[*]}-1)) ]]; then
+      if [[ "$m" -lt $((${#write_data[*]}-1)) ]]; then
         ((m++))
       else
         m=0
