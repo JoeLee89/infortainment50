@@ -12,7 +12,7 @@ sram_info(){
   bank_amount=$(sudo ./idll-test"$executable" --SOURCE_BANK 0x0 --DEST_BANK 0x1 --ADDRESS 0x0 --LENGTH 0x1 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SramBankCompareManual | grep -i "sram bank" | sed 's/SRAM Bank\[Number:Size\]\=\[0x//g' | sed 's/\s//g')
 
 #  #display how many bank
-  bank_amount=$(echo ${bank_amount:0:1})
+  bank_amount=${bank_amount:0:1}
 
   #incase if the project doesn't support to provide each bank info, it nees manual input info.
   if [[ "$bank_capacity_hex" == "" && "$bank_amount" == "" ]]; then
@@ -23,9 +23,10 @@ sram_info(){
     echo "Please input how many bank is supported: "
     read -p "" amount
     status="true"
+    bank_capacity_hex=$capacity
+    bank_amount=$amount
   fi
-  bank_capacity_hex=$capacity
-  bank_amount=$amount
+
 
 
   #display sram capacity in dec unit
@@ -233,7 +234,7 @@ Sram_Bank_Check(){
 
 Sram_Mirror_1_all(){
   local size mirror_mode multiple address
-  multiple="$bank_amount"
+  multiple=$bank_amount
   address=0
   mirror_mode=$1
 
@@ -351,8 +352,8 @@ sram_write_read_iterate(){
       )
       title_list b mesg[@]
 
-      Sram_Mirror_Write "$mirror_mode" "$multiple" "$r" "$addr" "dummy_write_01.txt"
-      Sram_Mirror_Read "$mirror_mode" "$addr" "$r" "dummy_read_01.txt"
+      Sram_Mirror_Write "$mirror_mode" "$multiple" "$r" "$addr" "dummy_write_02.txt"
+      Sram_Mirror_Read "$mirror_mode" "$addr" "$r" "dummy_read_02.txt"
     done
   done
 }
