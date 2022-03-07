@@ -94,7 +94,7 @@ Time_out() {
   title r "Be noted!! If no any message return, after 10 sec. It should be considered as failed."
   read -p "Press enter, when you are ready."
 
-  for mode in "constant" "mulplier" "interval"; do
+  for mode in "constant" "mulplier" ; do
 
     before=$(date '+%s')
     case $mode in
@@ -109,13 +109,7 @@ Time_out() {
         compare_result "$result" "failed"
         after=$(date '+%s')
       ;;
-    "interval")
-      title b "Read Time Out Interval getting/setting test : ${read_interval[0]} ms"
-      printcolor r "Note: DUT will wait until first byte is received, so it's normal behavior, while DUT has no response."
-      printcolor r "Note: So press Ctrl+c to cancel the test, after 10 seconds waiting behavior."
-      launch_command "./idll-test"$executable" --serial-port1 $port1_number --serial-port2 $port2_number --RIT ${read_interval[0]} --RTTC 0 --RTM 0 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SerialPort_RW"
-      after=$(date '+%s')
-      ;;
+
     esac
 
     compare_result "$result" "failed"
@@ -127,6 +121,13 @@ Time_out() {
     fi
 
   done
+  #test with timeout item RIT
+  #=========================================================
+  title b "Read Time Out Interval getting/setting test : ${read_interval[0]} ms"
+  printcolor r "Note: DUT will wait until first byte is received, so it's normal behavior, while DUT has no response."
+  printcolor r "Note: So press Ctrl+c to cancel the test, after 10 seconds waiting behavior."
+  launch_command "./idll-test"$executable" --serial-port1 $port1_number --serial-port2 $port2_number --RIT ${read_interval[0]} --RTTC 0 --RTM 0 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SerialPort_RW"
+
 
 }
 
