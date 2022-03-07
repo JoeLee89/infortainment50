@@ -277,7 +277,7 @@ Brightness(){
       elif [ "$brightness_value" == 100 ]; then
         printcolor r "Note: the LED will stop blinking/ turned LED SOLID ON, while brightness = $brightness_value"
       fi
-      printcolor r "Note: LED should keep blinking, while change the brightness setting < 100 and > 0."
+      printcolor r "Note: LED should stop blinking, while change the brightness setting."
       printcolor w "Enter to test brightness setting."
 
       read -p ""

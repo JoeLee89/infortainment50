@@ -24,8 +24,8 @@ number_random() {
 }
 
 #com_list=("LEC1_COM1" "LEC1_COM2")
-#baudrate=("110" "300" "600" "1200" "2400" "4800" "9600" "14400" "19200" "38400" "56000" "57600" "115200")
-baudrate=("110" "1200" "2400" "4800" "9600" "14400" "19200" "38400" "56000" "57600" "115200")
+baudrate=("110" "300" "600" "1200" "2400" "4800" "9600" "14400" "19200" "38400" "56000" "57600" "115200")
+#baudrate=("110" "1200" "2400" "4800" "9600" "14400" "19200" "38400" "56000" "57600" "115200")
 baudrate_default=115200
 databit=("2" "3" "4")
 databit_default=4
@@ -63,7 +63,7 @@ Time_out() {
   write_mulplier=(500 50 5 0)
   read_constant=(5000 500 5 0)
   read_mulplier=(500 50 5 0)
-  read_interval=(5000 50 5 0)
+  read_interval=(50 0)
 
   #Normal Test
   ###############################
@@ -74,18 +74,18 @@ Time_out() {
     compare_result "$result" "Get ReadTotalTimeoutConstant setting: $value"
   done
 
-  for value in ${read_interval[*]}; do
-    title b "Read Time Out Interval getting/setting test : $value ms"
-    launch_command "./idll-test"$executable" --serial-port1 $port1_number --serial-port2 $port2_number --RIT $value --RTTC 0 --RTM 0 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SerialPort_RW"
-    compare_result "$result" "All tests passed"
-    compare_result "$result" "Get ReadIntervalTimeout setting: $value"
-  done
-
   for value in ${read_mulplier[*]}; do
     title b "Read Time Out Mulplier getting/setting test : $value ms"
     launch_command "./idll-test"$executable" --serial-port1 $port1_number --serial-port2 $port2_number --RIT 0 --RTTC 0 --RTM $value -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SerialPort_RW"
     compare_result "$result" "All tests passed"
     compare_result "$result" "Get ReadTotalTimeoutMultiplier setting: $value"
+  done
+
+  for value in ${read_interval[*]}; do
+    title b "Read Time Out Interval getting/setting test : $value ms"
+    launch_command "./idll-test"$executable" --serial-port1 $port1_number --serial-port2 $port2_number --RIT $value --RTTC 0 --RTM 0 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SerialPort_RW"
+    compare_result "$result" "All tests passed"
+    compare_result "$result" "Get ReadIntervalTimeout setting: $value"
   done
 
   #Test without cable
@@ -111,6 +111,8 @@ Time_out() {
       ;;
     "interval")
       title b "Read Time Out Interval getting/setting test : ${read_interval[0]} ms"
+      printcolor r "Note: DUT will wait until first byte is received, so it's normal behavior, while DUT has no response."
+      printcolor r "Note: So press Ctrl+c to cancel the test, after 10 seconds waiting behavior."
       launch_command "./idll-test"$executable" --serial-port1 $port1_number --serial-port2 $port2_number --RIT ${read_interval[0]} --RTTC 0 --RTM 0 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SerialPort_RW"
       after=$(date '+%s')
       ;;
@@ -281,6 +283,7 @@ Feature() {
       mesg=(
         "Com Port: $com"
         "Data: $data"
+        "Data length:$list"
       )
       title_list b mesg[@]
 

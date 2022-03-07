@@ -97,7 +97,7 @@ Blink() {
   for (( all=0; all < led_amount; all++ )); do
 
     for duty_cyclell in "${duty_cycle_value[@]}"; do
-      title r "Note: be sure the brightness should not be changed during test."
+      title r "Note: be sure the brightness should be changed to supported highest value during test."
       printf "${COLOR_BLUE_WD}LED: $all ${COLOR_REST}\n"
       printf "${COLOR_BLUE_WD}Duty cycle:${COLOR_RED_WD} $duty_cyclell ${COLOR_REST}\n"
       printf "${COLOR_BLUE_WD}period (0=disable blinking): $period = $period ms ${COLOR_REST}\n"
@@ -139,7 +139,7 @@ Blink() {
     read -p "Enter to continue..."
 
     for perioddd in "${period_verify_value[@]}"; do
-      title r "Note: be sure the brightness should not be changed during test."
+      title r "Note: be sure the brightness should be changed to supported highest value during test."
       printf "${COLOR_BLUE_WD}LED: $all ${COLOR_REST}\n"
       printf "${COLOR_BLUE_WD}Duty cycle: $duty_cycle ${COLOR_REST}\n"
       printf "${COLOR_BLUE_WD}period( 0=disable blinking): ${COLOR_RED_WD}$perioddd  = $perioddd ms ${COLOR_REST}\n"
