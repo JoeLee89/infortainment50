@@ -138,7 +138,7 @@ Time_out() {
         title b "Read Time Out Mulplier getting/setting test : ${read_mulplier[0]} ms"
         launch_command "./idll-test$executable --serial-port1 $port1_number --serial-port2 $port2_number --RIT ${read_interval[0]}  --RTTC 0 --RTM $0 --WTTC 0 --WTTM 0  -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SerialPort_RW"
         compare_result "$result" "failed"
-        after=$(date '+%s')
+#        after=$(date '+%s')
       ;;
 
     esac
@@ -213,7 +213,7 @@ Feature() {
       )
       title_list b mesg[@]
 
-      launch_command "sudo ./idll-test"$executable" --serial-port1 $com --serial-port2 $com --BAUDRATE $list --DATABIT $databit_default --FLOWCTRL $flowctrl_default --PARITYBIT $paritybit_default --STOPBIT $stopbit_default --SERIAL_WRITE $data_default --READ_LEN $read_len_default --LOOP 1 --READ_INTERVAL $read_interval_default -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SerialPort_RW"
+      launch_command "sudo ./idll-test$executable --serial-port1 $com --serial-port2 $com --BAUDRATE $list --DATABIT $databit_default --FLOWCTRL $flowctrl_default --PARITYBIT $paritybit_default --STOPBIT $stopbit_default --SERIAL_WRITE $data_default --READ_LEN $read_len_default --LOOP 1 --READ_INTERVAL $read_interval_default -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SerialPort_RW"
       result00=$(echo "$result" | grep -i "baudrate" | sed 's/\s//g')
       compare_result "$result" "passed"
       compare_result "$result00" "baudrate=$list"
@@ -234,7 +234,7 @@ Feature() {
       )
       title_list b mesg[@]
 
-      launch_command "sudo ./idll-test"$executable" --serial-port1 $com --serial-port2 $com --BAUDRATE $baudrate_default --DATABIT $list --FLOWCTRL $flowctrl_default --PARITYBIT $paritybit_default --STOPBIT $stopbit_default --SERIAL_WRITE $data_default --READ_LEN $read_len_default --LOOP 1 --READ_INTERVAL $read_interval_default -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SerialPort_RW"
+      launch_command "sudo ./idll-test$executable --serial-port1 $com --serial-port2 $com --BAUDRATE $baudrate_default --DATABIT $list --FLOWCTRL $flowctrl_default --PARITYBIT $paritybit_default --STOPBIT $stopbit_default --SERIAL_WRITE $data_default --READ_LEN $read_len_default --LOOP 1 --READ_INTERVAL $read_interval_default -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SerialPort_RW"
       result00=$(echo "$result" | grep -i "databit" | sed 's/\s//g')
       compare_result "$result" "passed"
       compare_result "$result00" "databit=$list"
@@ -276,7 +276,7 @@ Feature() {
       )
       title_list b mesg[@]
 
-      launch_command "sudo ./idll-test"$executable" --serial-port1 $com --serial-port2 $com --BAUDRATE $baudrate_default --DATABIT $databit_default --FLOWCTRL $flowctrl_default --PARITYBIT $list --STOPBIT $stopbit_default --SERIAL_WRITE $data_default --READ_LEN $read_len_default --LOOP 1 --READ_INTERVAL $read_interval_default -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SerialPort_RW"
+      launch_command "sudo ./idll-test$executable --serial-port1 $com --serial-port2 $com --BAUDRATE $baudrate_default --DATABIT $databit_default --FLOWCTRL $flowctrl_default --PARITYBIT $list --STOPBIT $stopbit_default --SERIAL_WRITE $data_default --READ_LEN $read_len_default --LOOP 1 --READ_INTERVAL $read_interval_default -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SerialPort_RW"
       result00=$(echo "$result" | grep -i "parity" | sed 's/\s//g')
       compare_result "$result" "passed"
       compare_result "$result00" "parity=$list"
