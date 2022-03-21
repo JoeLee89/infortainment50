@@ -157,7 +157,7 @@ Time_out() {
   title b "Read Time Out Interval getting/setting test : ${read_interval[0]} ms"
   printcolor r "Note: DUT will wait until first byte is received, so it's normal behavior, while DUT has no response."
   printcolor r "Note: So press Ctrl+c to cancel the test, after 10 seconds waiting behavior."
-  launch_command "./idll-test$executable --serial-port1 $port1_number --serial-port2 $port2_number --RIT ${read_interval[0]} --RTTC 0 --RTM 0 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SerialPort_RW"
+  launch_command "./idll-test$executable --serial-port1 $port1_number --serial-port2 $port2_number --RIT ${read_interval[0]}  --RTTC 0 --RTM $0 --WTTC 0 --WTTM 0  -- --EBOARD_TYPE EBOARD_ADi_$board --section SerialPort_RW"
 
 
 }
