@@ -66,13 +66,13 @@ SramSyncVsync_Repeat(){
   for (( i = 0; i < 10; i++ )); do
     title b "Async/sync sram test (repeat 10 times)"
 #    launch_command "sudo ./idll-test"$executable" -- --EBOARD_TYPE EBOARD_ADi_"$board" --section ASYNC_SRAM"
-    launch_command "sudo ./idll-test"$executable" -- --EBOARD_TYPE EBOARD_ADi_LEC1 --section SRAM_AutoVerify"
+    launch_command "sudo ./idll-test"$executable" -- --EBOARD_TYPE EBOARD_ADi_$board --section SRAM_AutoVerify"
     verify_result "$result"
-    launch_command "sudo ./idll-test"$executable" -- --EBOARD_TYPE EBOARD_ADi_LEC1 --section SRAM_BankCopy"
+    launch_command "sudo ./idll-test"$executable" -- --EBOARD_TYPE EBOARD_ADi_$board --section SRAM_BankCopy"
     verify_result "$result"
-    launch_command "sudo ./idll-test"$executable" -- --EBOARD_TYPE EBOARD_ADi_LEC1 --section SRAM_BankCompare"
+    launch_command "sudo ./idll-test"$executable" -- --EBOARD_TYPE EBOARD_ADi_$board --section SRAM_BankCompare"
     verify_result "$result"
-    launch_command "sudo ./idll-test"$executable" -- --EBOARD_TYPE EBOARD_ADi_LEC1 --section SRAM_CalculateCRC32"
+    launch_command "sudo ./idll-test"$executable" -- --EBOARD_TYPE EBOARD_ADi_$board --section SRAM_CalculateCRC32"
     verify_result "$result"
 
     if [ "$status" == "fail" ]; then
@@ -481,44 +481,47 @@ bank_compare(){
 
   ########################################################################
   #write the data in bank 0, try to make 2 banks data different
-  printf "\n\n\n"
+  printf "\n"
   title b "Bank compare : Now try to write data in one of the bank and expect result will be failed."
-  read -p ""
+  read -p "Enter to continue..."
   steppingg=100000
+  step_dec=$((16#$steppingg))
+  bank_capacity_dec=$((16#$bank_capacity_hex))
+
 
   for h in "SramBankCompareManual" "SramAsyncBankCompareManual"; do
     #generate random number to prevent 2 banks have the same data
 
-    for (( i = 0; i < bank_capacity_hex; i=i+steppingg )); do
+    for (( i = 0; i < bank_capacity_dec; i=i+step_dec )); do
       title b "$h Test"
-      compare_fail_address=$((bank_capacity_hex+i))
+      i_hex=$(echo "obase=16;$i"|bc)
+      compare_fail_address=$((bank_capacity_dec+i))
+      compare_fail_address=$(echo "ibase=10;obase=16;$compare_fail_address"|bc)
+      compare_fail_address=${compare_fail_address,,}
       #make all bank sync up first, and then write data to first bank to make banks have different data
       bank_reset
 
       #write data in bank0
       ran=$(shuf -i 0-255 -n 1)
-      title b "Now trying to write data in address: 0x$i"
-      print_command "sudo ./idll-test"$executable" --sram-write 1:0x$i:$ran -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SRAM_Manual_write"
-      sudo ./idll-test"$executable" --sram-write 1:0x$i:"$ran" -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SRAM_Manual_write
+      title b "Now trying to write data in address: 0x$i_hex"
+      launch_command "sudo ./idll-test$executable --sram-write 1:0x$i_hex:$ran -- --EBOARD_TYPE EBOARD_ADi_$board --section SRAM_Manual_write"
 
+      launch_command "sudo ./idll-test$executable --SOURCE_BANK 0x0 --DEST_BANK 0x1 --ADDRESS 0x0 --LENGTH 0x$bank_capacity_hex -- --EBOARD_TYPE EBOARD_ADi_$board --section $h"
+      compare_result "$result" "failed" "skip"
+#      verify_result "$result"
 
-      launch_command "sudo ./idll-test"$executable" --SOURCE_BANK 0x0 --DEST_BANK 0x1 --ADDRESS 0x0 --LENGTH 0x$bank_capacity_hex -- --EBOARD_TYPE EBOARD_ADi_"$board" --section $h"
-      verify_result "$result"
-
-
-
-      if [ "$status" == "fail" ]; then
-        printcolor g "***********The above result is PASSED, while try to make both bank different\n"
+#      if [ "$status" == "fail" ]; then
+#        printcolor g "***********The above result is PASSED, while try to make both bank different\n"
 #        read -p "enter key to continue..."
-        status=""
-      else
-        printcolor r "***********The above result is FAILED, because both bank data are the same, while try to make both bank different"
-        read -p "Enter to continue..."
-        status=""
-      fi
+#        status=""
+#      else
+#        printcolor r "***********The above result is FAILED, because both bank data are the same, while try to make both bank different"
+#        read -p "Enter to continue..."
+#        status=""
+#      fi
 
-      title b "Confirm if above test result has the the correct returned error address : $compare_fail_address"
-      compare_result "$result" "0x$compare_fail_address" "skip"
+      title b "Confirm if test result has the the correct returned error address : $compare_fail_address"
+      compare_result "$result" "Error address : 0x$compare_fail_address" "skip"
     done
 
 
