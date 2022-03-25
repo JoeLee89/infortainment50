@@ -21,6 +21,26 @@ LED_set_get(){
     compare_result "$result" "pass"
   done
 }
+LedLoop(){
+  local period duty pin
+  read -p "How many pins does the project support?" pin
+  read -p "Press [q] will exit the loop."
+
+  while true; do
+    read -rsn 1 -t 0.05 input
+    if [[ "$input" == "q" ]]; then
+      break
+    fi
+
+    for (( i = 0; i < pin; i++ )); do
+      period=$(shuf -i 0-10000 -n 1)
+      duty=$(shuf -i 0-100 -n 1)
+      launch_command "sudo ./idll-test"$executable" --PIN_NUM $i --PERIOD $period --DUTY_CYCLE $duty --BRIGHTNESS 90 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section GPO_LED_Drive_SetBlink"
+      verify_result "$result"
+    done
+
+  done
+}
 
 LED(){
   brightness=40
@@ -28,18 +48,22 @@ LED(){
   blink_period=1000
   brightness_verify_value=("100" "99" "70" "50" "30" "10" "1" "0")
   duty_cycle_list=("100" "99" "50" "10" "1" "0")
-  blink_period_list=("10000" "9999" "5000" "500" "1" "0")
-  if [ "$1" == "scxx" ]; then
-    project_period=24
-    led_amount=23
-  elif [ "$1" == "sa3" ]; then
-    project_period=6
-    led_amount=15
-  fi
+  blink_period_list=("10000" "9999" "7000" "480" "150" "160" "1" "0")
+  printcolor w "How many pins does the project support?"
+  read -p "" led_amount
+  led_amount=${led_amount:-32}
+#  if [ "$1" == "scxx" ]; then
+#    project_period=24
+#    led_amount=23
+#  elif [ "$1" == "sa3" ]; then
+#    project_period=6
+#    led_amount=15
+#  fi
 
 #  blink_period_sec=$(count_whole_blink_sec $blink_period $project_period)
 
-  for all in $(seq 0 $led_amount); do
+#  for all in $(seq 0 $led_amount); do
+  for (( all=0; all < led_amount; all++ )); do
     for brightness_ in "${brightness_verify_value[@]}"; do
       printf "\n\n\n"
       printcolor w "LED: $all"
@@ -51,7 +75,7 @@ LED(){
       if [ "$brightness_" == 0 ]; then
         printcolor r "Note: the LED will STOP blinking/ turned LED OFF, while brightness = 0 "
       elif [ "$brightness_" == 100 ]; then
-        printcolor r "Note: the LED will KEEP Blinking, while brightness = 100"
+        printcolor r "Note: the LED will STOP blinking/ turned LED ON, while brightness = 100"
       fi
 
       read -p "enter to continue above setting..."
@@ -93,7 +117,7 @@ LED(){
       printcolor r 'Note: brightness will NOT be changed, while blink/period item testing'
 
       if [ "$blink" == 0 ]; then
-          printcolor r "Note: the LED will stop blinking/ LED SOLID ON, while blinking period = 0"
+          printcolor r "Note: the LED will stop blinking/ LED SOLID OFF, while blinking period = 0"
       fi
 
       read -p "enter to continue above setting..."
@@ -134,19 +158,15 @@ parameter(){
 
 while true; do
   printf  "\n"
-  printf  "${COLOR_RED_WD}1. (SCXX/BSEC) LED VERIFY ${COLOR_REST}\n"
-  printf  "${COLOR_RED_WD}2. (SA3X) LED VERIFY ${COLOR_REST}\n"
-  printf  "${COLOR_RED_WD}3. LED SET GET PORT/PIN VERIFY ${COLOR_REST}\n"
-
-  printf  "${COLOR_RED_WD}4. BAD PARAMETER ${COLOR_REST}\n"
+  printf  "${COLOR_RED_WD}1. LED VERIFY ${COLOR_REST}\n"
+  printf  "${COLOR_RED_WD}2. LED SET GET PORT/PIN VERIFY ${COLOR_REST}\n"
+  printf  "${COLOR_RED_WD}3. BAD PARAMETER ${COLOR_REST}\n"
   printf  "${COLOR_RED_WD}======================================${COLOR_REST}\n"
   printf  "CHOOSE ONE TO TEST: "
   read -p "" input
 
   if [ "$input" == 1 ]; then
-    LED scxx
-  elif [ "$input" == 2 ]; then
-    LED sa3
+    LED
   elif [ "$input" == 3 ]; then
     LED_set_get
   elif [ "$input" == 4 ]; then
