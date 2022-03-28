@@ -534,12 +534,21 @@ bank_compare(){
 
 }
 
+crc_tool(){
+  re=$(crc32 temp.txt)
+  if [[ "$re" =~ "not found" ]]; then
+    title r "Not found CRC32 tool, now try to install it."
+    sudo apt install libarchive-zip-perl
+  fi
+}
+
 #===============================================================
 #crc32 caculate
 #===============================================================
 crc32_caculate(){
 #  idll-test --ADDRESS 0x0 --LENGTH 0x800 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SramAsyncCalculateCRC32Manual
-
+  #confirm is CRC32 is install
+  crc_tool
   #try to verify with different length
   content_list=('ilovejoe' '1111' ' 22222222' '1' '23' 'iou')
 
@@ -547,7 +556,8 @@ crc32_caculate(){
   for l in "SramAsyncCalculateCRC32Manual" "SramCalculateCRC32Manual"; do
     for m in ${content_list[*]};do
       content=$m
-      local length=$(echo "${#content}")
+      local length crc
+      local length=${#content}
       #create a txt file to make the content is the same as sram
       start_address=$( shuf -i 0-$totalsize -n 1)
       differential=$((totalsize-start_address))
@@ -565,7 +575,7 @@ crc32_caculate(){
       title b "Test sram calculate CRC32 ($l)"
       title b "writing data : $m"
       launch_command "sudo ./idll-test"$executable" --ADDRESS $start_address --LENGTH $length -- --EBOARD_TYPE EBOARD_ADi_"$board" --section $l"
-      local crc=$(crc32 temp.txt)
+      crc=$(crc32 temp.txt)
       compare_result "$result" "$crc"
 
     done
