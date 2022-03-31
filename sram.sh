@@ -159,7 +159,7 @@ Bank_Info(){
 #===============================================================
 Sram_Mirror_Write(){
 
-  local mirror_mode multiple size address file
+  local mirror_mode multiple size address file start_address
   mirror_mode=$1
   multiple=$2
   size=$3
@@ -171,15 +171,14 @@ Sram_Mirror_Write(){
 
   number=$((4*size))
   read -n $number data < "$file"
-  launch_command "./idll-test"$executable" --sram-write $mirror_mode:$address:$data -- --EBOARD_TYPE EBOARD_ADi_$board --section SRAM_Manual_write"
+  launch_command "./idll-test$executable --sram-write $mirror_mode:$address:$data -- --EBOARD_TYPE EBOARD_ADi_$board --section SRAM_Manual_write"
   if [[ "$result" =~ $size_mes ]]; then
-        title b  "Sram capacity check PASS"
-      else
-
-        title r  "Sram capacity check FAIL"
-        title r  "Expected size: $size_mes"
+    title b  "Sram capacity check PASS"
+  else
+    title r  "Sram capacity check FAIL"
+    title r  "Expected size: $size_mes"
 #        echo "$result"
-        read -p ""
+    read -p ""
   fi
 
   compare_result "$result" "mirror mode: $mirror_mode"
@@ -195,10 +194,11 @@ Sram_Mirror_Read(){
 
   readarray -n $size readdata < "$file"
   read_data=${readdata[*]}
-  read_data=$(echo "$read_data" | sed 's/\s//g')
+  read_data=$(echo "$read_data" | sed 's/\s//g;s/[0-9]*://g')
 
   launch_command "./idll-test"$executable" --sram-read $mode:$address:$size -- --EBOARD_TYPE EBOARD_ADi_$board --section SRAM_Manual_read"
-  compare_result "$(echo "$result" | sed 's/\s//g')" "$read_data"
+  compare_result "$(echo "$result" | sed 's/\s//g;s/[0-9]*://g')" "$read_data"
+#  echo "$result" | sed 's/\s//g;s/[0-9]*://g'
 
 }
 
@@ -231,6 +231,43 @@ Sram_Bank_Check(){
     read -p ""
   fi
 }
+SramRandomSize(){
+  local start_address size mirror_mode multiple
+  mirror_mode=1
+  multiple=1
+#  for i in $(seq 0 100);do
+#
+#  done
+
+  for (( i = 0; i < 100; i++ )); do
+#    size=$(shuf -i 1-totalsize -n 1)
+    size=$(shuf -i 1-99 -n 1)
+  #  size=100
+    differential=$((totalsize-size))
+
+#    start_address=$(shuf -i "$((size-1))"-$((totalsize-1)) -n 1)
+    start_address=$(shuf -i 0-$differential -n 1)
+
+
+    Sram_Mirror_Write "$mirror_mode" "$multiple" "$size" "$start_address" "dummy_write_00.txt"
+    Sram_Mirror_Read "$mirror_mode" "$start_address" "$size" "dummy_read_00.txt"
+  done
+
+
+#  if [[ $start_address+$size -lt "$totalsize" ]]; then
+#    echo "pass"
+#
+#  else
+#    echo "fail"
+#
+#  fi
+#  size=${size:-((address_dec>size))}
+#  Sram_Mirror_Write "$mirror_mode" "$multiple" "$size" "$address" "dummy_write_00.txt"
+
+}
+SramRandomSize
+exit
+
 
 Sram_Mirror_1_all(){
   local size mirror_mode multiple address
@@ -557,7 +594,7 @@ crc32_caculate(){
     for m in ${content_list[*]};do
       content=$m
       local length crc
-      local length=${#content}
+      length=${#content}
       #create a txt file to make the content is the same as sram
       start_address=$( shuf -i 0-$totalsize -n 1)
       differential=$((totalsize-start_address))

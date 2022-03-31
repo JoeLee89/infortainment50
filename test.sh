@@ -152,7 +152,7 @@
 
 
 
-write_data() {
+write_data_old() {
   local i
   write_data=""
   for i in $(seq 0 1677216); do
@@ -160,15 +160,43 @@ write_data() {
 #    write_data[$i]=$(shuf -i 0-255 -n 1)
 #    echo "${write_data[@]}"
 
-    rand="$(shuf -i 100-255 -n 1)"
+    rand="$(shuf -i 0-255 -n 1)"
     write_data+="$rand/"
-    echo "$i:$rand" >> dummy_read_02.txt
+#    write_data+=$(echo "$rand" | awk '{printf("%c",$1)}')
+    echo "$i:$rand" >> dummy_read_03.txt
 #    printf "$(shuf -i 0-255 -n 1)\\" >> dummy.txt
     echo "$i"
   done
-  printf "$write_data" > dummy_write_02.txt
+  printf "$write_data" > dummy_write_03.txt
 
 }
+
+write_data() {
+  local i
+  write_data=""
+#  for i in $(seq 0 33554431); do
+  for i in $(seq 0 335); do
+#    data="$data/$i"
+#    write_data[$i]=$(shuf -i 0-255 -n 1)
+#    echo "${write_data[@]}"
+
+#    rand="$(shuf -i 0-255 -n 1)"
+    rand=$(shuf -e a b c d e f g h i j h l m n o p q r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z -n 1)
+    write_data+=$rand
+#    write_data+="$(echo "$rand" | awk '{printf("%c",$1)}')"
+#    echo "now i=$rand"
+#    echo "now acii=$(echo "$rand" | awk '{printf("%c",$1)}')"
+    printf "%d\n" "'$rand" >> dummy_read_03.txt
+#    echo "i=$i"
+#    printf "%d\n" "'$rand"
+#    echo "write data=$write_data"
+#    printf "$(shuf -i 0-255 -n 1)\\" >> dummy.txt
+    echo "$i"
+  done
+  printf "$write_data" > dummy_write_03.txt
+
+}
+
 write_data
 #read -p "aa" type
 #mirror=3
