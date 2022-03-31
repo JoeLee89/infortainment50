@@ -265,8 +265,8 @@ SramRandomSize(){
 #  Sram_Mirror_Write "$mirror_mode" "$multiple" "$size" "$address" "dummy_write_00.txt"
 
 }
-SramRandomSize
-exit
+#SramRandomSize
+#exit
 
 
 Sram_Mirror_1_all(){
