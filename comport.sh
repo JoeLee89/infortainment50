@@ -241,26 +241,26 @@ Feature() {
     done
   done
 
-  #Testing with flowctrl
-  ###################################################
-  #  title b "Testing with FLOWCTRL"
-  #
-  #  for list in ${flowctrl[*]}; do
-  #    for com in ${com_list[*]}; do
-  #      printf "Com port Test setting:"
-  #      mesg=(
-  #      "com port: $com"
-  #      "Flowctrl: $list"
-  #      "Data: $data_default"
-  #      )
-  #      title_list b mesg[@]
-  #
-  #      launch_command  "sudo ./idll-test"$executable" --serial-port1 $com --serial-port2 $com --BAUDRATE $baudrate_default --DATABIT $databit_default --FLOWCTRL $list --PARITYBIT $paritybit_default --STOPBIT $stopbit_default --SERIAL_WRITE $data_default --READ_LEN $read_len_default --LOOP 1 --READ_INTERVAL $read_interval_default -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SerialPort_RW"
-  #      result00=$(echo "$result" | grep -i "flowctrl" | sed 's/\s//g')
-  #      compare_result "$result" "passed"
-  #      compare_result "$result00" "flowCtrl=$list"
-  #    done
-  #  done
+  Testing with flowctrl
+  ##################################################
+    title b "Testing with FLOWCTRL"
+
+    for list in ${flowctrl[*]}; do
+      for com in ${com_list[*]}; do
+        printf "Com port Test setting:"
+        mesg=(
+        "com port: $com"
+        "Flowctrl: $list"
+        "Data: $data_default"
+        )
+        title_list b mesg[@]
+
+        launch_command  "sudo ./idll-test"$executable" --serial-port1 $com --serial-port2 $com --BAUDRATE $baudrate_default --DATABIT $databit_default --FLOWCTRL $list --PARITYBIT $paritybit_default --STOPBIT $stopbit_default --SERIAL_WRITE $data_default --READ_LEN $read_len_default --LOOP 1 --READ_INTERVAL $read_interval_default -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SerialPort_RW"
+        result00=$(echo "$result" | grep -i "flowctrl" | sed 's/\s//g')
+        compare_result "$result" "passed"
+        compare_result "$result00" "flowCtrl=$list"
+      done
+    done
 
   #Testing with paritybit
   ###################################################
