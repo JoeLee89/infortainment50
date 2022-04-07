@@ -44,6 +44,14 @@ launch_command() {
   print_command "$1"
   result=$($1)
   printcolor w "$result"
+  command=$1
+}
+
+log_to_file(){
+  echo "********************************************************* Command line ***********************************************************************" >> error_log.txt
+  echo "$command" >> error_log.txt
+  echo "**********************************************************************************************************************************************" >> error_log.txt
+  echo "$result" >> error_log.txt
 }
 
 #if $3 has input string, it will ignore $1 including fail message
@@ -71,6 +79,7 @@ compare_result() {
       printf "\n\n\n"
       status="fail"
       read -p ""
+      log_to_file
     fi
   elif [[ "$1" =~ $2 ]]; then
     printf "\n"
@@ -92,7 +101,7 @@ compare_result() {
     printf "\n\n\n"
     status="fail"
     read -p ""
-
+    log_to_file
   fi
 }
 
@@ -107,6 +116,7 @@ verify_result() {
     printf "\n\n\n"
     status="fail"
     read -p ""
+    log_to_file
   else
     echo "$result"
     printf "\n"

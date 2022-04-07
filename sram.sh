@@ -433,9 +433,10 @@ Write_with_verify(){
     while true; do
 
       title b "Test sram with verify ($m) : address get higher while data length smaller "
-      result=$( sudo ./idll-test"$executable" --ADDRESS $((addresss-1)) --LENGTH $length --SRAM-DATA-FILE="./fakefile.txt" -- --EBOARD_TYPE EBOARD_ADi_"$board" --section $m )
-      print_command "sudo ./idll-test"$executable" --ADDRESS $((addresss-1)) --LENGTH $length --SRAM-DATA-FILE="./fakefile.txt" -- --EBOARD_TYPE EBOARD_ADi_"$board" --section $m"
-      printcolor w "$result"
+#      result=$( sudo ./idll-test"$executable" --ADDRESS $((addresss-1)) --LENGTH $length --SRAM-DATA-FILE="./fakefile.txt" -- --EBOARD_TYPE EBOARD_ADi_"$board" --section $m )
+#      print_command "sudo ./idll-test"$executable" --ADDRESS $((addresss-1)) --LENGTH $length --SRAM-DATA-FILE="./fakefile.txt" -- --EBOARD_TYPE EBOARD_ADi_"$board" --section $m"
+      launch_command "sudo ./idll-test"$executable" --ADDRESS $((addresss-1)) --LENGTH $length --SRAM-DATA-FILE="./fakefile.txt" -- --EBOARD_TYPE EBOARD_ADi_"$board" --section $m"
+#      printcolor w "$result"
       verify_result "$result"
 
       length=$((length+stepping))
@@ -466,10 +467,10 @@ bank_copy(){
       for (( i = 0; i < bank_capacity_hex; i=i+10000 )); do
 
         title b "Bank copy ($k) : data length setting from small to bigger + all bank compare"
-        print_command "sudo ./idll-test"$executable" --ADDRESS 0x0 --LENGTH 0x$i --SOURCE_BANK 0x$m --DEST_BANK 0x$((m+1)) -- --EBOARD_TYPE EBOARD_ADi_"$board" --section $k"
-        result=$(sudo ./idll-test"$executable" --ADDRESS 0x0 --LENGTH 0x$i --SOURCE_BANK 0x$m --DEST_BANK 0x$((m+1)) -- --EBOARD_TYPE EBOARD_ADi_"$board" --section $k)
-
-        printcolor w "$result"
+        launch_command "sudo ./idll-test"$executable" --ADDRESS 0x0 --LENGTH 0x$i --SOURCE_BANK 0x$m --DEST_BANK 0x$((m+1)) -- --EBOARD_TYPE EBOARD_ADi_"$board" --section $k"
+#        print_command "sudo ./idll-test"$executable" --ADDRESS 0x0 --LENGTH 0x$i --SOURCE_BANK 0x$m --DEST_BANK 0x$((m+1)) -- --EBOARD_TYPE EBOARD_ADi_"$board" --section $k"
+#        result=$(sudo ./idll-test"$executable" --ADDRESS 0x0 --LENGTH 0x$i --SOURCE_BANK 0x$m --DEST_BANK 0x$((m+1)) -- --EBOARD_TYPE EBOARD_ADi_"$board" --section $k)
+#        printcolor w "$result"
         verify_result "$result"
 
         if [[ "$status" == "fail" ]]; then
@@ -558,7 +559,12 @@ bank_compare(){
 #      fi
 
       title b "Confirm if test result has the the correct returned error address : $compare_fail_address"
-      compare_result "$result" "Error address : 0x$compare_fail_address" "skip"
+      if [[ "$h" =~ "SramAsyncBankCompareManual"  ]]; then
+        compare_result "$result" "0x$compare_fail_address]" "skip"
+      else
+        compare_result "$result" "Error address : 0x$compare_fail_address" "skip"
+      fi
+
     done
 
 
