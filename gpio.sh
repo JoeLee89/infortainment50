@@ -115,7 +115,7 @@ set_get_pin(){
 
   for (( i = 0; i < 4; i++ )); do
     for state in "true" "false"; do
-      launch_command "sudo ./idll-test"$executable" --GPIO_PIN_ID 0x$i --GPIO_PIN_VAL $state -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SA3X_4xGPIO_by_Pin"
+      launch_command "sudo ./idll-test$executable --GPIO_PIN_ID 0x$i --GPIO_PIN_VAL $state -- --EBOARD_TYPE EBOARD_ADi_$board --section SA3X_4xGPIO_by_Pin"
 
       echo "$result" > templog.txt
       readarray readdata < "templog.txt"
@@ -123,19 +123,25 @@ set_get_pin(){
       before=$(echo "${readdata[5]}")
       before=${before#*: 0x}
       before=$(echo "$before" | sed 's/\s//g')
+      before=${before^^}
       before=$(echo "ibase=16;obase=2;$before"|bc)
       #add more 8 digit, when the result length is not enough
       before=$(printf %08d "$before")
+
 
       #get the after changing gpio action result
       after=$(echo "${readdata[9]}")
       after=${after#*: 0x}
       after=$(echo "$after" | sed 's/\s//g')
+      after=${after^^}
       after=$(echo "ibase=16;obase=2;$after"|bc)
       #add more 8 digit, when the result length is not enough
       after=$(printf %08d "$after")
 
       compare_result "${readdata[8]}" "Read back pin value: $state"
+      title b "Compare both the setting GPO bit=$i and received GPI bit=$((4+i)) pin status"
+      title b "Read back Get Port=$after"
+      compare_result "${after:$((7-i)):1}" "${after:$((7-4-i)):1}"
 
       #start to compare each byte value between after/before except the setting pin
       for (( l = 0; l < 8; l++ )); do
