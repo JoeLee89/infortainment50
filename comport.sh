@@ -39,10 +39,36 @@ paritybit=("1" "2" "3" "4" "5")
 paritybit_default=1
 stopbit=("1" "2")
 stopbit_default=1
-read_interval_default=4000
+read_interval_default=3000
 read_len=("1" "10" "15" "21" "99" "251" "255")
 read_len_default=100
 data_default=$(number_random read_len_default)
+
+###################################################
+#mdb
+###################################################
+mdb(){
+  sudo ./idll-test"$executable" -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SerialPort_GetPort_Num_Name
+  local port1 port2
+  printcolor r "Please refer above list, input the port index number as listed above as 'PortIndex= ??'"
+  printcolor w "Input com port 1 name you need to test"
+  read -p "Port 1 Index = " port1
+  printcolor w "Input com port 2 name you need to test"
+  read -p "Port 2 Index = " port2
+
+  port1=${port1:-0}
+  port1_number=${com_list_amount[$port1]}
+  port2=${port2:-1}
+  port2_number=${com_list_amount[$port2]}
+  printcolor w "Now connect com port:($port1_number) with com port:($port2_number) by null cable."
+
+  for ((i=0;i<10;i++));do
+    launch_command "./idll-test --serial-port1 $port1_number --serial-port2 $port2_number -- --EBOARD_TYPE EBOARD_ADi_SA3X --section SerialPort_MDB_Nullmodem"
+    compare_result "$result" "passed"
+  done
+
+}
+
 
 ###################################################
 #set/get time out
@@ -551,6 +577,7 @@ while true; do
   printf "${COLOR_RED_WD}3. COM PORT / RAW COM FULL PIN TEST (LEC1) ${COLOR_REST}\n"
   printf "${COLOR_RED_WD}4. COM PORT INFO ${COLOR_REST}\n"
   printf "${COLOR_RED_WD}5. COM PORT TIME OUT SETTING ${COLOR_REST}\n"
+  printf "${COLOR_RED_WD}6. COM PORT FUNCTION (MDB)(LOOPBACK) ${COLOR_REST}\n"
   printf "${COLOR_RED_WD}======================================${COLOR_REST}\n"
   printf "CHOOSE ONE TO TEST: "
   read -p "" input
@@ -565,7 +592,8 @@ while true; do
     Com_port_info
   elif [ "$input" == 5 ]; then
     Time_out
-
+  elif [ "$input" == 6 ]; then
+    mdb
   fi
 
 done
