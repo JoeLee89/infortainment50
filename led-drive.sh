@@ -47,8 +47,8 @@ LED(){
   duty_cycle=50
   blink_period=1000
   brightness_verify_value=("100" "99" "70" "50" "30" "10" "1" "0")
-  duty_cycle_list=("100" "99" "50" "10" "1" "0")
-  blink_period_list=("10000" "9999" "7000" "480" "150" "160" "1" "0")
+  duty_cycle_list=("1" "0" "2" "3" "19" "20" "49" "50" "80" "99" "100")
+  blink_period_list=("1" "2" "10" "30" "41" "99" "161" "0" "998" "9999" "10000")
   printcolor w "How many pins does the project support?"
   read -p "" led_amount
   led_amount=${led_amount:-32}
@@ -99,6 +99,11 @@ LED(){
         printcolor r "Note: the LED will stop blinking / turned LED ON, while duty cycle = 100"
       fi
 
+      if [[ "$dutycycle" -gt 1 && "$dutycycle" -lt 4 ]]; then
+        printcolor r "SA3xx project duty cycle = 2-3 should behave the same blinking period "
+
+      fi
+
       read -p "enter to continue above setting..."
       launch_command "sudo ./idll-test"$executable" --PIN_NUM $all --PERIOD $blink_period --DUTY_CYCLE $dutycycle --BRIGHTNESS $brightness -- --EBOARD_TYPE EBOARD_ADi_"$board" --section GPO_LED_Drive_SetBlink"
       compare_result "$result" "Duty cycle: $dutycycle"
@@ -118,6 +123,12 @@ LED(){
 
       if [ "$blink" == 0 ]; then
           printcolor r "Note: the LED will stop blinking/ LED SOLID OFF, while blinking period = 0"
+      fi
+
+      if [[ "$blink" -gt 0 && "$blink" -lt 167 ]]; then
+        printcolor r "SA3xx project period = 1-166 should behave the same blinking frequency "
+        printcolor r "SA2xx/SA1xx/SCxx project period = 1-41 should behave the same blinking frequency"
+
       fi
 
       read -p "enter to continue above setting..."
@@ -159,7 +170,7 @@ parameter(){
 while true; do
   printf  "\n"
   printf  "${COLOR_RED_WD}1. LED VERIFY ${COLOR_REST}\n"
-  printf  "${COLOR_RED_WD}2. LED SET GET PORT/PIN VERIFY ${COLOR_REST}\n"
+  printf  "${COLOR_RED_WD}2. LED SET / GET PORT/PIN VERIFY ${COLOR_REST}\n"
   printf  "${COLOR_RED_WD}3. BAD PARAMETER ${COLOR_REST}\n"
   printf  "${COLOR_RED_WD}======================================${COLOR_REST}\n"
   printf  "CHOOSE ONE TO TEST: "
@@ -167,9 +178,9 @@ while true; do
 
   if [ "$input" == 1 ]; then
     LED
-  elif [ "$input" == 3 ]; then
+  elif [ "$input" == 2 ]; then
     LED_set_get
-  elif [ "$input" == 4 ]; then
+  elif [ "$input" == 3 ]; then
     parameter
   fi
 

@@ -55,10 +55,7 @@ Blink() {
 
       fi
 
-      if [[ "$duty_cyclell" -gt 1 && "$duty_cyclell" -lt 4 ]]; then
-        printcolor r "SA3xx project duty cycle = 2-3 should behave the same blinking period "
 
-      fi
 
       read -p "Enter to continue above test..." continue
 
@@ -104,11 +101,7 @@ Blink() {
         printf "${COLOR_RED_WD}Note: period =0 should stop blinking!! \n${COLOR_REST}"
       fi
 
-      if [[ "$perioddd" -gt 0 && "$perioddd" -lt 167 ]]; then
-        printcolor r "SA3xx project period = 1-166 should behave the same blinking frequency "
-        printcolor r "SA2xx/SA1xx/SCxx project period = 1-41 should behave the same blinking frequency"
 
-      fi
 
       read -p "Enter to continue above test..." continue
 
