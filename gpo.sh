@@ -15,8 +15,8 @@ Blink() {
   elif [ "$1" == "lec1" ]; then
     led_amount=31
   fi
-  period_verify_value=("1" "99" "151" "0" "1000" "9999" "10000")
-  duty_cycle_value=("1" "0" "19" "20" "49" "50" "80" "99" "100")
+  period_verify_value=("1" "2" "10" "30" "41" "99" "166" "0" "998" "9999" "10000")
+  duty_cycle_value=("1" "0" "2" "3" "19" "20" "49" "50" "80" "99" "100")
 
   ########################################################################
   #loop all pin test
@@ -42,7 +42,7 @@ Blink() {
   for all in $(seq 0 $led_amount); do
 
     for duty_cyclell in "${duty_cycle_value[@]}"; do
-      title r "Note: be sure the brightness should be changed to 100, while blinking/period test."
+      title r "Note: make sure the brightness should be changed to 100, while blinking/period test."
       printf "${COLOR_BLUE_WD}LED: $all ${COLOR_REST}\n"
       printf "${COLOR_BLUE_WD}Duty cycle:${COLOR_RED_WD} $duty_cyclell ${COLOR_REST}\n"
       printf "${COLOR_BLUE_WD}period (0=disable blinking): $period = $period ms ${COLOR_REST}\n"
@@ -55,7 +55,12 @@ Blink() {
 
       fi
 
-      read -p "enter key to continue above test..." continue
+      if [[ "$duty_cyclell" -gt 1 && "$duty_cyclell" -lt 4 ]]; then
+        printcolor r "SA3xx project duty cycle = 2-3 should behave the same blinking period "
+
+      fi
+
+      read -p "Enter to continue above test..." continue
 
       launch_command "sudo ./idll-test"$executable" --PIN_NUM $all --PERIOD $period --DUTY_CYCLE $duty_cyclell -- --EBOARD_TYPE EBOARD_ADi_"$board" --section GPO_LED_SetDoLedBlink"
 #      verify_result "$result"
@@ -90,13 +95,19 @@ Blink() {
     read -p "Enter to continue..." continue
 
     for perioddd in "${period_verify_value[@]}"; do
-      title r "Note: be sure the brightness should be changed to 100, while blinking/period test."
+      title r "Note: make sure the brightness should be changed to 100, while blinking/period test."
       printf "${COLOR_BLUE_WD}LED: $all ${COLOR_REST}\n"
       printf "${COLOR_BLUE_WD}Duty cycle: $duty_cycle ${COLOR_REST}\n"
       printf "${COLOR_BLUE_WD}period( 0=disable blinking): ${COLOR_RED_WD}$perioddd  = $perioddd ms ${COLOR_REST}\n"
 
-      if [ "$perioddd" == 0 ]; then
+      if [ "$perioddd" -eq 0 ]; then
         printf "${COLOR_RED_WD}Note: period =0 should stop blinking!! \n${COLOR_REST}"
+      fi
+
+      if [[ "$perioddd" -gt 0 && "$perioddd" -lt 167 ]]; then
+        printcolor r "SA3xx project period = 1-166 should behave the same blinking frequency "
+        printcolor r "SA2xx/SA1xx/SCxx project period = 1-41 should behave the same blinking frequency"
+
       fi
 
       read -p "Enter to continue above test..." continue
