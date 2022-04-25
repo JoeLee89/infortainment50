@@ -107,7 +107,7 @@ LED(){
       99)
         if [ "$board" == "SA3X" ]; then
           printcolor r "Note: (SA3X) The duty cycle should have the same behavior, when set duty cycle = 99,100"
-          printcolor r "Note: the LED will stop blinking / turned LED ON, while duty cycle = 100"
+          printcolor r "Note: the LED will stop blinking / turned LED ON, while duty cycle = 99"
         fi
         ;;
       100)
