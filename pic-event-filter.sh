@@ -447,7 +447,7 @@ rtc_alarm_event() {
     title b "Now test function from [$ii] order"
     title b "Now trigger PIC RTC alarm for 5 times:"
     for ((i = 0; i < 5; i++)); do
-      sudo ./idll-test"$executable" --pic-alarm_seconds 2 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section PIC_RTC_ALARM_SET_manual [PIC][RTC][ALARM][MANUAL]
+      sudo ./idll-test"$executable" --rtc-alarm-conf 0 --pic-alarm_seconds 2 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section PIC_RTC_ALARM_SET_manual [PIC][RTC][ALARM][MANUAL]
       printcolor y "Wait 2 second for RTC alarm trigger...."
       sleep 3
     done
