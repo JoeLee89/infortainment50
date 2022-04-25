@@ -63,7 +63,7 @@ mdb(){
   printcolor w "Now connect com port:($port1_number) with com port:($port2_number) by null cable."
 
   for ((i=0;i<10;i++));do
-    launch_command "./idll-test --serial-port1 $port1_number --serial-port2 $port2_number -- --EBOARD_TYPE EBOARD_ADi_SA3X --section SerialPort_MDB_Nullmodem"
+    launch_command "./idll-test$executable --serial-port1 $port1_number --serial-port2 $port2_number -- --EBOARD_TYPE EBOARD_ADi_$board --section SerialPort_MDB_Nullmodem"
     compare_result "$result" "passed"
   done
 
