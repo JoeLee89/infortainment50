@@ -112,9 +112,9 @@ Time_out() {
   title r "Be noted!! If no any message return, after 10 sec. It should be considered as failed."
   read -p "Press enter, when you are ready."
 
-  for mode in "constant" "mulplier" ; do
+  for mode in "constant" "mulplier"; do
 
-#    before=$(date '+%s')
+    #    before=$(date '+%s')
     case $mode in
     "constant")
       title b "Read Time Out Constant getting/setting test : ${read_constant[0]} ms"
@@ -126,30 +126,28 @@ Time_out() {
       compare_result "$result" "failed"
       ;;
     "mulplier")
-        title b "Read Time Out Mulplier getting/setting test : ${read_mulplier[0]} ms"
-        launch_command "./idll-test$executable --serial-port1 $port1_number --serial-port2 $port2_number --RIT 0 --RTTC 0 --RTM ${read_mulplier[0]} --WTTC 0 --WTTM 0  -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SerialPort_RW"
-        compare_result "$result" "failed"
+      title b "Read Time Out Mulplier getting/setting test : ${read_mulplier[0]} ms"
+      launch_command "./idll-test$executable --serial-port1 $port1_number --serial-port2 $port2_number --RIT 0 --RTTC 0 --RTM ${read_mulplier[0]} --WTTC 0 --WTTM 0  -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SerialPort_RW"
+      compare_result "$result" "failed"
 
-        title b "Write Time Out Mulplier getting/setting test : ${write_mulplier[0]} ms"
-        launch_command "./idll-test$executable --serial-port1 $port1_number --serial-port2 $port2_number --RIT 0 --RTTC 0 --RTM ${write_mulplier[0]} --WTTC 0 --WTTM 0  -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SerialPort_RW"
-        compare_result "$result" "failed"
+      title b "Write Time Out Mulplier getting/setting test : ${write_mulplier[0]} ms"
+      launch_command "./idll-test$executable --serial-port1 $port1_number --serial-port2 $port2_number --RIT 0 --RTTC 0 --RTM ${write_mulplier[0]} --WTTC 0 --WTTM 0  -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SerialPort_RW"
+      compare_result "$result" "failed"
       ;;
-#    "interval")
-#        title b "Read Time Out Mulplier getting/setting test : ${read_mulplier[0]} ms"
-#        launch_command "./idll-test$executable --serial-port1 $port1_number --serial-port2 $port2_number --RIT ${read_interval[0]}  --RTTC 0 --RTM $0 --WTTC 0 --WTTM 0  -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SerialPort_RW"
-#        compare_result "$result" "failed"
-##        after=$(date '+%s')
-#      ;;
+      #    "interval")
+      #        title b "Read Time Out Mulplier getting/setting test : ${read_mulplier[0]} ms"
+      #        launch_command "./idll-test$executable --serial-port1 $port1_number --serial-port2 $port2_number --RIT ${read_interval[0]}  --RTTC 0 --RTM $0 --WTTC 0 --WTTM 0  -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SerialPort_RW"
+      #        compare_result "$result" "failed"
+      ##        after=$(date '+%s')
+      #      ;;
 
     esac
 
-
-
-#    amount=$after-$before
-#    if [[ "$amount" -lt 3 || "$amount" -gt 7 ]]; then
-#      title r "Test fail, because the process time is > 7 seconds or < 3 seconds"
-#      read -p ""
-#    fi
+    #    amount=$after-$before
+    #    if [[ "$amount" -lt 3 || "$amount" -gt 7 ]]; then
+    #      title r "Test fail, because the process time is > 7 seconds or < 3 seconds"
+    #      read -p ""
+    #    fi
 
   done
   #test with timeout item RIT
@@ -159,9 +157,7 @@ Time_out() {
   printcolor r "Note: So press Ctrl+c to cancel the test, after 10 seconds waiting behavior."
   launch_command "./idll-test$executable --serial-port1 $port1_number --serial-port2 $port2_number --RIT ${read_interval[0]}  --RTTC 0 --RTM $0 --WTTC 0 --WTTM 0  -- --EBOARD_TYPE EBOARD_ADi_$board --section SerialPort_RW"
 
-
 }
-
 
 ###################################################
 #basic info
@@ -243,24 +239,24 @@ Feature() {
 
   Testing with flowctrl
   ##################################################
-    title b "Testing with FLOWCTRL"
+  title b "Testing with FLOWCTRL"
 
-    for list in ${flowctrl[*]}; do
-      for com in ${com_list[*]}; do
-        printf "Com port Test setting:"
-        mesg=(
+  for list in ${flowctrl[*]}; do
+    for com in ${com_list[*]}; do
+      printf "Com port Test setting:"
+      mesg=(
         "com port: $com"
         "Flowctrl: $list"
         "Data: $data_default"
-        )
-        title_list b mesg[@]
+      )
+      title_list b mesg[@]
 
-        launch_command  "sudo ./idll-test"$executable" --serial-port1 $com --serial-port2 $com --BAUDRATE $baudrate_default --DATABIT $databit_default --FLOWCTRL $list --PARITYBIT $paritybit_default --STOPBIT $stopbit_default --SERIAL_WRITE $data_default --READ_LEN $read_len_default --LOOP 1 --READ_INTERVAL $read_interval_default -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SerialPort_RW"
-        result00=$(echo "$result" | grep -i "flowctrl" | sed 's/\s//g')
-        compare_result "$result" "passed"
-        compare_result "$result00" "flowCtrl=$list"
-      done
+      launch_command "sudo ./idll-test"$executable" --serial-port1 $com --serial-port2 $com --BAUDRATE $baudrate_default --DATABIT $databit_default --FLOWCTRL $list --PARITYBIT $paritybit_default --STOPBIT $stopbit_default --SERIAL_WRITE $data_default --READ_LEN $read_len_default --LOOP 1 --READ_INTERVAL $read_interval_default -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SerialPort_RW"
+      result00=$(echo "$result" | grep -i "flowctrl" | sed 's/\s//g')
+      compare_result "$result" "passed"
+      compare_result "$result00" "flowCtrl=$list"
     done
+  done
 
   #Testing with paritybit
   ###################################################
