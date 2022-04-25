@@ -17,7 +17,7 @@ LED_set_get(){
   read -p "This test will loop forever, until press CTRL+C..."
 
   while true; do
-    launch_command "sudo ./idll-test"$executable" --LOOP 1 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section GPO_LED_Drive"
+    launch_command "sudo ./idll-test$executable --LOOP 1 -- --EBOARD_TYPE EBOARD_ADi_$board --section GPO_LED_Drive"
     compare_result "$result" "pass"
   done
 }
@@ -35,7 +35,7 @@ LedLoop(){
     for (( i = 0; i < pin; i++ )); do
       period=$(shuf -i 0-10000 -n 1)
       duty=$(shuf -i 0-100 -n 1)
-      launch_command "sudo ./idll-test"$executable" --PIN_NUM $i --PERIOD $period --DUTY_CYCLE $duty --BRIGHTNESS 90 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section GPO_LED_Drive_SetBlink"
+      launch_command "sudo ./idll-test$executable --PIN_NUM $i --PERIOD $period --DUTY_CYCLE $duty --BRIGHTNESS 90 -- --EBOARD_TYPE EBOARD_ADi_$board --section GPO_LED_Drive_SetBlink"
       verify_result "$result"
     done
 
@@ -43,7 +43,7 @@ LedLoop(){
 }
 
 LED(){
-  brightness=40
+  brightness=10
   duty_cycle=50
   blink_period=1000
   brightness_verify_value=("100" "99" "70" "50" "30" "10" "1" "0")
@@ -79,7 +79,7 @@ LED(){
       fi
 
       read -p "enter to continue above setting..."
-      launch_command "sudo ./idll-test"$executable" --PIN_NUM $all --PERIOD $blink_period --DUTY_CYCLE $duty_cycle --BRIGHTNESS $brightness_ -- --EBOARD_TYPE EBOARD_ADi_"$board" --section GPO_LED_Drive_SetBlink"
+      launch_command "sudo ./idll-test$executable --PIN_NUM $all --PERIOD $blink_period --DUTY_CYCLE $duty_cycle --BRIGHTNESS $brightness_ -- --EBOARD_TYPE EBOARD_ADi_$board --section GPO_LED_Drive_SetBlink"
       compare_result "$result" "Brightness: $brightness_"
     done
 
@@ -93,19 +93,31 @@ LED(){
       printcolor w "=============================================== "
       printcolor r 'Note: brightness will NOT be changed, while blink/period item testing'
 
-      if [ "$dutycycle" == 0 ]; then
+      case $dutycycle in
+      0)
         printcolor r "Note: the LED will stop blinking / turned LED OFF, while duty cycle = 0"
-      elif [ "$dutycycle" == 100 ]; then
+        ;;
+      2 | 3)
+        if [ "$board" == "SA3X" ]; then
+          printcolor r "Note: (SA3X) The duty cycle should have the same behavior, when set duty cycle = 2,3"
+
+        fi
+
+        ;;
+      99)
+        if [ "$board" == "SA3X" ]; then
+          printcolor r "Note: (SA3X) The duty cycle should have the same behavior, when set duty cycle = 99,100"
+          printcolor r "Note: the LED will stop blinking / turned LED ON, while duty cycle = 100"
+        fi
+        ;;
+      100)
         printcolor r "Note: the LED will stop blinking / turned LED ON, while duty cycle = 100"
-      fi
+        ;;
+      esac
 
-      if [[ "$dutycycle" -gt 1 && "$dutycycle" -lt 4 ]]; then
-        printcolor r "SA3xx project duty cycle = 2-3 should behave the same blinking period "
-
-      fi
 
       read -p "enter to continue above setting..."
-      launch_command "sudo ./idll-test"$executable" --PIN_NUM $all --PERIOD $blink_period --DUTY_CYCLE $dutycycle --BRIGHTNESS $brightness -- --EBOARD_TYPE EBOARD_ADi_"$board" --section GPO_LED_Drive_SetBlink"
+      launch_command "sudo ./idll-test$executable --PIN_NUM $all --PERIOD $blink_period --DUTY_CYCLE $dutycycle --BRIGHTNESS $brightness -- --EBOARD_TYPE EBOARD_ADi_$board --section GPO_LED_Drive_SetBlink"
       compare_result "$result" "Duty cycle: $dutycycle"
     done
 
@@ -121,18 +133,28 @@ LED(){
       printcolor w "==============================================="
       printcolor r 'Note: brightness will NOT be changed, while blink/period item testing'
 
+
       if [ "$blink" == 0 ]; then
           printcolor r "Note: the LED will stop blinking/ LED SOLID OFF, while blinking period = 0"
       fi
 
-      if [[ "$blink" -gt 0 && "$blink" -lt 167 ]]; then
-        printcolor r "SA3xx project period = 1-166 should behave the same blinking frequency "
-        printcolor r "SA2xx/SA1xx/SCxx project period = 1-41 should behave the same blinking frequency"
+      if [ "$board" == "SA3X" ]; then
+
+        if [[ "$blink" -gt 0 && "$blink" -lt 167 ]]; then
+          printcolor r "SA3xx project period = 1-166 should behave the same blinking frequency "
+        fi
+
+      else
+
+        if [[ "$blink" -gt 0 && "$blink" -lt 42 ]]; then
+          printcolor r "SA2xx/SA1xx/SCxx project period = 1-41 should behave the same blinking frequency"
+        fi
 
       fi
 
+
       read -p "enter to continue above setting..."
-      launch_command "sudo ./idll-test"$executable" --PIN_NUM $all --PERIOD $blink --DUTY_CYCLE $duty_cycle --BRIGHTNESS $brightness -- --EBOARD_TYPE EBOARD_ADi_"$board" --section GPO_LED_Drive_SetBlink"
+      launch_command "sudo ./idll-test$executable --PIN_NUM $all --PERIOD $blink --DUTY_CYCLE $duty_cycle --BRIGHTNESS $brightness -- --EBOARD_TYPE EBOARD_ADi_$board --section GPO_LED_Drive_SetBlink"
       compare_result "$result" "nPeriod: $blink"
     done
 
@@ -149,10 +171,10 @@ LED(){
 parameter(){
   title "Check bad parameter... "
   command_line=(
-  "sudo ./idll-test"$executable" --PIN_NUM 25 --PERIOD 23 --DUTY_CYCLE 255 --BRIGHTNESS 255 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section GPO_LED_Drive_SetBlink"
-  "sudo ./idll-test"$executable" --PIN_NUM 23 --PERIOD 256 --DUTY_CYCLE 255 --BRIGHTNESS 255 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section GPO_LED_Drive_SetBlink"
-  "sudo ./idll-test"$executable" --PIN_NUM 23 --PERIOD 23 --DUTY_CYCLE 256 --BRIGHTNESS 255 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section GPO_LED_Drive_SetBlink"
-  "sudo ./idll-test"$executable" --PIN_NUM 23 --PERIOD 23 --DUTY_CYCLE 255 --BRIGHTNESS 256 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section GPO_LED_Drive_SetBlink"
+  "sudo ./idll-test$executable --PIN_NUM 25 --PERIOD 23 --DUTY_CYCLE 255 --BRIGHTNESS 255 -- --EBOARD_TYPE EBOARD_ADi_$board --section GPO_LED_Drive_SetBlink"
+  "sudo ./idll-test$executable --PIN_NUM 23 --PERIOD 256 --DUTY_CYCLE 255 --BRIGHTNESS 255 -- --EBOARD_TYPE EBOARD_ADi_$board --section GPO_LED_Drive_SetBlink"
+  "sudo ./idll-test$executable --PIN_NUM 23 --PERIOD 23 --DUTY_CYCLE 256 --BRIGHTNESS 255 -- --EBOARD_TYPE EBOARD_ADi_$board --section GPO_LED_Drive_SetBlink"
+  "sudo ./idll-test$executable --PIN_NUM 23 --PERIOD 23 --DUTY_CYCLE 255 --BRIGHTNESS 256 -- --EBOARD_TYPE EBOARD_ADi_$board --section GPO_LED_Drive_SetBlink"
   )
 
   for command in "${command_line[@]}";do
