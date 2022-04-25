@@ -155,7 +155,7 @@
 write_data_old() {
   local i
   write_data=""
-  for i in $(seq 0 1677216); do
+  for i in $(seq 0 16777216); do
 #    data="$data/$i"
 #    write_data[$i]=$(shuf -i 0-255 -n 1)
 #    echo "${write_data[@]}"
@@ -174,8 +174,8 @@ write_data_old() {
 write_data() {
   local i
   write_data=""
-#  for i in $(seq 0 33554431); do
-  for i in $(seq 0 335); do
+  for i in $(seq 0 8388608); do
+#  for i in $(seq 0 1048576); do
 #    data="$data/$i"
 #    write_data[$i]=$(shuf -i 0-255 -n 1)
 #    echo "${write_data[@]}"
