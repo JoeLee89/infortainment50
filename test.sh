@@ -175,6 +175,7 @@ write_data() {
   local i
   write_data=""
   for i in $(seq 0 8388608); do
+
 #  for i in $(seq 0 1048576); do
 #    data="$data/$i"
 #    write_data[$i]=$(shuf -i 0-255 -n 1)
