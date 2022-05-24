@@ -169,9 +169,10 @@ Sram_Mirror_Write(){
   sram_size=$((totalsize/multiple))
   size_mes="SRAM size: $sram_size"
 
-  number=$((4*size))
-  read -n $number data < "$file"
-  launch_command "./idll-test$executable --sram-write $mirror_mode:$address:$data -- --EBOARD_TYPE EBOARD_ADi_$board --section SRAM_Manual_write"
+#  number=$((4*size))
+#  read -n $number data < "$file"
+#  launch_command "./idll-test$executable --sram-write $mirror_mode:$address:$data -- --EBOARD_TYPE EBOARD_ADi_$board --section SRAM_Manual_write"
+  launch_command "./idll-test$executable --sram-write $mirror_mode:$address:$file:$size -- --EBOARD_TYPE EBOARD_ADi_$board --section SRAM_Manual_write"
   if [[ "$result" =~ $size_mes ]]; then
     title b  "Sram capacity check PASS"
   else
@@ -194,10 +195,27 @@ Sram_Mirror_Read(){
 
   readarray -n $size readdata < "$file"
   read_data=${readdata[*]}
-  read_data=$(echo "$read_data" | sed 's/\s//g;s/[0-9]*://g')
+  read_data=$(echo "$read_data" | sed 's/\s//g;s/[0-9]*://g;/^$/d')
 
-  launch_command "./idll-test"$executable" --sram-read $mode:$address:$size -- --EBOARD_TYPE EBOARD_ADi_$board --section SRAM_Manual_read"
-  compare_result "$(echo "$result" | sed 's/\s//g;s/[0-9]*://g')" "$read_data"
+  result=$(./idll-test"$executable" --sram-read $mode:$address:$size -- --EBOARD_TYPE EBOARD_ADi_$board --section SRAM_Manual_read)
+  print_command "./idll-test"$executable" --sram-read $mode:$address:$size -- --EBOARD_TYPE EBOARD_ADi_$board --section SRAM_Manual_read"
+  read_from_sram=$(echo "$result" | grep -i '[0-9]:' | sed 's/\s//g;s/[0-9]*://g')
+  if [[ "$read_data" == "$read_from_sram" ]]; then
+    printf "\n"
+    printcolor g "================================================================"
+    printcolor g "Compare both read/write data : PASS"
+    printcolor g "================================================================"
+    printf "\n\n\n"
+  else
+    printf "\n"
+    printcolor r "================================================================"
+    printcolor r "Compare both read/write data : FAIL"
+    printcolor r "================================================================"
+    printf "\n\n\n"
+    read -p ""
+  fi
+
+#  compare_result "$(echo "$result" | grep -i '[0-9]:' | sed 's/\s//g;s/[0-9]*://g')" "$read_data"
 #  echo "$result" | sed 's/\s//g;s/[0-9]*://g'
 
 }
@@ -239,9 +257,9 @@ SramRandomSize(){
 #
 #  done
 
-  for (( i = 0; i < 100; i++ )); do
-#    size=$(shuf -i 1-totalsize -n 1)
-    size=$(shuf -i 1-99 -n 1)
+  for (( i = 0; i < 3; i++ )); do
+    size=$(shuf -i 1-$totalsize -n 1)
+#    size=$(shuf -i 1-99 -n 1)
   #  size=100
     differential=$((totalsize-size))
 
@@ -249,8 +267,8 @@ SramRandomSize(){
     start_address=$(shuf -i 0-$differential -n 1)
 
 
-    Sram_Mirror_Write "$mirror_mode" "$multiple" "$size" "$start_address" "dummy_write_00.txt"
-    Sram_Mirror_Read "$mirror_mode" "$start_address" "$size" "dummy_read_00.txt"
+    Sram_Mirror_Write "$mirror_mode" "$multiple" "$size" "$start_address" "dummy_write_03.txt"
+    Sram_Mirror_Read "$mirror_mode" "$start_address" "$size" "dummy_read_03.txt"
   done
 
 
@@ -265,8 +283,8 @@ SramRandomSize(){
 #  Sram_Mirror_Write "$mirror_mode" "$multiple" "$size" "$address" "dummy_write_00.txt"
 
 }
-#SramRandomSize
-#exit
+SramRandomSize
+exit
 
 
 Sram_Mirror_1_all(){
