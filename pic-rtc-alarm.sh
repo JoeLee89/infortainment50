@@ -31,7 +31,7 @@ alarm_compare_set_get(){
     alarm_get_time=$(echo "$pic_alarm_get" | grep -i "rtc alarm")
     alarm_get_time=${alarm_get_time#*Time: }
     alarm_get_time=${alarm_get_time:0:17}
-    alarm_set_time=$(echo "$pic_alarm_set" | grep -i 'rtc alarm')
+    alarm_set_time=$(echo "$pic_alarm_set" | grep -i 'RTC Alarm set to')
     alarm_set_time=${alarm_set_time#*Time: }
     alarm_set_time=${alarm_set_time:0:17}
 
@@ -63,8 +63,10 @@ alarm_compare_set_get(){
 }
 
 PicRtcAlarm(){
+  pic_rtc_sync
   title b "Setting PIC RTC Alarm"
   confirm_pic_message "rtc_alarm" "newest_unread" "all" ""
+
 
   while true; do
     printcolor r "Type waiting second before alarm trigger"
@@ -105,32 +107,37 @@ PicRtcAlarm(){
 
     pic_alarm_get=$(sudo ./idll-test"$executable" -- --EBOARD_TYPE EBOARD_ADi_"$board" --section PIC_RTC_ALARM_GET_manual [PIC][RTC][ALARM][MANUAL])
 
-    for (( i = 0; i < pic_log_filter_amount; i++ )); do
-      result=$(confirm_pic_message "rtc_alarm" "newest_unread" "0" "")
-      printcolor w "$result"
-      pic_catch_content=$(echo "$result" | grep "Time")
-      picevent_alarmtime=${pic_catch_content:8:17}
+    if [ "$pic_log_filter_amount" -eq 0 ]; then
+      title r "There is no any PIC Alarm event triggered"
+      read -p ""
+    else
+      for (( i = 0; i < pic_log_filter_amount; i++ )); do
+        result=$(confirm_pic_message "rtc_alarm" "newest_unread" "0" "")
+        printcolor w "$result"
+        pic_catch_content=$(echo "$result" | grep "Time")
+        picevent_alarmtime=${pic_catch_content:8:17}
 
-      if [[ "$alarm_get_time" == "$picevent_alarmtime" ]]; then
-        mesg=(
-        "The PIC event time: $picevent_alarmtime"
-        "The PIC Alarm expected time: $alarm_get_time"
-        )
-        title_list b mesg[@]
-        printcolor y "Alarm time VS. PIC trigger event match!!!"
-      else
-        mesg=(
-        "The PIC event time: $picevent_alarmtime"
-        "The PIC Alarm expected time: $alarm_get_time"
-        )
-        title_list b mesg[@]
+        if [[ "$alarm_get_time" == "$picevent_alarmtime" ]]; then
+          mesg=(
+          "The PIC event time: $picevent_alarmtime"
+          "The PIC Alarm expected time: $alarm_get_time"
+          )
+          title_list b mesg[@]
+          printcolor y "Alarm time VS. PIC trigger event match!!!"
+        else
+          mesg=(
+          "The PIC event time: $picevent_alarmtime"
+          "The PIC Alarm expected time: $alarm_get_time"
+          )
+          title_list b mesg[@]
 
-        printcolor b "$pic_alarm_get"
-        printcolor b "$result"
-        printcolor y "Found alarm event!! But the alarm time getting from PIC can't match the setting alarm time!!"
-        read -p "Confirm above list to check what's different..."
-      fi
-    done
+          printcolor b "$pic_alarm_get"
+          printcolor b "$result"
+          printcolor y "Found alarm event!! But the alarm time getting from PIC can't match the setting alarm time!!"
+          read -p "Confirm above list to check what's different..."
+        fi
+      done
+    fi
 
     read -p "q to exit loop RTC alarm test, or enter to repeat test: " leave
     if [ "$leave" == "q" ]; then
@@ -165,6 +172,24 @@ PicRtcAlarm_Callback() {
   done
 }
 
+BadParameter(){
+
+  command_line=(
+    "./idll-test"$executable" --pic-time 2100/03/31/01/02/03 -- --EBOARD_TYPE EBOARD_ADi_SA3X --section PIC_RTC_ALARM_SET_manual [PIC][RTC][ALARM][MANUAL]"
+    "./idll-test"$executable" --pic-time 1999/03/31/01/02/03 -- --EBOARD_TYPE EBOARD_ADi_SA3X --section PIC_RTC_ALARM_SET_manual [PIC][RTC][ALARM][MANUAL]"
+    "./idll-test"$executable" --pic-time 2022/a/15/01/02/03 -- --EBOARD_TYPE EBOARD_ADi_SA3X --section PIC_RTC_ALARM_SET_manual [PIC][RTC][ALARM][MANUAL]"
+    "./idll-test"$executable" --pic-time 2022/12/b/01/02/03 -- --EBOARD_TYPE EBOARD_ADi_SA3X --section PIC_RTC_ALARM_SET_manual [PIC][RTC][ALARM][MANUAL]"
+    "./idll-test"$executable" --pic-time 2022/12/15/c/02/03 -- --EBOARD_TYPE EBOARD_ADi_SA3X --section PIC_RTC_ALARM_SET_manual [PIC][RTC][ALARM][MANUAL]"
+    "./idll-test"$executable" --pic-time 2022/12/15/02/d/03 -- --EBOARD_TYPE EBOARD_ADi_SA3X --section PIC_RTC_ALARM_SET_manual [PIC][RTC][ALARM][MANUAL]"
+    "./idll-test"$executable" --pic-time 2022/12/15/02/12/e -- --EBOARD_TYPE EBOARD_ADi_SA3X --section PIC_RTC_ALARM_SET_manual [PIC][RTC][ALARM][MANUAL]"
+  )
+
+  for command in "${command_line[@]}";do
+    launch_command "$(echo "$command")"
+    compare_result "$result" "failed" "skip"
+  done
+}
+
 #===============================================================
 #MAIN
 #===============================================================
@@ -173,6 +198,7 @@ while true; do
   printf "${COLOR_RED_WD}1. GET PIC EVENT${COLOR_REST}\n"
   printf "${COLOR_RED_WD}2. PIC RTC ALARM  ${COLOR_REST}\n"
   printf "${COLOR_RED_WD}3. PIC RTC ALARM CALLBACK ${COLOR_REST}\n"
+  printf "${COLOR_RED_WD}4. BAD PARAMETER ${COLOR_REST}\n"
   printf "${COLOR_RED_WD}======================================${COLOR_REST}\n"
   printf "CHOOSE ONE TO TEST: "
   read -p "" input
@@ -183,6 +209,8 @@ while true; do
     PicRtcAlarm
   elif [ "$input" == 3 ]; then
     PicRtcAlarm_Callback
+  elif [ "$input" == 4 ]; then
+    BadParameter
 
   fi
 
