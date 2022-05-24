@@ -194,7 +194,7 @@ Com_port_info() {
 
 }
 ###################################################
-#Testing with BAUDRATE
+#Testing with all feature
 ###################################################
 Feature() {
 
@@ -348,6 +348,158 @@ Feature() {
     done
   done
 }
+
+swap(){
+  tmp=$input01
+  input01=$input02
+  input02=$tmp
+}
+
+###################################################
+#Testing with all MDB feature
+###################################################
+FeatureMdb() {
+
+  sudo ./idll-test"$executable" -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SerialPort_GetPort_Num_Name
+  printcolor w "Now connect each com port with loopback."
+  printcolor w "Input 1st com port number you need to test, or Enter to test all"
+  printcolor r "Please refer above list, input the port index number as listed above as 'PortIndex= ??', if you choose to test the single port."
+  read -p "PortIndex = " input001
+  printcolor w "Input 2nd com port number you need to test, or Enter to test all"
+  printcolor r "Please refer above list, input the port index number as listed above as 'PortIndex= ??', if you choose to test the single port."
+  read -p "PortIndex = " input002
+
+  input01=${com_list_amount[input001]:?"You don't choose any port!!"}
+  input02=${com_list_amount[input002]:?"You don't choose any port!!"}
+
+
+  title b "Going to test the com port as below list, please confirm."
+  echo "$input01 , $input02"
+  read -p ""
+
+  #Testing with Baudrate
+  ###################################################
+  title b "Testing with BAUDRATE"
+  for list in ${baudrate[*]}; do
+    printf "Com port Test setting:"
+    mesg=(
+      "Com Port: $input01 , $input02"
+      "Baud rate: $list"
+      "Data: $data_default"
+    )
+    title_list b mesg[@]
+
+    for i in $(seq 2); do
+      launch_command "sudo ./idll-test$executable --serial-port1 $input01 --serial-port2 $input02 --BAUDRATE $list --DATABIT $databit_default --FLOWCTRL $flowctrl_default --PARITYBIT 6 --STOPBIT $stopbit_default --SERIAL_WRITE $data_default --READ_LEN $read_len_default --LOOP 1 --READ_INTERVAL $read_interval_default -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SerialPort_RW"
+      result00=$(echo "$result" | grep -i "baudrate" | sed 's/\s//g')
+      compare_result "$result" "passed"
+      compare_result "$result00" "baudrate=$list"
+      #swap input01/input02 and then test again
+      swap
+    done
+
+  done
+
+  #Testing with DATABIT
+  ###################################################
+  title b "Testing with DATABIT"
+
+  for list in ${databit[*]}; do
+    printf "Com port Test setting:"
+    mesg=(
+      "Com Port: $input01 , $input02"
+      "Databit: $list"
+      "Data: $data_default"
+    )
+    title_list b mesg[@]
+
+    for i in $(seq 2); do
+      launch_command "sudo ./idll-test$executable --serial-port1 $input01 --serial-port2 $input02 --BAUDRATE $baudrate_default --DATABIT $list --FLOWCTRL $flowctrl_default --PARITYBIT 6 --STOPBIT $stopbit_default --SERIAL_WRITE $data_default --READ_LEN $read_len_default --LOOP 1 --READ_INTERVAL $read_interval_default -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SerialPort_RW"
+      result00=$(echo "$result" | grep -i "databit" | sed 's/\s//g')
+      compare_result "$result" "passed"
+      compare_result "$result00" "databit=$list"
+      #swap input01/input02 and then test again
+      swap
+    done
+
+  done
+
+
+
+  #Testing with flowctrl
+  ##################################################
+  title b "Testing with FLOWCTRL"
+
+  for list in ${flowctrl[*]}; do
+    printf "Com port Test setting:"
+    mesg=(
+      "com port: $input01 , $input02"
+      "Flowctrl: $list"
+      "Data: $data_default"
+    )
+    title_list b mesg[@]
+
+    for i in $(seq 2); do
+      launch_command "sudo ./idll-test"$executable" --serial-port1 $input01 --serial-port2 $input02 --BAUDRATE $baudrate_default --DATABIT $databit_default --FLOWCTRL $list --PARITYBIT 6 --STOPBIT $stopbit_default --SERIAL_WRITE $data_default --READ_LEN $read_len_default --LOOP 1 --READ_INTERVAL $read_interval_default -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SerialPort_RW"
+      result00=$(echo "$result" | grep -i "flowctrl" | sed 's/\s//g')
+      compare_result "$result" "passed"
+      compare_result "$result00" "flowCtrl=$list"
+      #swap input01/input02 and then test again
+      swap
+    done
+
+  done
+
+
+
+  #Testing with stopbit
+  ###################################################
+  title b "Testing with STOPBIT"
+
+  for list in ${stopbit[*]}; do
+    printf "Com port Test setting:"
+    mesg=(
+      "Com Port: $input01 , $input02"
+      "Stopbit: $list"
+      "Data: $data_default"
+    )
+    title_list b mesg[@]
+
+    for i in $(seq 2); do
+      launch_command "sudo ./idll-test"$executable" --serial-port1 $input01 --serial-port2 $input02 --BAUDRATE $baudrate_default --DATABIT $databit_default --FLOWCTRL $flowctrl_default --PARITYBIT 6 --STOPBIT $list --SERIAL_WRITE $data_default --READ_LEN $read_len_default --LOOP 1 --READ_INTERVAL $read_interval_default -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SerialPort_RW"
+      result00=$(echo "$result" | grep -i "stopbit" | sed 's/\s//g')
+      compare_result "$result" "passed"
+      compare_result "$result00" "stopbit=$list"
+      #swap input01/input02 and then test again
+      swap
+    done
+
+  done
+
+  #Testing with different data length
+  ###################################################
+  title b "Testing with DATA length"
+
+  for list in ${read_len[*]}; do
+    data=$(number_random list)
+    printf "Com port Test setting:"
+    mesg=(
+      "Com Port: $input01 , $input02"
+      "Data: $data"
+      "Data length:$list"
+    )
+    title_list b mesg[@]
+
+    for i in $(seq 2); do
+      launch_command "sudo ./idll-test"$executable" --serial-port1 $input01 --serial-port2 $input02 --BAUDRATE $baudrate_default --DATABIT $databit_default --FLOWCTRL $flowctrl_default --PARITYBIT 6 --STOPBIT $stopbit_default --SERIAL_WRITE $data --READ_LEN $list --LOOP 1 --READ_INTERVAL 1000 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SerialPort_RW"
+      compare_result "$result" "passed"
+      #swap input01/input02 and then test again
+      swap
+    done
+
+  done
+}
+
 
 ###################################################
 #prot to port
@@ -573,7 +725,7 @@ while true; do
   printf "${COLOR_RED_WD}3. COM PORT / RAW COM FULL PIN TEST (LEC1) ${COLOR_REST}\n"
   printf "${COLOR_RED_WD}4. COM PORT INFO ${COLOR_REST}\n"
   printf "${COLOR_RED_WD}5. COM PORT TIME OUT SETTING ${COLOR_REST}\n"
-  printf "${COLOR_RED_WD}6. COM PORT FUNCTION (MDB)(LOOPBACK) ${COLOR_REST}\n"
+  printf "${COLOR_RED_WD}6. COM PORT FUNCTION (MDB)(PORT TO PORT) ${COLOR_REST}\n"
   printf "${COLOR_RED_WD}======================================${COLOR_REST}\n"
   printf "CHOOSE ONE TO TEST: "
   read -p "" input
@@ -589,7 +741,7 @@ while true; do
   elif [ "$input" == 5 ]; then
     Time_out
   elif [ "$input" == 6 ]; then
-    mdb
+    FeatureMdb
   fi
 
 done
