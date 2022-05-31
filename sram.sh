@@ -380,9 +380,6 @@ sram_write_read_iterate(){
   printcolor r "Input how many byte you need to test or ENTER to test on all supported size:"
   read -p "" size
   size=${size:-$max_loop}
-  printf "$size"
-  exit
-
 
   #loop all first bank address
   for addr in ${bank_address[*]};do
