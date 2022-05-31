@@ -270,18 +270,6 @@ SramRandomSize(){
     Sram_Mirror_Write "$mirror_mode" "$multiple" "$size" "$start_address" "dummy_write_03.txt"
     Sram_Mirror_Read "$mirror_mode" "$start_address" "$size" "dummy_read_03.txt"
   done
-
-
-#  if [[ $start_address+$size -lt "$totalsize" ]]; then
-#    echo "pass"
-#
-#  else
-#    echo "fail"
-#
-#  fi
-#  size=${size:-((address_dec>size))}
-#  Sram_Mirror_Write "$mirror_mode" "$multiple" "$size" "$address" "dummy_write_00.txt"
-
 }
 
 
@@ -297,7 +285,7 @@ Sram_Mirror_1_all(){
   size=${size:-$address_dec}
 
   #write data to sram
-  Sram_Mirror_Write "$mirror_mode" "$multiple" "$size" "$address" "dummy_write_00.txt"
+  Sram_Mirror_Write "$mirror_mode" "$multiple" "$size" "$address" "dummy_write_03.txt"
 
   title b "Mirror=$mirror_mode to check data other banks"
   Sram_Mirror_Read "$mirror_mode" "0" "$size" "dummy_read_03.txt"
@@ -323,8 +311,8 @@ Sram_Mirror_2_2(){
   size=${size:-$address_dec}
 
   #write data to sram
-  Sram_Mirror_Write "$mirror_mode" "$multiple" "$size" "${address[0]}" "dummy_write_00.txt"
-  Sram_Mirror_Write "$mirror_mode" "$multiple" "$size" "${address[1]}" "dummy_write_01.txt"
+  Sram_Mirror_Write "$mirror_mode" "$multiple" "$size" "${address[0]}" "dummy_write_03.txt"
+  Sram_Mirror_Write "$mirror_mode" "$multiple" "$size" "${address[1]}" "dummy_write_03.txt"
 
   title b "Mirror=$mirror_mode to check data other banks"
   Sram_Mirror_Read "$mirror_mode" "${address[0]}" "$size" "dummy_read_03.txt"
@@ -353,7 +341,7 @@ SramManualSramRandom(){
   size=${size:-$address_dec}
 
   #write data to sram
-  Sram_Mirror_Write "$mirror_mode" "$multiple" "$size" "$address" "dummy_write_00.txt"
+  Sram_Mirror_Write "$mirror_mode" "$multiple" "$size" "$address" "dummy_write_03.txt"
 
   Sram_Mirror_Read "1" "$address" "$size" "dummy_read_03.txt"
 }
@@ -387,11 +375,14 @@ sram_write_read_iterate(){
   multiple=1
   address=0
   mirror_mode=1
-  max_loop=5000
+  max_loop=$totalsize
 
   printcolor r "Input how many byte you need to test or ENTER to test on all supported size:"
   read -p "" size
   size=${size:-$max_loop}
+  printf "$size"
+  exit
+
 
   #loop all first bank address
   for addr in ${bank_address[*]};do
@@ -406,7 +397,7 @@ sram_write_read_iterate(){
       )
       title_list b mesg[@]
 
-      Sram_Mirror_Write "$mirror_mode" "$multiple" "$r" "$addr" "dummy_write_02.txt"
+      Sram_Mirror_Write "$mirror_mode" "$multiple" "$r" "$addr" "dummy_write_03.txt"
       Sram_Mirror_Read "$mirror_mode" "$addr" "$r" "dummy_read_03.txt"
     done
   done
