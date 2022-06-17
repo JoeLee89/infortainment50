@@ -1,5 +1,6 @@
 #!/bin/bash
 source ./common_func.sh
+pic_rtc_sync
 #===============================================================
 #GET PIC EVENT
 #===============================================================
@@ -63,7 +64,6 @@ alarm_compare_set_get(){
 }
 
 PicRtcAlarm(){
-  pic_rtc_sync
   title b "Setting PIC RTC Alarm"
   confirm_pic_message "rtc_alarm" "newest_unread" "all" ""
 
@@ -107,7 +107,7 @@ PicRtcAlarm(){
 
     pic_alarm_get=$(sudo ./idll-test"$executable" -- --EBOARD_TYPE EBOARD_ADi_"$board" --section PIC_RTC_ALARM_GET_manual [PIC][RTC][ALARM][MANUAL])
 
-    if [ "$pic_log_filter_amount" -eq 0 ]; then
+    if [[ "$pic_log_filter_amount" -eq 0 ]]; then
       title r "There is no any PIC Alarm event triggered"
       read -p ""
     else
@@ -175,13 +175,13 @@ PicRtcAlarm_Callback() {
 BadParameter(){
 
   command_line=(
-    "./idll-test"$executable" --pic-time 2100/03/31/01/02/03 -- --EBOARD_TYPE EBOARD_ADi_SA3X --section PIC_RTC_ALARM_SET_manual [PIC][RTC][ALARM][MANUAL]"
-    "./idll-test"$executable" --pic-time 1999/03/31/01/02/03 -- --EBOARD_TYPE EBOARD_ADi_SA3X --section PIC_RTC_ALARM_SET_manual [PIC][RTC][ALARM][MANUAL]"
-    "./idll-test"$executable" --pic-time 2022/a/15/01/02/03 -- --EBOARD_TYPE EBOARD_ADi_SA3X --section PIC_RTC_ALARM_SET_manual [PIC][RTC][ALARM][MANUAL]"
-    "./idll-test"$executable" --pic-time 2022/12/b/01/02/03 -- --EBOARD_TYPE EBOARD_ADi_SA3X --section PIC_RTC_ALARM_SET_manual [PIC][RTC][ALARM][MANUAL]"
-    "./idll-test"$executable" --pic-time 2022/12/15/c/02/03 -- --EBOARD_TYPE EBOARD_ADi_SA3X --section PIC_RTC_ALARM_SET_manual [PIC][RTC][ALARM][MANUAL]"
-    "./idll-test"$executable" --pic-time 2022/12/15/02/d/03 -- --EBOARD_TYPE EBOARD_ADi_SA3X --section PIC_RTC_ALARM_SET_manual [PIC][RTC][ALARM][MANUAL]"
-    "./idll-test"$executable" --pic-time 2022/12/15/02/12/e -- --EBOARD_TYPE EBOARD_ADi_SA3X --section PIC_RTC_ALARM_SET_manual [PIC][RTC][ALARM][MANUAL]"
+    "./idll-test"$executable" --pic-time 2100/03/31/01/02/03 -- --EBOARD_TYPE EBOARD_ADi_$board --section PIC_RTC_ALARM_SET_manual [PIC][RTC][ALARM][MANUAL]"
+    "./idll-test"$executable" --pic-time 1999/03/31/01/02/03 -- --EBOARD_TYPE EBOARD_ADi_$board --section PIC_RTC_ALARM_SET_manual [PIC][RTC][ALARM][MANUAL]"
+    "./idll-test"$executable" --pic-time 2022/a/15/01/02/03 -- --EBOARD_TYPE EBOARD_ADi_$board --section PIC_RTC_ALARM_SET_manual [PIC][RTC][ALARM][MANUAL]"
+    "./idll-test"$executable" --pic-time 2022/12/b/01/02/03 -- --EBOARD_TYPE EBOARD_ADi_$board --section PIC_RTC_ALARM_SET_manual [PIC][RTC][ALARM][MANUAL]"
+    "./idll-test"$executable" --pic-time 2022/12/15/c/02/03 -- --EBOARD_TYPE EBOARD_ADi_$board --section PIC_RTC_ALARM_SET_manual [PIC][RTC][ALARM][MANUAL]"
+    "./idll-test"$executable" --pic-time 2022/12/15/02/d/03 -- --EBOARD_TYPE EBOARD_ADi_$board --section PIC_RTC_ALARM_SET_manual [PIC][RTC][ALARM][MANUAL]"
+    "./idll-test"$executable" --pic-time 2022/12/15/02/12/e -- --EBOARD_TYPE EBOARD_ADi_$board --section PIC_RTC_ALARM_SET_manual [PIC][RTC][ALARM][MANUAL]"
   )
 
   for command in "${command_line[@]}";do
