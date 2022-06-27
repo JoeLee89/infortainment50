@@ -63,22 +63,62 @@ alarm_compare_set_get(){
     fi
 }
 
+DifferentialTime(){
+  time=$key
+  if [[ "$key" =~ "/"  ]]; then
+    year=$(echo "$time" | sed 's/\/[0-9]\{0,2\}//g')
+    month=$(echo "$time" | sed 's/[0-9]\{3,4\}\///g' | sed 's/\/[0-9]*//g')
+    day=$(echo "$time" | sed 's/[0-9]\{3,4\}\/[0-9]\{1,2\}\///g' | sed 's/\/[0-9]*//g')
+    hour=$(echo "$time" | sed 's/[0-9]\{3,4\}\/[0-9]\{1,2\}\/[0-9]\{1,2\}\///g' | sed 's/\/[0-9]*//g')
+    minute=$(echo "$time" | sed 's/[0-9]\{3,4\}\/[0-9]\{1,2\}\/[0-9]\{1,2\}\/[0-9]\{1,2\}\///g' | sed 's/\/[0-9]*//g')
+    second=$(echo "$time" | sed 's/[0-9]\{3,4\}\///g' | sed 's/[0-9]\{1,2\}\///g')
+#    echo "$year-$month-$day $hour:$minute:$second"
+    now=$(date +"%s")
+    future=$(date -d "$year-$month-$day $hour:$minute:$second" +"%s")
+    echo $((future-now))
+  else
+    echo "$key"
+  fi
+
+}
+
+PicRTCSet(){
+  printcolor r "Type [second value] only or the [complete time format] to test alarm trigger"
+  printcolor r "e.g. complete time= 2022/02/08/14/35/20 (year/month/day/hour/minute/second)"
+  read -p "Setting time =  " key
+
+  printcolor r "Set alarm behavior setting"
+  printcolor r "Type 0: only event/ 1: power button trigger"
+  read -p "Trigger mode= " input
+
+  if [[ "$key" =~ "/"  ]]; then
+    launch_command "./idll-test"$executable" --pic-time $key -- --EBOARD_TYPE EBOARD_ADi_$board --section PIC_RTC_ALARM_SET_manual [PIC][RTC][ALARM][MANUAL]"
+    pic_alarm_set="$result"
+  else
+    launch_command "sudo ./idll-test"$executable" --pic-alarm_seconds $key -- --EBOARD_TYPE EBOARD_ADi_"$board" --section PIC_RTC_ALARM_SET_manual [PIC][RTC][ALARM][MANUAL]"
+    pic_alarm_set="$result"
+
+  fi
+
+}
+
 PicRtcAlarm(){
   title b "Setting PIC RTC Alarm"
   confirm_pic_message "rtc_alarm" "newest_unread" "all" ""
 
-
   while true; do
-    printcolor r "Type waiting second before alarm trigger"
-    read -p "Seconds=  " key
-
-    printcolor r "Set alarm behavior setting"
-    printcolor r "Type 0: only event/ 1: power button trigger"
-    read -p "Trigger mode= " input
-
-    print_command "sudo ./idll-test"$executable" --pic-alarm_seconds $key -- --EBOARD_TYPE EBOARD_ADi_"$board" --section PIC_RTC_ALARM_SET_manual [PIC][RTC][ALARM][MANUAL]"
-    pic_alarm_set=$(sudo ./idll-test"$executable" --pic-alarm_seconds $key -- --EBOARD_TYPE EBOARD_ADi_"$board" --section PIC_RTC_ALARM_SET_manual [PIC][RTC][ALARM][MANUAL])
-    echo "$pic_alarm_set"
+    PicRTCSet
+#    printcolor r "Type waiting second before alarm trigger"
+#    read -p "Seconds=  " key
+#
+#    printcolor r "Set alarm behavior setting"
+#    printcolor r "Type 0: only event/ 1: power button trigger"
+#    read -p "Trigger mode= " input
+#
+#
+#    print_command "sudo ./idll-test"$executable" --pic-alarm_seconds $key -- --EBOARD_TYPE EBOARD_ADi_"$board" --section PIC_RTC_ALARM_SET_manual [PIC][RTC][ALARM][MANUAL]"
+#    pic_alarm_set=$(sudo ./idll-test"$executable" --pic-alarm_seconds $key -- --EBOARD_TYPE EBOARD_ADi_"$board" --section PIC_RTC_ALARM_SET_manual [PIC][RTC][ALARM][MANUAL])
+#    echo "$pic_alarm_set"
 
     print_command "sudo ./idll-test"$executable" --rtc-alarm-conf $input -- --EBOARD_TYPE EBOARD_ADi_"$board" --section PIC_RTC_ALARM_CONF_SET_manual [PIC][RTC][ALARM][MANUAL]"
     sudo ./idll-test"$executable" --rtc-alarm-conf $input -- --EBOARD_TYPE EBOARD_ADi_"$board" --section PIC_RTC_ALARM_CONF_SET_manual [PIC][RTC][ALARM][MANUAL]
@@ -86,8 +126,13 @@ PicRtcAlarm(){
     title b "Confirm if RTC alarm time setting is correct..."
     alarm_compare_set_get
 
-    title b "Now Counting down $key seconds to trigger alarm time..."
-    for (( i = 0; i < $key; i++ )); do
+    #confirm the differential between user input time and now time by the function DifferentialTime()
+    second=$(DifferentialTime)
+    if [[ "$second" -lt 0 ]]; then
+      second=1
+    fi
+    title b "Now Counting down $second seconds to trigger alarm time..."
+    for (( i = 0; i < second; i++ )); do
         sleep 1
         printcolor r "\r$i.."
     done
