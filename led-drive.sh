@@ -99,19 +99,19 @@ LED(){
         ;;
       2 | 3)
         if [ "$board" == "SA3X" ]; then
-          printcolor r "Note: (SA3X) The duty cycle should have the same behavior, when set duty cycle = 2,3"
+          printcolor y "Note: (SA3X) The duty cycle should have the same behavior, when set duty cycle = 2,3"
 
         fi
 
         ;;
       99)
         if [ "$board" == "SA3X" ]; then
-          printcolor r "Note: (SA3X) The duty cycle should have the same behavior, when set duty cycle = 99,100"
-          printcolor r "Note: the LED will stop blinking / turned LED ON, while duty cycle = 99"
+          printcolor y "Note: (SA3X) The duty cycle should have the same behavior, when set duty cycle = 99,100"
+          printcolor r "Warning: the LED will have slightly blinking (**ALMOST SOLID ON**),while duty cycle = 99"
         fi
         ;;
       100)
-        printcolor r "Note: the LED will stop blinking / turned LED ON, while duty cycle = 100"
+        printcolor r "Warning: the LED will have slightly blinking (**ALMOST SOLID ON**), while duty cycle = 100"
         ;;
       esac
 
