@@ -53,6 +53,7 @@ sram_info(){
 }
 
 sram_info
+#organize a data list in random format for further usage
 write_data
 
 #===============================================================
@@ -660,7 +661,11 @@ crc32_caculate(){
   done
 
 }
+Performance(){
+  launch_command "sudo ./idll-test$executable -- --EBOARD_TYPE EBOARD_ADi_$board --section SRAM_Performance"
+  echo "$result"
 
+}
 
 #
 while true; do
@@ -678,6 +683,7 @@ while true; do
   printf  "${COLOR_RED_WD}11. SRAM BANK COPY${COLOR_REST}\n"
   printf  "${COLOR_RED_WD}12. SRAM BANK COMPARE${COLOR_REST}\n"
   printf  "${COLOR_RED_WD}13. SRAM CRC32 CALCULATE${COLOR_REST}\n"
+  printf  "${COLOR_RED_WD}14. SRAM PERFORMANCE${COLOR_REST}\n"
   printf  "${COLOR_RED_WD}======================================${COLOR_REST}\n"
   printf  "CHOOSE ONE TO TEST: "
   read -p "" input
@@ -708,7 +714,8 @@ while true; do
     bank_compare
   elif [ "$input" == 13 ]; then
     crc32_caculate
-
+  elif [ "$input" == 14 ]; then
+    Performance
   fi
 
 done
