@@ -5,14 +5,15 @@ sram_info(){
   #before process , it needs to reset sram mirror as none mirror
   temp=$(sudo ./idll-test"$executable" --sram-read 1:0:1 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SRAM_Manual_read)
 
-  bank=$(sudo ./idll-test"$executable" --SOURCE_BANK 0x0 --DEST_BANK 0x1 --ADDRESS 0x0 --LENGTH 0x1 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SramBankCompareManual | grep -i "sram bank" | sed 's/SRAM Bank\[Number:Size\]\=\[0x//g' | sed 's/:0x[0-9]*]//g' | sed 's/\s//g')
+  #display how many bank
+#  bank=$(sudo ./idll-test"$executable" --SOURCE_BANK 0x0 --DEST_BANK 0x1 --ADDRESS 0x0 --LENGTH 0x1 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SramBankCompareManual | grep -i "sram bank" | sed 's/SRAM Bank\[Number:Size\]\=\[0x//g' | sed 's/:0x[0-9]*]//g' | sed 's/\s//g')
+  bank_amount=$(sudo ./idll-test"$executable" -- --EBOARD_TYPE EBOARD_ADi_$board --section SRAM_Capacity | grep -i "sram bank count" | sed 's/\s//g;s/.*://g')
+
   #display each bank capacity in hex unit
-  bank_capacity_hex=$(sudo ./idll-test"$executable" --SOURCE_BANK 0x0 --DEST_BANK 0x1 --ADDRESS 0x0 --LENGTH 0x1 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SramBankCompareManual | grep -i "sram bank" | sed 's/SRAM Bank\[Number:Size\]\=\[0x//g' | sed 's/[0-9]:0x//g' | sed 's/\]//g' | sed 's/\s//g')
-
-  bank_amount=$(sudo ./idll-test"$executable" --SOURCE_BANK 0x0 --DEST_BANK 0x1 --ADDRESS 0x0 --LENGTH 0x1 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SramBankCompareManual | grep -i "sram bank" | sed 's/SRAM Bank\[Number:Size\]\=\[0x//g' | sed 's/\s//g')
-
-#  #display how many bank
-  bank_amount=${bank_amount:0:1}
+#  bank_capacity_hex=$(sudo ./idll-test"$executable" --SOURCE_BANK 0x0 --DEST_BANK 0x1 --ADDRESS 0x0 --LENGTH 0x1 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SramBankCompareManual | grep -i "sram bank" | sed 's/SRAM Bank\[Number:Size\]\=\[0x//g' | sed 's/[0-9]:0x//g' | sed 's/\]//g' | sed 's/\s//g')
+  bank_capacity_hex=$(sudo ./idll-test"$executable" -- --EBOARD_TYPE EBOARD_ADi_$board --section SRAM_Capacity | grep -i "sram bank size" | sed 's/\s//g;s/.*://g' )
+  bank_capacity_hex=$(echo "obase=16;$bank_capacity_hex"|bc)
+#  echo "$bank_capacity_hex"
 
   #incase if the project doesn't support to provide each bank info, it nees manual input info.
   if [[ "$bank_capacity_hex" == "" && "$bank_amount" == "" ]]; then
@@ -25,15 +26,11 @@ sram_info(){
     status="true"
     bank_capacity_hex=$capacity
     bank_amount=$amount
+    address_dec=$((16#$bank_capacity_hex))
   fi
 
-
-
   #display sram capacity in dec unit
-  address=$(sudo ./idll-test"$executable" -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SRAM_Capacity | grep -i 'SRAM size' | sed 's/SRAM size: //g' | sed 's/\/r//g' | sed 's/\s//g' |sed 's/]//g')
-
-  #display sram capacity in dec unit
-#  address=$(echo ${address:0:8})
+  address=$(sudo ./idll-test"$executable" -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SRAM_Capacity | grep -i 'SRAM size' | sed 's/\s//g;s/.*://g')
 
   #display bank capacity for each bank in dec format
   address_dec=$((16#$bank_capacity_hex))
@@ -46,7 +43,7 @@ sram_info(){
 
   #bank address list for some function usage
 #  bank_address=(${bank_address_list[@]})
-  echo "SRAM each bank first address = ${bank_address[*]}"
+  echo "Each SRAM bank first address = ${bank_address[*]}"
   #input how many SRAM size
   totalsize=$address
 
@@ -222,31 +219,58 @@ Sram_Mirror_Read(){
 }
 
 Sram_Bank_Check(){
-  #display each bank capacity in hex unit
-  bank_capacity_hex_02=$(sudo ./idll-test"$executable" --SOURCE_BANK 0x0 --DEST_BANK 0x1 --ADDRESS 0x0 --LENGTH 0x1 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SramBankCompareManual | grep -i "sram bank" | sed 's/SRAM Bank\[Number:Size\]\=\[0x//g' | sed 's/[0-9]:0x//g' | sed 's/\]//g' | sed 's/\s//g')
-  bank_amount_02=$(sudo ./idll-test"$executable" --SOURCE_BANK 0x0 --DEST_BANK 0x1 --ADDRESS 0x0 --LENGTH 0x1 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SramBankCompareManual | grep -i "sram bank" | sed 's/SRAM Bank\[Number:Size\]\=\[0x//g' | sed 's/\s//g')
+  local state
+  state="true"
+  #display how many bank
+  bank_amount_02=$(sudo ./idll-test"$executable" -- --EBOARD_TYPE EBOARD_ADi_$board --section SRAM_Capacity | grep -i "sram bank count" | sed 's/\s//g;s/.*://g')
 
-#  #display how many bank
-  bank_amount_02=$(echo ${bank_amount:0:1})
+  #display each bank capacity
+  bank_capacity_dec_02=$(sudo ./idll-test"$executable" -- --EBOARD_TYPE EBOARD_ADi_$board --section SRAM_Capacity | grep -i "sram bank size" | sed 's/\s//g;s/.*://g')
 
   #incase if the project doesn't support to provide each bank info, it nees manual input info.
-  if [[ "$bank_capacity_hex_02" == "" || "$bank_amount_02" == "" ]]; then
+  if [[ "$bank_capacity_dec_02" == "" || "$bank_amount_02" == "" ]]; then
     return
   fi
-
-  #display bank capacity for each bank in dec format
-  address_dec_02=$((16#$bank_capacity_hex_02))
-
-  if [[ "$bank_amount_02" -ne  "$bank_amount" || "$address_dec" -ne "$address_dec_02" ]]; then
-    printcolor r "The following test result is different"
+  case $1 in
+  1)
+    if [[ "$bank_amount_02" -ne  "$bank_amount" || "$address_dec" -ne "$bank_capacity_dec_02" ]]; then
+      state="false"
+    else
+      state="true"
+    fi
+    ;;
+  2)
+    if [[ "$bank_amount_02" -ne  "$((bank_amount/2))" || "$address_dec" -ne "$bank_capacity_dec_02" ]]; then
+      state="false"
+    else
+      state="true"
+    fi
+    ;;
+  3)
+    if [[ "$bank_amount_02" -ne  "$((bank_amount/4))" || "$address_dec" -ne "$bank_capacity_dec_02" ]]; then
+      state="false"
+    else
+      state="true"
+    fi
+    ;;
+  4)
+    if [[ "$bank_amount_02" -ne  "$((bank_amount/4))" || "$address_dec" -ne "$bank_capacity_dec_02" ]]; then
+      state="false"
+    else
+      state="true"
+    fi
+    ;;
+  esac
+  if [[ "$state" == "false" ]]; then
+    printcolor r "The following test result does't follow mirror rule"
     printcolor r "======================================="
-    printcolor r "the sram info BEFORE sram mirror test"
+    printcolor r "the sram info BEFORE sram mirror=1 test"
     printcolor r "the sram bank =$bank_amount"
     printcolor r "the sram bank size = $address_dec"
     printcolor r "======================================="
-    printcolor r "the sram info AFTER sram mirror test"
+    printcolor r "the sram info AFTER sram mirror=$1 test"
     printcolor r "the sram bank =$bank_amount_02"
-    printcolor r "the sram bank size = $address_dec_02"
+    printcolor r "the sram bank size = $bank_capacity_dec_02"
     read -p ""
   fi
 }
@@ -290,7 +314,7 @@ Sram_Mirror_1_all(){
 
   title b "Mirror=$mirror_mode to check data other banks"
   Sram_Mirror_Read "$mirror_mode" "0" "$size" "dummy_read_03.txt"
-  Sram_Bank_Check
+  Sram_Bank_Check "$mirror_mode"
 
   title b "Mirror=1 to check data other banks"
   for addresss in ${bank_address[*]}; do
@@ -318,7 +342,7 @@ Sram_Mirror_2_2(){
   title b "Mirror=$mirror_mode to check data other banks"
   Sram_Mirror_Read "$mirror_mode" "${address[0]}" "$size" "dummy_read_03.txt"
   Sram_Mirror_Read "$mirror_mode" "${address[1]}" "$size" "dummy_read_03.txt"
-  Sram_Bank_Check
+  Sram_Bank_Check "$mirror_mode"
 
   title b "Mirror=1 to check data other banks"
   Sram_Mirror_Read "1" "${bank_address[0]}" "$size" "dummy_read_03.txt"
@@ -466,9 +490,10 @@ Write_with_verify(){
 bank_copy(){
 #  sram_info
   local k i
+  echo "abc"
   for k in "SramBankCopyManual" "SramAsyncBankCopyManual"; do
 
-    for (( m = 0; m < bank-1; m++ )); do
+    for (( m = 0; m < bank_amount-1; m++ )); do
       echo "abc"
       for (( i = 0; i < bank_capacity_hex; i=i+10000 )); do
 
@@ -478,6 +503,7 @@ bank_copy(){
 #        result=$(sudo ./idll-test"$executable" --ADDRESS 0x0 --LENGTH 0x$i --SOURCE_BANK 0x$m --DEST_BANK 0x$((m+1)) -- --EBOARD_TYPE EBOARD_ADi_"$board" --section $k)
 #        printcolor w "$result"
         verify_result "$result"
+        Sram_Bank_Check 1
 
         if [[ "$status" == "fail" ]]; then
           status=""
@@ -494,7 +520,7 @@ bank_copy(){
 #===============================================================
 bank_reset(){
   title b "Now make both banks sync up first."
-  if [ "$bank" == "4" ]; then
+  if [ "$bank_amount" == "4" ]; then
     temp=$(sudo ./idll-test"$executable" --ADDRESS 0x0 --LENGTH 0x$bank_capacity_hex --SOURCE_BANK 0x0 --DEST_BANK 0x1 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SramBankCopyManual)
     temp=$(sudo ./idll-test"$executable" --ADDRESS 0x0 --LENGTH 0x$bank_capacity_hex --SOURCE_BANK 0x1 --DEST_BANK 0x2 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SramBankCopyManual)
     temp=$(sudo ./idll-test"$executable" --ADDRESS 0x0 --LENGTH 0x$bank_capacity_hex --SOURCE_BANK 0x2 --DEST_BANK 0x3 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SramBankCopyManual)
@@ -552,6 +578,7 @@ bank_compare(){
 
       launch_command "sudo ./idll-test$executable --SOURCE_BANK 0x0 --DEST_BANK 0x1 --ADDRESS 0x0 --LENGTH 0x$bank_capacity_hex -- --EBOARD_TYPE EBOARD_ADi_$board --section $h"
       compare_result "$result" "failed" "skip"
+      Sram_Bank_Check 1
 #      verify_result "$result"
 
 #      if [ "$status" == "fail" ]; then
