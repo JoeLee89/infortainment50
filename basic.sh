@@ -12,7 +12,7 @@ ErrorString() {
 Initial() {
   while true; do
 #    echo "$board"
-    print_command "sudo ./idll-test"$executable" -- --EBOARD_TYPE EBOARD_ADi_BSEC_BACC --section adiLibInit"
+    print_command "sudo ./idll-test"$executable" -- --EBOARD_TYPE EBOARD_ADi_$board --section adiLibInit"
     result=$(sudo ./idll-test"$executable" -- --EBOARD_TYPE EBOARD_ADi_"$board" --section adiLibInit)
     echo "$result"
     if [[ "$result" == ""  ]]; then
