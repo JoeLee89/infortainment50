@@ -363,7 +363,7 @@ SramManualSramRandom(){
 
   printcolor r "Input how many byte you need to test or ENTER to test on all supported size:"
   read -p "" size
-  size=${size:-$address_dec}
+  size=${size:-$totalsize}
 
   #write data to sram
   Sram_Mirror_Write "$mirror_mode" "$multiple" "$size" "$address" "dummy_write_03.txt"
@@ -646,7 +646,7 @@ crc32_caculate(){
       printf  "$content" > temp.txt
 
       #write temp.txt data to sram in specific address
-      sudo ./idll-test"$executable" --ADDRESS $start_address --LENGTH $length --SRAM-DATA-FILE="temp.txt" -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SramWriteWithVerifyManual
+      sudo ./idll-test"$executable" --ADDRESS $start_address --LENGTH $length --SRAM-DATA-FILE=temp.txt -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SramWriteWithVerifyManual
 
       title b "Test sram calculate CRC32 ($l)"
       title b "writing data : $m"
@@ -677,6 +677,17 @@ crc32_caculate(){
       crc=$(crc32 fake8m.txt)
       file="fake8m.txt"
       ;;
+    "4194304")
+      crc=$(crc32 fake4m.txt)
+      file="fake4m.txt"
+      ;;
+    "2097152")
+      crc=$(crc32 fake2m.txt)
+      file="fake2m.txt"
+      ;;
+    "1048576")
+      crc=$(crc32 fake1m.txt)
+      file="fake1m.txt"
     esac
 
     title b "Try to write all supported capacity in sram, and calculate the all supported capacity crc32"
