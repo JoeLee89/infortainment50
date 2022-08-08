@@ -212,8 +212,6 @@ result_check(){
     fi
     ;;
   esac
-
-
 }
 
 meter_detection_loop(){
@@ -274,11 +272,11 @@ meter_detection_loop(){
 
         for (( l = 0; l < $meter_total_pin; l++ )); do
           title b "Now get detection ( PORT ) value"
-          launch_command "sudo ./idll-test"$executable" -- --EBOARD_TYPE EBOARD_ADi_"$board" --section HardMeter_Detection_ByPort"
+          launch_command "sudo ./idll-test$executable -- --EBOARD_TYPE EBOARD_ADi_$board --section HardMeter_Detection_ByPort"
           result_check "port" "0x0" "$result"
 
           title b "Now get detection ( PIN ) value"
-          launch_command "sudo ./idll-test"$executable" --HM_PIN_ID $l -- --EBOARD_TYPE EBOARD_ADi_"$board" --section HardMeter_Detection_ByPin"
+          launch_command "sudo ./idll-test$executable --HM_PIN_ID $l -- --EBOARD_TYPE EBOARD_ADi_$board --section HardMeter_Detection_ByPin"
         done
 
         if [[ "$now" > "$after" || "$status" == "fail" ]]; then
@@ -288,6 +286,107 @@ meter_detection_loop(){
       done
       ;;
     esac
+  done
+}
+
+#===============================================================
+#Hard Meter Fail / Reset test
+#===============================================================
+
+FailGetPort(){
+  local re temp
+  temp=$(sudo ./idll-test"$executable"  -- --EBOARD_TYPE EBOARD_ADi_"$board" --section adiHardMeterFailureGetPort_manu)
+  re=$(echo "$temp" | grep '^Failure')
+
+  if [ "$1" == "y" ]; then
+    print_command "sudo ./idll-test$executable  -- --EBOARD_TYPE EBOARD_ADi_$board --section adiHardMeterFailureGetPort_manu"
+    echo "$temp"
+  fi
+  re=${re:0-$2}
+  printcolor b "Fail Get Port=$re"
+
+}
+
+FailGetPin(){
+  local re status temp
+  local list=()
+
+  for (( i = 0; i < $1; i++ )); do
+    temp=$(sudo ./idll-test"$executable" --PIN_VAL 0x$i -- --EBOARD_TYPE EBOARD_ADi_"$board" --section adiHardMeterFailureGetPin_manu )
+
+    if [ "$2" == "y" ]; then
+      print_command "sudo ./idll-test$executable  --PIN_VAL 0x$i -- --EBOARD_TYPE EBOARD_ADi_$board --section adiHardMeterFailureGetPin_manu "
+      echo "$temp"
+    fi
+
+    re=$(echo "$temp" | grep '^Failure' | sed 's/\s//g ; s/.*://g ; s/,.*//g')
+    if [ "$re" == "" ]; then
+      re=0
+    fi
+    list[(($1-i))]=$re
+  done
+  status=$(echo "${list[*]}" | sed 's/\s//g')
+  printcolor b "Fail Get Pin =$status"
+}
+
+
+FailResetPort(){
+  local reset_pin input_list
+  for (( i = 0; i < $1; i++ )); do
+    input_list[i]=1
+  done
+  total_pin=$(echo "${input_list[*]}" | sed 's/\s//g')
+#  total_pin=$(${input_list[*]}//'\s'//"")
+#  total_pin=$(echo "obase=10;$total_pin"|bc)
+  total_pin=$((2#$total_pin))
+  printcolor y "Input amount hard meter pins in DEC/HEX format to reset, or press ENTER to reset all port:"
+  echo "DEC= xxx (x means digit in DEC format)"
+  echo "HEX= 0x (Prefix needs to add '0x' string to recognize it is the HEX format)"
+  read -p "Reset Pins= " reset_pin
+  reset_pin=${reset_pin:-$total_pin}
+
+  launch_command "sudo ./idll-test$executable --PORT_VAL $reset_pin -- --EBOARD_TYPE EBOARD_ADi_$board --section adiHardMeterOutResetPort_manu"
+  compare_result "$result" "passed"
+}
+
+FailResetPin(){
+  local reset_pin input_list
+  printcolor y "Input which hard meter pin in DEC format to reset:"
+  echo "DEC= xxx (x means digit in DEC format 0-15)"
+#  echo "HEX= 0x (Prefix needs to add '0x' string to recognize it is the HEX format)"
+  read -p "Reset Pins= " reset_pin
+  reset_pin=${reset_pin:-"0"}
+  launch_command "sudo ./idll-test$executable --PIN_VAL 0x$reset_pin -- --EBOARD_TYPE EBOARD_ADi_$board --section adiHardMeterOutResetPin_manu"
+  compare_result "$result" "passed"
+}
+
+
+FailFunction(){
+  local amount_pin pin_status port_status
+  title b "Hard meter Failure get port/pin function test"
+  echo "Pressing [y] to export idll output result, or just [ENTER] to skip detailed output:"
+  read -p "" export
+  echo "Input how many pins are hard meter supported?"
+  read -p "Amount supported pins= " amount_pin
+  export=${export:-"n"}
+
+  while true; do
+    printcolor y "Press [x] to exit the loop of fail get port/pin status."
+    printcolor y "Press [1] to reset port."
+    printcolor y "Press [2] to reset pin."
+
+    echo "Collecting all failure pins status, please wait...."
+    FailGetPin "$amount_pin" "$export"
+    FailGetPort "$export" "$amount_pin"
+
+    read -rsn 1 -t 0.01 input
+    if [[ "$input" == "x" ]]; then
+      break
+    elif [[ "$input" == "1" ]]; then
+      FailResetPort "$amount_pin"
+    elif [[ "$input" == "2" ]]; then
+      FailResetPin
+    fi
   done
 }
 
@@ -302,6 +401,7 @@ while true; do
   printf  "${COLOR_RED_WD}6. GET PIN / SET PIN / GET METER SENSE ${COLOR_REST}\n"
   printf  "${COLOR_RED_WD}7. METER DETECTION PIN/PORT ${COLOR_REST}\n"
   printf  "${COLOR_RED_WD}8. METER DETECTION PIN/PORT LOOP${COLOR_REST}\n"
+  printf  "${COLOR_RED_WD}9. METER FAILURE / RESET${COLOR_REST}\n"
   printf  "${COLOR_RED_WD}=========================================================${COLOR_REST}\n"
   printf "CHOOSE ONE TO TEST: "
   read -p "" input
@@ -322,6 +422,8 @@ while true; do
       meter_detection
   elif [ "$input" == 8 ]; then
       meter_detection_loop
+  elif [ "$input" == 9 ]; then
+      FailFunction
 
   fi
 
