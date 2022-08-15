@@ -3,7 +3,7 @@ source ./common_func.sh
 times=0
 
 loop_time=$(date +%s --date="+12 hour")
-file_name="all_tests_auto_EBOARD_ADi_LEC1.bat"
+file_name="all_tests_auto_EBOARD_ADi_LEC1.sh"
 
 
 #set start time will make the program pause, until the setting time reach
@@ -62,6 +62,7 @@ while true; do
       echo "================================================================================================" >> result.log
       echo "$con" >> result.log
       echo "================================================================================================" >> result.log
+      compare_result "$result" "passed"
       echo "$result" >> result.log
     fi
   done < $file_name
