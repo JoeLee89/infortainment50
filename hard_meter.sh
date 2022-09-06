@@ -316,10 +316,10 @@ FailGetPin() {
   local list=()
 
   for ((i = 0; i < $1; i++)); do
-    temp=$(sudo ./idll-test"$executable" --PIN_VAL 0x$i -- --EBOARD_TYPE EBOARD_ADi_"$board" --section adiHardMeterFailureGetPin_manu)
+    temp=$(sudo ./idll-test"$executable" --PIN_VAL $i -- --EBOARD_TYPE EBOARD_ADi_"$board" --section adiHardMeterFailureGetPin_manu)
 
     if [ "$2" == "y" ]; then
-      print_command "sudo ./idll-test$executable  --PIN_VAL 0x$i -- --EBOARD_TYPE EBOARD_ADi_$board --section adiHardMeterFailureGetPin_manu "
+      print_command "sudo ./idll-test$executable  --PIN_VAL $i -- --EBOARD_TYPE EBOARD_ADi_$board --section adiHardMeterFailureGetPin_manu "
       echo "$temp"
     fi
     #clear all unneeded string
@@ -380,7 +380,7 @@ MeterRotateSelection() {
 
       ;;
     "SA3X")
-      GetSetPin_SA3X
+      GetSetPin_SA3
 
       ;;
     "BSEC_BACC")
