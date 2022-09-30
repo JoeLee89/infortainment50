@@ -90,12 +90,6 @@ ConfirmAutoManual() {
 
     fi
   done <$file_name
-
-#  echo "auto=${auto[*]}"
-#  echo ""
-#  echo ""
-#  echo "manual=${manual[*]}"
-#  read -p ""
 }
 
 AutoManual() {
@@ -121,7 +115,6 @@ AutoAuto() {
   for i in "${auto[@]}"; do
     launch_command "$i"
     compare_result "$result" "passed"
-    break
   done
 }
 
