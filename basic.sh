@@ -53,9 +53,10 @@ FPGA_FW_SHA256() {
 ConfirmAutoManual() {
   local require file_name auto_item con
   file_name="all_tests_auto_EBOARD_ADi_SC1X.sh"
-  auto_item=('LED' 'Brightness' 'GPO' 'SPI' 'I2C' 'HardMeter')
-  auto=()
-  manual=()
+  auto_item=('LED' 'Brightness' 'GPO' 'SPI' 'I2C' 'HardMeter' 'SecMeter')
+  #skip to set auto/manual at initial time on purpose, so it would be save the auto / manual list without reset at second run this function
+#  auto=()
+#  manual=()
   m=0
   n=0
   found=0
@@ -65,8 +66,12 @@ ConfirmAutoManual() {
   printcolor r "If it is incorrect, input the correct file name, or just [Enter] to test."
   read -p "" file_name2
 
-
   echo "Start collecting auto script data...."
+  echo "auto=${#auto[*]}"
+  if [[ "${#auto[*]}" -gt 0 ]]; then
+    return
+  fi
+
   while read line; do
     con=$(echo "$line" | grep -i "idll-test" | grep -v "#" | sed "s/\r//g")
     #loop all auto list to compare with $con to check if they match, if match, then plus 1 in $found
