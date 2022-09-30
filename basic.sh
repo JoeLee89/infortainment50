@@ -59,6 +59,13 @@ ConfirmAutoManual() {
   m=0
   n=0
   found=0
+  file_name=${file_name2:-$file_name}
+
+  printcolor r "So far, the auto script file name: $file_name"
+  printcolor r "If it is incorrect, input the correct file name, or just [Enter] to test."
+  read -p "" file_name2
+
+
   echo "Start collecting auto script data...."
   while read line; do
     con=$(echo "$line" | grep -i "idll-test" | grep -v "#" | sed "s/\r//g")
@@ -66,14 +73,15 @@ ConfirmAutoManual() {
     if [[ "${#con}" -ne 0 ]]; then
       for i in ${auto_item[*]}; do
         if [[ "$con" =~ $i ]]; then
-          auto[$m]="$con"
+          manual[$m]="$con"
           ((m++))
           ((found++))
         fi
       done
+
     #if $found is 0, meaning it won't match with auto_item list, so add the $con value to $manual list
       if [ "$found" -eq 0 ]; then
-        manual[$n]="$con"
+        auto[$n]="$con"
         ((n++))
       fi
 
@@ -82,6 +90,12 @@ ConfirmAutoManual() {
 
     fi
   done <$file_name
+
+#  echo "auto=${auto[*]}"
+#  echo ""
+#  echo ""
+#  echo "manual=${manual[*]}"
+#  read -p ""
 }
 
 AutoManual() {
@@ -107,6 +121,7 @@ AutoAuto() {
   for i in "${auto[@]}"; do
     launch_command "$i"
     compare_result "$result" "passed"
+    break
   done
 }
 
