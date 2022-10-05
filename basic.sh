@@ -52,7 +52,7 @@ FPGA_FW_SHA256() {
 
 ConfirmAutoManual() {
   local require file_name auto_item con
-  file_name="all_tests_auto_EBOARD_ADi_SC1X.sh"
+  file_name="all_tests_auto_EBOARD_ADi_$board.sh"
   auto_item=('LED' 'Brightness' 'GPO' 'SPI' 'I2C' 'HardMeter' 'SecMeter')
   #skip to set auto/manual at initial time on purpose, so it would be save the auto / manual list without reset at second run this function
 #  auto=()
@@ -60,11 +60,12 @@ ConfirmAutoManual() {
   m=0
   n=0
   found=0
-  file_name=${file_name2:-$file_name}
+
 
   printcolor r "So far, the auto script file name: $file_name"
   printcolor r "If it is incorrect, input the correct file name, or just [Enter] to test."
   read -p "" file_name2
+  file_name=${file_name2:-$file_name}
 
   echo "Start collecting auto script data...."
   echo "auto=${#auto[*]}"
