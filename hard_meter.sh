@@ -422,6 +422,19 @@ FailFunction() {
     fi
   done
 }
+Performance(){
+  printcolor b "The default response time = 3000us. if you want to change other response time"
+  printcolor b "if you want to change other response time, input the setting time you won't, or just [Enter] to test."
+  read -p "" set_time
+  set_time=${set_time:-3000}
+  launch_command "./idll-test_hm_perform$executable --KEY_VALUE_PAIRS 'adiHardMeterGetPort_threshold=$set_time,adiHardMeterSetPort_threshold=$set_time,adiHardMeterFailureGetPort_threshold=$set_time' --PORT_VAL 0xf0 --HM-Int-Count 1 --LOOP 200 -- --EBOARD_TYPE EBOARD_ADi_$board --section HardMeter_ByPort_NCV7240"
+  compare_result "$result" "passed"
+
+
+
+}
+
+
 
 #========================================================================================================
 
@@ -435,6 +448,7 @@ while true; do
   printf "${COLOR_RED_WD}7. METER DETECTION PIN/PORT ${COLOR_REST}\n"
   printf "${COLOR_RED_WD}8. METER DETECTION PIN/PORT LOOP${COLOR_REST}\n"
   printf "${COLOR_RED_WD}9. METER FAILURE / RESET${COLOR_REST}\n"
+  printf "${COLOR_RED_WD}10. METER PERFORMANCE${COLOR_REST}\n"
   printf "${COLOR_RED_WD}=========================================================${COLOR_REST}\n"
   printf "CHOOSE ONE TO TEST: "
   read -p "" input
@@ -457,6 +471,8 @@ while true; do
     meter_detection_loop
   elif [ "$input" == 9 ]; then
     FailFunction
+  elif [ "$input" == 10 ]; then
+    Performance
 
   fi
 
