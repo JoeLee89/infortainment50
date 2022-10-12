@@ -53,7 +53,7 @@ FPGA_FW_SHA256() {
 ConfirmAutoManual() {
   local require file_name auto_item con
   file_name="all_tests_auto_EBOARD_ADi_$board.sh"
-  auto_item=('LED' 'Brightness' 'GPO' 'SPI' 'I2C' 'HardMeter' 'SecMeter')
+  auto_item=('LED' 'Brightness' 'SPI' 'I2C' 'HardMeter' 'SecMeter')
   #skip to set auto/manual at initial time on purpose, so it would be save the auto / manual list without reset at second run this function
 #  auto=()
 #  manual=()
