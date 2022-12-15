@@ -57,13 +57,15 @@ while true; do
     con=$(echo "$line" | grep -i "idll-test" | grep -v "#" | sed "s/\r//g")
 
     if [[ "${#con}" -ne 0 ]]; then
-      echo "$(date +%D-%T)" >>result.log
-      launch_command "$con"
-      echo "================================================================================================" >> result.log
-      echo "$con" >> result.log
-      echo "================================================================================================" >> result.log
-      compare_result "$result" "passed"
-      echo "$result" >> result.log
+      for (( i = 1; i < $(shuf -i 3-6 -n 1); i++ )); do
+          echo "$(date +%D-%T)" >> result.log
+          launch_command "$con"
+          echo "================================================================================================" >> result.log
+          echo "$con" >> result.log
+          echo "================================================================================================" >> result.log
+          compare_result "$result" "passed"
+          echo "$result" >> result.log
+      done
     fi
   done < $file_name
 
