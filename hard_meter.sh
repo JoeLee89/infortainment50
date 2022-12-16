@@ -429,7 +429,7 @@ Performance(){
   printcolor b "if you want to change other response time, input the setting time you won't, or just [Enter] to test."
   read -p "" set_time
   set_time=${set_time:-3000}
-  launch_command "./idll-test_hm_perform$executable --KEY_VALUE_PAIRS 'adiHardMeterGetPort_threshold=$set_time,adiHardMeterSetPort_threshold=$set_time,adiHardMeterFailureGetPort_threshold=$set_time' --PORT_VAL 0xf0 --HM-Int-Count 1 --LOOP $test_time -- --EBOARD_TYPE EBOARD_ADi_$board --section HardMeter_ByPort_NCV7240"
+  launch_command "./idll-test$executable --KEY_VALUE_PAIRS 'adiHardMeterGetPort_threshold=$set_time,adiHardMeterSetPort_threshold=$set_time,adiHardMeterFailureGetPort_threshold=$set_time' --PORT_VAL 0xf0 --HM-Int-Count 1 --LOOP $test_time -- --EBOARD_TYPE EBOARD_ADi_$board --section HardMeter_ByPort_NCV7240"
   compare_result "$result" "passed"
 
 
