@@ -422,7 +422,8 @@ FailFunction() {
     fi
   done
 }
-Performance(){
+
+PerformanceNCV7240(){
   local test_time set_time
   test_time=300
   printcolor b "The default response time = 3000us. if you want to change other response time"
@@ -432,10 +433,34 @@ Performance(){
   launch_command "./idll-test$executable --KEY_VALUE_PAIRS 'adiHardMeterGetPort_threshold=$set_time,adiHardMeterSetPort_threshold=$set_time,adiHardMeterFailureGetPort_threshold=$set_time' --PORT_VAL 0xf0 --HM-Int-Count 1 --LOOP $test_time -- --EBOARD_TYPE EBOARD_ADi_$board --section HardMeter_ByPort_NCV7240"
   compare_result "$result" "passed"
 
-
-
 }
 
+PerformanceOther(){
+  local test_time set_time
+  test_time=300
+  printcolor b "The default response time = 3000us. if you want to change other response time"
+  printcolor b "if you want to change other response time, input the setting time you won't, or just [Enter] to test."
+  read -p "" set_time
+  set_time=${set_time:-3000}
+  for (( i = 0; i < $test_time; i++ )); do
+    # to get specific strings from result Max=
+    launch_command "./idll-test$executable --PORT_VAL 0xFF --HM-Int-Count 1 -- --EBOARD_TYPE EBOARD_ADi_SC1X --section HardMeter_ByPort"
+    getport_time=$(echo "$result"  | grep -i adihardmetergetport | grep -o "Max=[0-9]*" | sed 's/Max=//g' )
+    setport_time=$(echo "$result"  | grep -i adihardmetersetport | grep -o "Max=[0-9]*" | sed 's/Max=//g' )
+    senseport_time=$(echo "$result"  | grep -i adihardmetergetsenseport | grep -o "Max=[0-9]*" | sed 's/Max=//g' )
+    if [[ "$getport_time" -gt 3000 || "$setport_time" -gt 3000 || "$senseport_time" -gt 3000  ]]; then
+      log_to_file
+      printcolor r "Some the of the hardmeter response time are large than 3000us as below list."
+      printcolor r "============================================================================"
+      printcolor w "Getport_time=$getport_time us"
+      printcolor w "Setport_time=$setport_time us"
+      printcolor w "Senseport_time=$senseport_time us"
+      read -p ""
+    fi
+
+  done
+#  compare_result "$result" "passed"
+}
 
 
 #========================================================================================================
@@ -450,7 +475,8 @@ while true; do
   printf "${COLOR_RED_WD}7. METER DETECTION PIN/PORT ${COLOR_REST}\n"
   printf "${COLOR_RED_WD}8. METER DETECTION PIN/PORT LOOP${COLOR_REST}\n"
   printf "${COLOR_RED_WD}9. METER FAILURE / RESET${COLOR_REST}\n"
-  printf "${COLOR_RED_WD}10. METER PERFORMANCE${COLOR_REST}\n"
+  printf "${COLOR_RED_WD}10. METER PERFORMANCE (SA3X/LEC1)${COLOR_REST}\n"
+  printf "${COLOR_RED_WD}11. METER PERFORMANCE (SA2X/SCxx)${COLOR_REST}\n"
   printf "${COLOR_RED_WD}=========================================================${COLOR_REST}\n"
   printf "CHOOSE ONE TO TEST: "
   read -p "" input
@@ -474,8 +500,9 @@ while true; do
   elif [ "$input" == 9 ]; then
     FailFunction
   elif [ "$input" == 10 ]; then
-    Performance
-
+    PerformanceNCV7240
+  elif [ "$input" == 11 ]; then
+    PerformanceOther
   fi
 
 done
