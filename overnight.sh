@@ -50,7 +50,11 @@ other() {
     echo "================================================================================================" >> result.log
     echo "$other_cmd" >> result.log
     echo "================================================================================================" >> result.log
-    compare_result "$other" "passed"
+    if [[ "$result" =~ "27 == 0" ]]; then
+      .
+    elif [[ "$result" =~ "failed" ]]; then
+      log_to_file
+    fi
     echo "$other" >> result.log
   done
 }
