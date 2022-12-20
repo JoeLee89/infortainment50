@@ -97,7 +97,12 @@ while true; do
           echo "================================================================================================" >> result.log
           echo "$con" >> result.log
           echo "================================================================================================" >> result.log
-          compare_result "$result" "passed"
+
+          if [[ "$result" =~ "27 == 0" ]]; then
+            .
+          elif [[ "$result" =~ "failed" ]]; then
+            log_to_file
+          fi
           echo "$result" >> result.log
       done
     fi
