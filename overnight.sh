@@ -50,10 +50,10 @@ other() {
     echo "================================================================================================" >> result.log
     echo "$other_cmd" >> result.log
     echo "================================================================================================" >> result.log
-    get_mesg=$(grep -i "27 == 0" $result)
-    if [[ "$result" =~ "27 == 0" && "$result" =~ "failed" ]]; then
+    get_mesg=$(echo "$other" | grep -i "27 == 0")
+    if [[ "$other" =~ "27 == 0" && "$other" =~ "failed" ]]; then
       .
-    elif [[ "$result" =~ "failed" && $get_mesg == "" ]]; then
+    elif [[ "$other" =~ "failed" && $get_mesg == "" ]]; then
       log_to_file
       echo "$other" >> result.log
     else
