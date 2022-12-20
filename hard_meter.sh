@@ -444,7 +444,7 @@ PerformanceOther(){
   set_time=${set_time:-3000}
   for (( i = 0; i < $test_time; i++ )); do
     # to get specific strings from result Max=
-    launch_command "./idll-test$executable --PORT_VAL 0xFF --HM-Int-Count 1 -- --EBOARD_TYPE EBOARD_ADi_SC1X --section HardMeter_ByPort"
+    launch_command "./idll-test$executable --PORT_VAL 0xFF --HM-Int-Count 1 -- --EBOARD_TYPE EBOARD_ADi_$board --section HardMeter_ByPort"
     getport_time=$(echo "$result"  | grep -i adihardmetergetport | grep -o "Max=[0-9]*" | sed 's/Max=//g' )
     setport_time=$(echo "$result"  | grep -i adihardmetersetport | grep -o "Max=[0-9]*" | sed 's/Max=//g' )
     senseport_time=$(echo "$result"  | grep -i adihardmetergetsenseport | grep -o "Max=[0-9]*" | sed 's/Max=//g' )
