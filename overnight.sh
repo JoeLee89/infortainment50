@@ -54,8 +54,11 @@ other() {
       .
     elif [[ "$result" =~ "failed" ]]; then
       log_to_file
+      echo "$other" >> result.log
+    else
+      echo "$other" >> result.log
     fi
-    echo "$other" >> result.log
+
   done
 }
 
