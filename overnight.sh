@@ -102,9 +102,7 @@ while true; do
           echo "$con" >> result.log
           echo "================================================================================================" >> result.log
 
-          if [[ "$result" =~ "27 == 0" ]]; then
-            .
-          elif [[ "$result" =~ "failed" ]]; then
+          if [[ "$result" =~ "failed" ]]; then
             log_to_file
           fi
           echo "$result" >> result.log
