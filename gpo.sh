@@ -95,10 +95,10 @@ Blink() {
       title r "Note: make sure the brightness should be changed to 100, while blinking/period test."
       printf "${COLOR_BLUE_WD}LED: $all ${COLOR_REST}\n"
       printf "${COLOR_BLUE_WD}Duty cycle: $duty_cycle ${COLOR_REST}\n"
-      printf "${COLOR_BLUE_WD}period( 0=disable blinking): ${COLOR_RED_WD}$perioddd  = $perioddd ms ${COLOR_REST}\n"
+      printf "${COLOR_BLUE_WD}period( 0,1=disable blinking): ${COLOR_RED_WD}$perioddd  = $perioddd ms ${COLOR_REST}\n"
 
       if [[ "$perioddd" -eq 0 || "$perioddd" -eq 1 ]]; then
-        printf "${COLOR_RED_WD}Note: period = 0,1 should stop blinking!! \n${COLOR_REST}"
+        printf "${COLOR_RED_WD}Note: period = 0,1 should stop blinking, and light off \n${COLOR_REST}"
       fi
 
 

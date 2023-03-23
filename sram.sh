@@ -205,10 +205,20 @@ Sram_Mirror_Read(){
     printcolor g "================================================================"
     printf "\n\n\n"
   else
+    echo "readfrom file data= $read_data"
+    echo "read from sram= $read_from_sram"
+    echo "result= $result"
     printf "\n"
     printcolor r "================================================================"
     printcolor r "Compare both read/write data : FAIL"
     printcolor r "================================================================"
+    printcolor y "The following info is the data from sram and file data."
+    printcolor y "----------------------------------------------------------------"
+    printcolor y "Read from file data: \n$read_data"
+    printcolor y "----------------------------------------------------------------"
+    printcolor y "Read from sram: \n$read_from_sram"
+    print_command "./idll-test"$executable" --sram-read $mode:$address:$size -- --EBOARD_TYPE EBOARD_ADi_$board --section SRAM_Manual_read"
+    echo "result= $result"
     printf "\n\n\n"
     read -p ""
   fi
@@ -227,7 +237,7 @@ Sram_Bank_Check(){
   #display each bank capacity
   bank_capacity_dec_02=$(sudo ./idll-test"$executable" -- --EBOARD_TYPE EBOARD_ADi_$board --section SRAM_Capacity | grep -i "sram bank size" | sed 's/\s//g;s/.*://g')
 
-  #incase if the project doesn't support to provide each bank info, it nees manual input info.
+  #incase if the project doesn't support to provide each bank info, it needs manual input info.
   if [[ "$bank_capacity_dec_02" == "" || "$bank_amount_02" == "" ]]; then
     return
   fi
@@ -384,6 +394,10 @@ BadParameter(){
     "sudo ./idll-test"$executable" --sram-read 1:100000000:3 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SRAM_Manual_read"
     "sudo ./idll-test"$executable" --sram-read 1:100000000:3 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SRAM_Manual_read"
     "sudo ./idll-test"$executable" --sram-read 5:1:3 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SRAM_Manual_read"
+    "sudo ./idll-test"$executable" --ADDRESS 4 --LENGTH 5 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SramAsyncCalculateCRC32Manual"
+    "sudo ./idll-test"$executable" --ADDRESS 5 --LENGTH 4 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SramAsyncCalculateCRC32Manual"
+    "sudo ./idll-test"$executable" --ADDRESS 4 --LENGTH 5 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SramCalculateCRC32Manual"
+    "sudo ./idll-test"$executable" --ADDRESS 5 --LENGTH 4 -- --EBOARD_TYPE EBOARD_ADi_"$board" --section SramCalculateCRC32Manual"
   )
 
   for command in "${command_line[@]}";do
@@ -494,20 +508,20 @@ bank_copy(){
   for k in "SramBankCopyManual" "SramAsyncBankCopyManual"; do
 
     for (( m = 0; m < bank_amount-1; m++ )); do
-      echo "abc"
       for (( i = 0; i < bank_capacity_hex; i=i+10000 )); do
 
         title b "Bank copy ($k) : data length setting from small to bigger + all bank compare"
-        launch_command "sudo ./idll-test"$executable" --ADDRESS 0x0 --LENGTH 0x$i --SOURCE_BANK 0x$m --DEST_BANK 0x$((m+1)) -- --EBOARD_TYPE EBOARD_ADi_"$board" --section $k"
-#        print_command "sudo ./idll-test"$executable" --ADDRESS 0x0 --LENGTH 0x$i --SOURCE_BANK 0x$m --DEST_BANK 0x$((m+1)) -- --EBOARD_TYPE EBOARD_ADi_"$board" --section $k"
-#        result=$(sudo ./idll-test"$executable" --ADDRESS 0x0 --LENGTH 0x$i --SOURCE_BANK 0x$m --DEST_BANK 0x$((m+1)) -- --EBOARD_TYPE EBOARD_ADi_"$board" --section $k)
-#        printcolor w "$result"
-        verify_result "$result"
-        Sram_Bank_Check 1
-
-        if [[ "$status" == "fail" ]]; then
-          status=""
-          break
+        if [ "$i" -gt 0 ]; then
+          launch_command "sudo ./idll-test"$executable" --ADDRESS 0x0 --LENGTH 0x$i --SOURCE_BANK 0x$m --DEST_BANK 0x$((m+1)) -- --EBOARD_TYPE EBOARD_ADi_"$board" --section $k"
+  #        print_command "sudo ./idll-test"$executable" --ADDRESS 0x0 --LENGTH 0x$i --SOURCE_BANK 0x$m --DEST_BANK 0x$((m+1)) -- --EBOARD_TYPE EBOARD_ADi_"$board" --section $k"
+  #        result=$(sudo ./idll-test"$executable" --ADDRESS 0x0 --LENGTH 0x$i --SOURCE_BANK 0x$m --DEST_BANK 0x$((m+1)) -- --EBOARD_TYPE EBOARD_ADi_"$board" --section $k)
+  #        printcolor w "$result"
+          verify_result "$result"
+          Sram_Bank_Check 1
+          if [[ "$status" == "fail" ]]; then
+            status=""
+            break
+          fi
         fi
 
       done
@@ -626,7 +640,7 @@ crc32_caculate(){
   #confirm is CRC32 is install
   crc_tool
   #try to verify with different length
-  content_list=('ilovejoe' '1111' ' 22222222' '1' '23' 'iou')
+  content_list=('ilovejoe' '1111' '2222222222222222' '2333' 'ioou')
 
   #size for all list and write in sram / verify the data by crc32
   for l in "SramAsyncCalculateCRC32Manual" "SramCalculateCRC32Manual"; do
@@ -635,12 +649,20 @@ crc32_caculate(){
       local length crc
       length=${#content}
       #create a txt file to make the content is the same as sram
-      start_address=$( shuf -i 0-$totalsize -n 1)
+      while true; do
+        start_address=$( shuf -i 0-$totalsize -n 1)
+        if [ $((start_address%4)) -eq 0 ]; then
+          break
+        fi
+      done
+
       differential=$((totalsize-start_address))
 
-      if [[ "$differential" -lt "$length"  ]]; then
-        content=${content:0:$differential}
-        length=$differential
+      if [[ "$differential" -lt "$length" ]]; then
+        start_address=$((start_address-4))
+        content=${content:0:4}
+#        content=${content:0:$differential}
+        length=4
       fi
 
       printf  "$content" > temp.txt

@@ -50,12 +50,16 @@ other() {
     echo "================================================================================================" >> result.log
     echo "$other_cmd" >> result.log
     echo "================================================================================================" >> result.log
-    if [[ "$result" =~ "27 == 0" ]]; then
+    get_mesg=$(echo "$other" | grep -i "27 == 0")
+    if [[ "$other" =~ "27 == 0" && "$other" =~ "failed" ]]; then
       .
-    elif [[ "$result" =~ "failed" ]]; then
+    elif [[ "$other" =~ "failed" && $get_mesg == "" ]]; then
       log_to_file
+      echo "$other" >> result.log
+    else
+      echo "$other" >> result.log
     fi
-    echo "$other" >> result.log
+
   done
 }
 
@@ -97,7 +101,10 @@ while true; do
           echo "================================================================================================" >> result.log
           echo "$con" >> result.log
           echo "================================================================================================" >> result.log
-          compare_result "$result" "passed"
+
+          if [[ "$result" =~ "failed" ]]; then
+            log_to_file
+          fi
           echo "$result" >> result.log
       done
     fi

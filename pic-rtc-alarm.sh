@@ -128,6 +128,7 @@ PicRtcAlarm(){
 
     #confirm the differential between user input time and now time by the function DifferentialTime()
     second=$(DifferentialTime)
+    second=$((second+5))
     if [[ "$second" -lt 0 ]]; then
       second=1
     fi
@@ -143,7 +144,7 @@ PicRtcAlarm(){
     launch_command "sudo ./idll-test"$executable" -- --EBOARD_TYPE EBOARD_ADi_"$board" --section PIC_RTC_ALARM_CONF_GET_manual [PIC][RTC][ALARM][MANUAL]"
     compare_result "$result" "Current RTC Alarm Configuration is '$input'"
 
-    #check if the trigger time match the setting alarm time from pic event
+    #check if the trigger time match the setting alarm time from pic eventq
     #==============================================================================
     title b "Now will confirm if event exists and date time match the one been setting before."
 
