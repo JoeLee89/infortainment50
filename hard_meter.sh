@@ -442,6 +442,18 @@ PerformanceOther(){
   printcolor b "if you want to change other response time, input the setting time you won't, or just [Enter] to test."
   read -p "" set_time
   set_time=${set_time:-3000}
+  launch_command "./idll-test$executable --KEY_VALUE_PAIRS 'adiHardMeterGetPort_threshold=$set_time,adiHardMeterSetPort_threshold=$set_time,adiHardMeterFailureGetPort_threshold=$set_time' --PORT_VAL 0xf0 --HM-Int-Count 1 --LOOP $test_time -- --EBOARD_TYPE EBOARD_ADi_$board --section HardMeter_ByPort"
+  compare_result "$result" "passed"
+
+}
+
+PerformanceOther_old(){
+  local test_time set_time
+  test_time=300
+  printcolor b "The default response time = 3000us. if you want to change other response time"
+  printcolor b "if you want to change other response time, input the setting time you won't, or just [Enter] to test."
+  read -p "" set_time
+  set_time=${set_time:-3000}
   for (( i = 0; i < $test_time; i++ )); do
     # to get specific strings from result Max=
     launch_command "./idll-test$executable --PORT_VAL 0xFF --HM-Int-Count 1 -- --EBOARD_TYPE EBOARD_ADi_$board --section HardMeter_ByPort"
