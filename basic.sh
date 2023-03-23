@@ -62,7 +62,7 @@ ConfirmAutoManual() {
   found=0
 
 
-  printcolor r "So far, the auto script file name: $file_name"
+  printcolor r "So far, the auto script file name: ($file_name)"
   printcolor r "If it is incorrect, input the correct file name, or just [Enter] to test."
   read -p "" file_name2
   file_name=${file_name2:-$file_name}
@@ -115,12 +115,65 @@ AutoManual() {
   done
 
 }
+other() {
+#  print_command "sudo ./idll-test"$executable" -- --EBOARD_TYPE EBOARD_ADi_"$board" "Scenario: adiWatchdogSetSystemRestart" -s"
+  local other other_cmd
+  other_00=$(./idll-test"$executable" -- --EBOARD_TYPE EBOARD_ADi_"$board" "Scenario: adiWatchdogSetSystemRestart")
+  other_00_cmd="./idll-test"$executable" -- --EBOARD_TYPE EBOARD_ADi_"$board" \"Scenario: adiWatchdogSetSystemRestart\""
+  other_01=$(./idll-test"$executable" -- --EBOARD_TYPE EBOARD_ADi_"$board" "Scenario: adiBatSetLowVoltage")
+  other_01_cmd="./idll-test"$executable" -- --EBOARD_TYPE EBOARD_ADi_"$board" \"Scenario: adiBatSetLowVoltage\""
+  other_02=$(./idll-test"$executable" --BAT-QTY 3 -- --EBOARD_TYPE EBOARD_ADi_"$board" "Scenario: adiBatSetWarningVoltage")
+  other_02_cmd="./idll-test"$executable" --BAT-QTY 3 -- --EBOARD_TYPE EBOARD_ADi_"$board" \"Scenario: adiBatSetWarningVoltage\""
+
+  case $1 in
+  'adiWatchdogSetSystemRestart')
+    other=$other_00
+    other_cmd=$other_00_cmd
+
+    ;;
+  'adiBatSetLowVoltage')
+    other=$other_01
+    other_cmd=$other_01_cmd
+
+    ;;
+  'adiBatSetWarningVoltage')
+    other=$other_02
+    other_cmd=$other_02_cmd
+
+    ;;
+  esac
+
+  print_command "$other_cmd"
+  echo "$other"
+  echo "================================================================================================" >> result.log
+  echo "$other_cmd" >> result.log
+  echo "================================================================================================" >> result.log
+  if [[ "$result" =~ "27 == 0" ]]; then
+    .
+  elif [[ "$result" =~ "failed" ]]; then
+    log_to_file
+  fi
+  echo "$other" >> result.log
+}
 
 AutoAuto() {
   ConfirmAutoManual
+  done=0
+  other_command=("adiWatchdogSetSystemRestart" "adiBatSetLowVoltage" "adiBatSetWarningVoltage" )
   for i in "${auto[@]}"; do
-    launch_command "$i"
-    compare_result "$result" "passed"
+    for m in "${other_command[@]}"; do
+      if [[ "$i" =~ $m  ]]; then
+        other "$m"
+        done=1
+      fi
+
+    done
+    if [ "$done" -eq 0  ]; then
+      launch_command "$i"
+      compare_result "$result" "passed"
+    fi
+    done=0
+
   done
 }
 
