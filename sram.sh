@@ -640,7 +640,7 @@ crc32_caculate(){
   #confirm is CRC32 is install
   crc_tool
   #try to verify with different length
-  content_list=('ilovejoe' '1111' '2222222222222222' '2333' 'ioou')
+  content_list=('ilovejoe' '1111' '2222222222222220' '2333' 'ioou')
 
   #size for all list and write in sram / verify the data by crc32
   for l in "SramAsyncCalculateCRC32Manual" "SramCalculateCRC32Manual"; do
