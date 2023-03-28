@@ -60,8 +60,10 @@ pic_battery_low_callback(){
   battery_wanring_reset "warning"
 
   while true ; do
-    printcolor y "Input Interval (unit: minute):"
-    read -p "" interval
+#    printcolor y "Input Interval (unit: minute):"
+#    read -p "" interval
+    #interval time item has been removed decided by SW/PM
+    interval=1
     printcolor y "Input Mask (1,2,4,7):"
     read -p "" mask
 
@@ -141,8 +143,9 @@ pic_battery_warning_callback(){
   battery_wanring_reset "low"
 
   while true ; do
-    printcolor y "Input Interval (unit: minute):"
-    read -p "" interval
+#    printcolor y "Input Interval (unit: minute):"
+#    read -p "" interval
+    interval=1
     printcolor y "Input Mask (1,2,4,7):"
     read -p "" mask
 
