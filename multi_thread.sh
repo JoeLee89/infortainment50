@@ -71,23 +71,15 @@ wait_times() {
 }
 
 act(){
+  local ss
+  ss=("$@")
   while read line; do
     con=$(echo "$line" | grep -i "idll-test" | grep -v "#\|\"" | sed "s/\r//g")
-    ss=("$@")
 
     if [[ "${#con}" -ne 0 ]]; then
-      # check if the array list include the list other_command, and run the function other()
       for script in "${ss[@]}"; do
-        other_command=("adiWatchdogSetSystemRestart" "adiBatSetLowVoltage" "adiBatSetWarningVoltage" )
-        for m in "${other_command[@]}"; do
-          if [[ "$script" == "$m"  ]]; then
-            other "$m"
-          fi
-        done
-
         # check if the $con include any string in returned array list
         if [[ "$con" =~ $script ]]; then
-#          echo "$con"
           echo "$(date +%D-%T)" >> result.log
           launch_command "$con"
           echo "================================================================================================" >> result.log
@@ -99,12 +91,22 @@ act(){
           fi
           echo "$result" >> result.log
         fi
-
-
-
       done
     fi
   done < $file_name
+
+  # check if the array list include the list other_command, and run the function other()
+  for scripts in "${ss[@]}"; do
+    other_command=("adiWatchdogSetSystemRestart" "adiBatSetLowVoltage" "adiBatSetWarningVoltage" )
+    for m in "${other_command[@]}"; do
+      if [[ "$scripts" == "$m"  ]]; then
+        echo "ss=${ss[*]}"
+        echo "other=$m"
+        echo "con=$con"
+#            other "$m"
+      fi
+    done
+  done
 
 }
 
@@ -119,6 +121,16 @@ lEC1_6=("EEPROM_Auto" )
 lEC1_7=("SRAM" )
 lEC1_8=("RAWCOM" )
 lEC1_9=("RAWCOM" )
+
+SC1X_0=("Ext_SPI")
+SC1X_1=("GPO_LED")
+SC1X_2=("HardMeter" "SecMeter" "User_LED")
+SC1X_3=("Ext_I2C")
+SC1X_4=("GPO_LED_Drive")
+SC1X_5=("HighCurrent_LED")
+SC1X_6=("BatteryVoltage" "1Wire" "adiWatchdogSetSystemRestart" "adiBatSetLowVoltage" "adiBatSetWarningVoltage")
+SC1X_7=("EEPROM_Auto" )
+SC1X_8=("SRAM" )
 
 if [[ "$start_time" -ne 0 ]]; then
   wait_times
@@ -150,23 +162,25 @@ while true; do
     .
     ;;
   "SC1X")
-    act "${lEC1_0[@]}" &
-    act "${lEC1_1[@]}" &
-    act "${lEC1_2[@]}" &
-    act "${lEC1_3[@]}" &
-    act "${lEC1_4[@]}" &
-    act "${lEC1_5[@]}" &
-    act "${lEC1_6[@]}" &
-    act "${lEC1_7[@]}" &
-    act "${lEC1_8[@]}" &
-#    act "${lEC1_9[@]}" &
+
+    act "${SC1X_0[@]}" &
+    act "${SC1X_1[@]}" &
+    act "${SC1X_2[@]}" &
+    act "${SC1X_3[@]}" &
+    act "${SC1X_4[@]}" &
+    act "${SC1X_5[@]}" &
+    act "${SC1X_6[@]}" &
+    act "${SC1X_7[@]}" &
+    act "${SC1X_8[@]}" &
+    echo "33333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333"
+    wait
+    break
     ;;
   "SA3X")
     .
     ;;
   esac
 
-  wait
 
   if [ "$(date +%s)" -gt "$loop_time" ]; then
     echo "The setting time's up!!"
