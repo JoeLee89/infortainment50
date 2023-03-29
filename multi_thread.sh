@@ -103,7 +103,7 @@ act(){
 #        echo "ss=${ss[*]}"
 #        echo "other=$m"
 #        echo "con=$con"
-            other "$m"
+        other "$m"
       fi
     done
   done
