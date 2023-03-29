@@ -100,10 +100,10 @@ act(){
     other_command=("adiWatchdogSetSystemRestart" "adiBatSetLowVoltage" "adiBatSetWarningVoltage" )
     for m in "${other_command[@]}"; do
       if [[ "$scripts" == "$m"  ]]; then
-        echo "ss=${ss[*]}"
-        echo "other=$m"
-        echo "con=$con"
-#            other "$m"
+#        echo "ss=${ss[*]}"
+#        echo "other=$m"
+#        echo "con=$con"
+            other "$m"
       fi
     done
   done
