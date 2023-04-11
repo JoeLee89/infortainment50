@@ -1,6 +1,53 @@
 #!/bin/bash
 source ./common_func.sh
 
+Period_definition(){
+  input=$1
+  actual_period="(too hard to calculate)"
+
+  if [[ "$board" == "SC1X" || "$board" == "BSEC_BACC" ]]; then
+    case $input in
+    0)
+      actual_period=0
+      ;;
+
+    [1-9]|[1-3][0-9]|4[0-1])
+      actual_period=41
+      ;;
+    4[1-9]|[5-7][0-9]|8[0-3])
+      actual_period=83
+      ;;
+    8[4-9]|9[0-9]|1[0-1][0-9]|12[0-5])
+      actual_period=125
+      ;;
+    12[6-9]|1[3-5][0-9]|16[0-7])
+      actual_period=167
+      ;;
+    9959|99[6-9][0-9]|10000)
+      actual_period=10000
+      ;;
+    esac
+  fi
+
+  if [ "$board" == "SA3X" ]; then
+    case $input in
+    0)
+      actual_period=0
+      ;;
+
+    [1-9]|[1-9][0-9]|1[0-5][0-9]|16[0-6])
+      actual_period=166
+      ;;
+    16[7-9]|2[0-9][0-9]|3[0-3][0-3])
+      actual_period=333
+      ;;
+    983[4-9]|9[8-9][4-9][0-9]|10000)
+      actual_period=10000
+      ;;
+    esac
+  fi
+
+}
 #===============================================================
 #LED all function
 #===============================================================
@@ -11,7 +58,6 @@ count_whole_blink_sec(){
   echo "$(echo "scale=2; $blink_period_/$project_period_" | bc)"
 }
 
-
 LED_set_get(){
   title b "To set / get pin and set / get port value for all leds"
   read -p "This test will loop forever, until press CTRL+C..."
@@ -21,6 +67,7 @@ LED_set_get(){
     compare_result "$result" "pass"
   done
 }
+
 LedLoop(){
   local period duty pin
   read -p "How many pins does the project support?" pin
@@ -123,12 +170,13 @@ LED(){
 
 
     for blink in "${blink_period_list[@]}"; do
-
+      Period_definition "$blink"
       #blink period setting
       printf "\n\n\n"
       printcolor w "LED: $all"
       printcolor w "Setting brightness: $brightness"
-      printcolor r "Blinking period: $blink ms"
+      printcolor r "Setting Blinking period: $blink ms"
+      printcolor r "Actual Blinking period: $actual_period ms"
       printcolor w "Duty cycle: $duty_cycle"
       printcolor w "==============================================="
       printcolor r 'Note: brightness will NOT be changed, while blink/period item testing'
