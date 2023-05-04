@@ -153,7 +153,7 @@ disabling_blinking_muti_condition(){
           printcolor w "Enter to test."
           read -p ""
           launch_command "sudo ./idll-test"$executable" --PIN_NUM $led --PIN_VAL $i -- --EBOARD_TYPE EBOARD_ADi_"$board" --section GPO_LED_SetPin"
-          echo "Confirm if the LED stops blinking, and enter to next text"
+          echo "Confirm if the LED stops blinking, and enter to next test"
           read -p ""
         ;;
 
