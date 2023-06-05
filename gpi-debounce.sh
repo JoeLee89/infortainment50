@@ -472,6 +472,23 @@ ConfirmPulseWidth() {
 }
 
 #===============================================================
+#GPI interrupt test with GPO
+#===============================================================
+GPI_GPO(){
+  title b "Start to test the GPI-GPO looping test"
+  title r "Before the test plug in GPI-GPO looback cable to GPI/GPO port"
+  title r "Note: please close the testing terminal window, after the test. Because gpi interrupt is running in multi-thread mode."
+  read -p ""
+  local amount_pins=4294967295
+  print_command "sudo ./idll-test"$executable" --DI-Int true --DI-Mask "$amount_pins" --DI-Int-Rising true --DI-Int-Falling true -- --EBOARD_TYPE EBOARD_ADi_"$board" --section Register_DI_Manu &"
+  sudo ./idll-test"$executable" --DI-Int true --DI-Mask "$amount_pins" --DI-Int-Rising true --DI-Int-Falling true -- --EBOARD_TYPE EBOARD_ADi_"$board" --section Register_DI_Manu &
+  for i in $(seq 0 10000); do
+    random=$(shuf -i 0-$amount_pins -n 1)
+    temp=$(sudo ./idll-test"$executable" --PORT_VAL "$random" -- --EBOARD_TYPE EBOARD_ADi_"$board" --section GPO_LED_SetPort) &
+  done
+}
+
+#===============================================================
 # callback for bsec card
 #===============================================================
 Callback_Bsec() {
@@ -509,6 +526,7 @@ while true; do
   printf  "${COLOR_RED_WD}8. DI INTERRUPT ${COLOR_REST}\n"
   printf  "${COLOR_RED_WD}9. PULSE WIDTH CONFIRM(loopback cable) ${COLOR_REST}\n"
   printf  "${COLOR_RED_WD}10. CALLBACK (BSEC ONLY) ${COLOR_REST}\n"
+  printf  "${COLOR_RED_WD}11. GPI-GPO LOOPBACK ${COLOR_REST}\n"
   printf  "${COLOR_RED_WD}======================================${COLOR_REST}\n"
   printf  "CHOOSE ONE TO TEST: "
   read -p "" input
@@ -534,6 +552,8 @@ while true; do
     ConfirmPulseWidth
   elif [ "$input" == 10 ]; then
     Callback_Bsec
+  elif [ "$input" == 11 ]; then
+    GPI_GPO
   fi
 
 done
