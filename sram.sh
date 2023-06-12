@@ -166,11 +166,22 @@ Sram_Mirror_Write(){
   echo "totalsize=$totalsize"
   sram_size=$((totalsize/multiple))
   size_mes="SRAM size: $sram_size"
+  if [[ "$file" =~ "txt" ]]; then
+    launch_command "./idll-test$executable --sram-write $mirror_mode:$address:$file:$size -- --EBOARD_TYPE EBOARD_ADi_$board --section SRAM_Manual_write"
+  else
+    for (( i = 0; i < size; i++ )); do
+      temp="$file/"
+      _file+="$temp"
+    done
+    launch_command "./idll-test$executable --sram-write $mirror_mode:$address:$_file -- --EBOARD_TYPE EBOARD_ADi_$board --section SRAM_Manual_write"
 
+  fi
 #  number=$((4*size))
 #  read -n $number data < "$file"
 #  launch_command "./idll-test$executable --sram-write $mirror_mode:$address:$data -- --EBOARD_TYPE EBOARD_ADi_$board --section SRAM_Manual_write"
-  launch_command "./idll-test$executable --sram-write $mirror_mode:$address:$file:$size -- --EBOARD_TYPE EBOARD_ADi_$board --section SRAM_Manual_write"
+
+
+#  launch_command "./idll-test$executable --sram-write $mirror_mode:$address:$file:$size -- --EBOARD_TYPE EBOARD_ADi_$board --section SRAM_Manual_write"
   if [[ "$result" =~ $size_mes ]]; then
     title b  "Sram capacity check PASS"
   else
@@ -182,7 +193,6 @@ Sram_Mirror_Write(){
 
   compare_result "$result" "mirror mode: $mirror_mode"
 }
-
 
 Sram_Mirror_Read(){
   local read_data size address mode file
@@ -307,7 +317,29 @@ SramRandomSize(){
   done
 }
 
+Sram_Write_Only(){
+  local size address
+  printcolor r "Writing data to sram will be fixed as [123]"
+  printcolor r "Input how many byte you need to test or ENTER to test on all supported size, or just ENTER to be 10"
+  read -p "" size
+  size=${size:-10}
+  printcolor r "Input the address you need to write. Or just ENTER to set address = 0"
+  read -p "" address
+  address=${address:-0}
+  Sram_Mirror_Write "1" "1" "$size" "$address" "123"
+}
 
+Sram_Read_Only(){
+  local size address
+  printcolor r "Input how many byte you need to read, or just ENTER to be 10"
+  read -p "" size
+  size=${size:-"10"}
+  printcolor r "Input the address you need to read. Or just ENTER to set address = 0"
+  read -p "" address
+  address=${address:-"0"}
+  launch_command "./idll-test$executable --sram-read 1:$address:$size -- --EBOARD_TYPE EBOARD_ADi_$board --section SRAM_Manual_read"
+
+}
 
 Sram_Mirror_1_all(){
   local size mirror_mode multiple address
@@ -744,6 +776,8 @@ while true; do
   printf  "${COLOR_RED_WD}12. SRAM BANK COMPARE${COLOR_REST}\n"
   printf  "${COLOR_RED_WD}13. SRAM CRC32 CALCULATE${COLOR_REST}\n"
   printf  "${COLOR_RED_WD}14. SRAM PERFORMANCE${COLOR_REST}\n"
+  printf  "${COLOR_RED_WD}15. SRAM WRITE ONLY${COLOR_REST}\n"
+  printf  "${COLOR_RED_WD}16. SRAM READ ONLY${COLOR_REST}\n"
   printf  "${COLOR_RED_WD}======================================${COLOR_REST}\n"
   printf  "CHOOSE ONE TO TEST: "
   read -p "" input
@@ -776,6 +810,10 @@ while true; do
     crc32_caculate
   elif [ "$input" == 14 ]; then
     Performance
+  elif [ "$input" == 15 ]; then
+    Sram_Write_Only
+  elif [ "$input" == 16 ]; then
+    Sram_Read_Only
   fi
 
 done
