@@ -503,6 +503,7 @@ queue_amount() {
 #===============================================================
 
 filter_user() {
+  local key
   mseg=(
   "The following type list you can choose by number to display all unread new pic event: "
   "1. battery"
@@ -516,33 +517,42 @@ filter_user() {
   )
   title_list w mseg[@]
   read -p "Type your choose: " input
-  case $input in
-  1)
-    confirm_pic_message "battery" "newest_unread" "all" ""
-    ;;
-  2)
-    confirm_pic_message "intrusion_open" "newest_unread" "all" ""
-    ;;
-  3)
-    confirm_pic_message "intrusion_close" "newest_unread" "all" ""
-    ;;
-  4)
-    confirm_pic_message "power" "newest_unread" "all" ""
-    ;;
-  5)
-    confirm_pic_message "button" "newest_unread" "all" ""
-    ;;
-  6)
-    confirm_pic_message "battery_alarm" "newest_unread" "all" ""
-    ;;
-  7)
-    confirm_pic_message "rtc_alarm" "newest_unread" "all" ""
-    ;;
-  8)
-    confirm_pic_message "any" "newest_unread" "all" ""
-    ;;
-  esac
+  while true; do
+    case $input in
+    1)
+      confirm_pic_message "battery" "newest_unread" "all" ""
+      ;;
+    2)
+      confirm_pic_message "intrusion_open" "newest_unread" "all" ""
+      ;;
+    3)
+      confirm_pic_message "intrusion_close" "newest_unread" "all" ""
+      ;;
+    4)
+      confirm_pic_message "power" "newest_unread" "all" ""
+      ;;
+    5)
+      confirm_pic_message "button" "newest_unread" "all" ""
+      ;;
+    6)
+      confirm_pic_message "battery_alarm" "newest_unread" "all" ""
+      ;;
+    7)
+      confirm_pic_message "rtc_alarm" "newest_unread" "all" ""
+      ;;
+    8)
+      confirm_pic_message "any" "newest_unread" "all" ""
+      ;;
+    esac
 
+    #loop the item user input, until the x string is typed.
+    echo "Enter to loop the event check, or [x] to exit."
+        read -r -p "" key
+        key=${key:-$input}
+        if [[ "$key" == "x" ]]; then
+          break
+        fi
+  done
 }
 #===============================================================
 #MAIN
