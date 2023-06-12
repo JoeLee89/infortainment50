@@ -318,15 +318,17 @@ SramRandomSize(){
 }
 
 Sram_Write_Only(){
-  local size address
-  printcolor r "Writing data to sram will be fixed as [123]"
-  printcolor r "Input how many byte you need to test or ENTER to test on all supported size, or just ENTER to be 10"
+  local size address data
+  printcolor r "Input what data [0-255] you need to write in SRAM or ENTER to test with data [123]"
+  read -p "" data
+  data=${data:-123}
+  printcolor r "Input how many byte you need to test ,or just ENTER to be 10"
   read -p "" size
   size=${size:-10}
   printcolor r "Input the address you need to write. Or just ENTER to set address = 0"
   read -p "" address
   address=${address:-0}
-  Sram_Mirror_Write "1" "1" "$size" "$address" "123"
+  Sram_Mirror_Write "1" "1" "$size" "$address" "$data"
 }
 
 Sram_Read_Only(){

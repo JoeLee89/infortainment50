@@ -475,17 +475,26 @@ ConfirmPulseWidth() {
 #GPI interrupt test with GPO
 #===============================================================
 GPI_GPO(){
-  title b "Start to test the GPI-GPO looping test"
-  title r "Before the test plug in GPI-GPO looback cable to GPI/GPO port"
-  title r "Note: please close the testing terminal window, after the test. Because gpi interrupt is running in multi-thread mode."
-  read -p ""
+  local input
   local amount_pins=4294967295
-  print_command "sudo ./idll-test"$executable" --DI-Int true --DI-Mask "$amount_pins" --DI-Int-Rising true --DI-Int-Falling true -- --EBOARD_TYPE EBOARD_ADi_"$board" --section Register_DI_Manu &"
-  sudo ./idll-test"$executable" --DI-Int true --DI-Mask "$amount_pins" --DI-Int-Rising true --DI-Int-Falling true -- --EBOARD_TYPE EBOARD_ADi_"$board" --section Register_DI_Manu &
-  for i in $(seq 0 10000); do
-    random=$(shuf -i 0-$amount_pins -n 1)
-    temp=$(sudo ./idll-test"$executable" --PORT_VAL "$random" -- --EBOARD_TYPE EBOARD_ADi_"$board" --section GPO_LED_SetPort) &
-  done
+  title b "Start to test the GPI-GPO looping test"
+  printcolor r "***Before the test, MAKE SURE GPI-GPO looback cable is plugged to GPI/GPO port"
+  printcolor y "1. GPI CALLBACK."
+  printcolor y "2. GPO FUNCTION."
+  printcolor y "Choose one of above test item:"
+  read -p "" input
+  case $input in
+  1)
+    print_command "sudo ./idll-test"$executable" --DI-Int true --DI-Mask "$amount_pins" --DI-Int-Rising true --DI-Int-Falling true -- --EBOARD_TYPE EBOARD_ADi_"$board" --section Register_DI_Manu &"
+    sudo ./idll-test"$executable" --DI-Int true --DI-Mask "$amount_pins" --DI-Int-Rising true --DI-Int-Falling true -- --EBOARD_TYPE EBOARD_ADi_"$board" --section Register_DI_Manu
+    ;;
+  2)
+    for i in $(seq 0 1000); do
+      random=$(shuf -i 0-$amount_pins -n 1)
+      sudo ./idll-test"$executable" --PORT_VAL "$random" -- --EBOARD_TYPE EBOARD_ADi_"$board" --section GPO_LED_SetPort
+    done
+    ;;
+  esac
 }
 
 #===============================================================
