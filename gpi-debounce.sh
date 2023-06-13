@@ -489,9 +489,10 @@ GPI_GPO(){
     sudo ./idll-test"$executable" --DI-Int true --DI-Mask "$amount_pins" --DI-Int-Rising true --DI-Int-Falling true -- --EBOARD_TYPE EBOARD_ADi_"$board" --section Register_DI_Manu
     ;;
   2)
-    for i in $(seq 0 1000); do
+    for i in $(seq 0 10000); do
       random=$(shuf -i 0-$amount_pins -n 1)
       sudo ./idll-test"$executable" --PORT_VAL "$random" -- --EBOARD_TYPE EBOARD_ADi_"$board" --section GPO_LED_SetPort
+      printcolor y "Booting Times = $i"
     done
     printcolor y "The looping test for 10000 times is finished."
     ;;
