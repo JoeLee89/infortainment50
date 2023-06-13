@@ -493,6 +493,7 @@ GPI_GPO(){
       random=$(shuf -i 0-$amount_pins -n 1)
       sudo ./idll-test"$executable" --PORT_VAL "$random" -- --EBOARD_TYPE EBOARD_ADi_"$board" --section GPO_LED_SetPort
     done
+    printcolor y "The looping test for 10000 times is finished."
     ;;
   esac
 }
