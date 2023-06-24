@@ -497,7 +497,22 @@ queue_amount() {
   launch_command "sudo ./idll-test"$executable" -- --EBOARD_TYPE EBOARD_ADi_"$board" --section Callback_PIC_EventQueueFull_Auto [CALLBACK][PIC][UNITTEST]"
   compare_result "$result" "passed"
 }
+#===============================================================
+#pic queue event amount check
+#===============================================================
 
+get_pic_event() {
+  while true; do
+    launch_command "sudo ./idll-test"$executable" -- --EBOARD_TYPE EBOARD_ADi_"$board" --section PIC_GetPICEvent_and_DisplayEventTime"
+    compare_result "$result" "passed"
+    echo "press [x] to exit the loop."
+    read -p "" input_x
+    if [ $input_x == "x" ]; then
+      break
+    fi
+  done
+
+}
 #===============================================================
 #pic event filter by user
 #===============================================================
@@ -567,6 +582,7 @@ while true; do
   printf "${COLOR_RED_WD}6. RTC ALARM EVENT${COLOR_REST}\n"
   printf "${COLOR_RED_WD}7. PIC QUEUE AMOUNT ${COLOR_REST}\n"
   printf "${COLOR_RED_WD}8. PIC EVENT FILTER CHOOSE BY USER ${COLOR_REST}\n"
+  printf "${COLOR_RED_WD}9. Get ANY PIC EVENT ${COLOR_REST}\n"
   printf "${COLOR_RED_WD}======================================${COLOR_REST}\n"
   printf "CHOOSE ONE TO TEST: "
   read -p "" input
@@ -587,6 +603,8 @@ while true; do
     queue_amount
   elif [ "$input" == 8 ]; then
     filter_user
+  elif [ "$input" == 9 ]; then
+    get_pic_event
   fi
 
 done
