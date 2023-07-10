@@ -157,7 +157,7 @@ Bank_Info(){
 #===============================================================
 Sram_Mirror_Write(){
 
-  local mirror_mode multiple size address file start_address
+  local mirror_mode multiple size address file start_address temp
   mirror_mode=$1
   multiple=$2
   size=$3
@@ -169,19 +169,15 @@ Sram_Mirror_Write(){
   if [[ "$file" =~ "txt" ]]; then
     launch_command "./idll-test$executable --sram-write $mirror_mode:$address:$file:$size -- --EBOARD_TYPE EBOARD_ADi_$board --section SRAM_Manual_write"
   else
+#    clear the data in _file first, preventing previous data storing in memory, start from squire every time.
+    _file=""
     for (( i = 0; i < size; i++ )); do
-      temp="$file/"
-      _file+="$temp"
+      _file+="$file/"
     done
     launch_command "./idll-test$executable --sram-write $mirror_mode:$address:$_file -- --EBOARD_TYPE EBOARD_ADi_$board --section SRAM_Manual_write"
 
   fi
-#  number=$((4*size))
-#  read -n $number data < "$file"
-#  launch_command "./idll-test$executable --sram-write $mirror_mode:$address:$data -- --EBOARD_TYPE EBOARD_ADi_$board --section SRAM_Manual_write"
 
-
-#  launch_command "./idll-test$executable --sram-write $mirror_mode:$address:$file:$size -- --EBOARD_TYPE EBOARD_ADi_$board --section SRAM_Manual_write"
   if [[ "$result" =~ $size_mes ]]; then
     title b  "Sram capacity check PASS"
   else
