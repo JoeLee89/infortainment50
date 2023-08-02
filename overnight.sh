@@ -4,6 +4,7 @@ times=0
 
 loop_time=$(date +%s --date="+12 hour")
 file_name="all_tests_auto_EBOARD_ADi_$board.sh"
+result_file_name="Result_$board"_"$(date +%y%m%d-%H%M%S)"
 #file_name="test.txt"
 #sed -i 's/"/\\"/g' $file_name
 
@@ -48,16 +49,16 @@ other() {
     print_command "$other_cmd"
     echo "$other"
     echo "================================================================================================" >> result.log
-    echo "$other_cmd" >> result.log
+    echo "$other_cmd" >> $result_file_name
     echo "================================================================================================" >> result.log
     get_mesg=$(echo "$other" | grep -i "27 == 0")
     if [[ "$other" =~ "27 == 0" && "$other" =~ "failed" ]]; then
-      .
+      :
     elif [[ "$other" =~ "failed" && $get_mesg == "" ]]; then
       log_to_file
-      echo "$other" >> result.log
+      echo "$other" >> $result_file_name
     else
-      echo "$other" >> result.log
+      echo "$other" >> $result_file_name
     fi
 
   done
@@ -83,29 +84,29 @@ fi
 
 while true; do
   ((times++))
-  echo "<<Times=$times>>" >> result.log
-  echo "$(date +%D-%T)" >>result.log
+  echo "<<Times=$times>>" >> $result_file_name
+  echo "$(date +%D-%T)" >>$result_file_name
 
   if [[ "$others_script" -ne 0 ]]; then
     other
   fi
 
   while read line; do
-    con=$(echo "$line" | grep -i "idll-test" | grep -v "#\|\"" | sed "s/\r//g")
+    con=$(echo "$line" | grep -i "idll-test" | grep -v "#\|\"" | sed "s/\r//g" | sed "s/idll-test/idll-test$executable/g")
 
     if [[ "${#con}" -ne 0 ]]; then
       for (( i = 1; i < $(shuf -i 3-6 -n 1); i++ )); do
 
-          echo "$(date +%D-%T)" >> result.log
+          echo "$(date +%D-%T)" >> $result_file_name
           launch_command "$con"
           echo "================================================================================================" >> result.log
-          echo "$con" >> result.log
+          echo "$con" >> $result_file_name
           echo "================================================================================================" >> result.log
 
           if [[ "$result" =~ "failed" ]]; then
             log_to_file
           fi
-          echo "$result" >> result.log
+          echo "$result" >> $result_file_name
       done
     fi
   done < $file_name
