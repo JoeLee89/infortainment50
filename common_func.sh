@@ -48,10 +48,12 @@ launch_command() {
 }
 
 log_to_file(){
+  local file_name
+  file_name="error_$board.log"
   echo "********************************************************* Command line ***********************************************************************" >> error_log.txt
-  echo "$command" >> error_log.txt
+  echo "$command" >> $file_name
   echo "**********************************************************************************************************************************************" >> error_log.txt
-  echo "$result" >> error_log.txt
+  echo "$result" >> $file_name
 }
 
 #if $3 has input string, it will ignore $1 including fail message
