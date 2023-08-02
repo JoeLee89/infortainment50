@@ -4,7 +4,7 @@ times=0
 
 loop_time=$(date +%s --date="+12 hour")
 file_name="all_tests_auto_EBOARD_ADi_$board.sh"
-result_file_name="Result_$board"_"$(date +%y%m%d-%H%M%S)"
+result_file_name="Result_$board"_"$(date +%y%m%d-%H%M%S).log"
 #file_name="test.txt"
 #sed -i 's/"/\\"/g' $file_name
 
