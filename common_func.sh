@@ -15,7 +15,7 @@ else
   executable=""
 fi
 
-for i in "LEC1" "BSEC_BACC" "SC1X" "SA3X"; do
+for i in "SIOG_FPGA" "LEC1" "BSEC_BACC" "SC1X" "SA3X"; do
 
   board_init=$(sudo ./idll-test"$executable" -- --EBOARD_TYPE EBOARD_ADi_"$i" --section adiLibInit)
 
