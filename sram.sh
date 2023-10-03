@@ -191,7 +191,7 @@ Sram_Mirror_Write(){
 }
 
 Sram_Mirror_Read(){
-  local read_data size address mode file
+  local read_data size address mode file read_from_sram
   size=$3
   mode=$1
   address=$2
@@ -228,6 +228,8 @@ Sram_Mirror_Read(){
     printf "\n\n\n"
     read -p ""
   fi
+  unset -v read_from_sram
+  unset -v read_data
 
 #  compare_result "$(echo "$result" | grep -i '[0-9]:' | sed 's/\s//g;s/[0-9]*://g')" "$read_data"
 #  echo "$result" | sed 's/\s//g;s/[0-9]*://g'
