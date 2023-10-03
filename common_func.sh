@@ -30,7 +30,7 @@ echo "Please ignore above message, it is the process of the detecting board name
 echo "================================================================"
 
 printf "${COLOR_RED_WD}Please confirm the detected board name = $board${COLOR_REST}\n"
-echo "If it is correct, enter to continue, or input the board name: (BSEC_BACC, LEC1, SC1X, SA3X)"
+echo "If it is correct, enter to continue, or input the board name: (BSEC_BACC, LEC1, SC1X, SA3X, SIOG_FPGA)"
 read -p "" board_name
 
 board=${board_name:-$board}
